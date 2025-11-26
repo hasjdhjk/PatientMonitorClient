@@ -45,9 +45,12 @@ public class SideBar extends JPanel {
 
         // logout always on the bottom
         JButton logoutBtn = createButton("Log Out", "logout", Color.RED);
+
         logoutBtn.addActionListener(e -> System.exit(0));
-        JPanel bottomPanel = new JPanel(new BorderLayout());
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
         bottomPanel.setOpaque(false);
+        bottomPanel.setPreferredSize(new Dimension(210, logoutBtn.getPreferredSize().height + 20));
         bottomPanel.add(logoutBtn, BorderLayout.SOUTH);
 
         add(bottomPanel, BorderLayout.SOUTH);
@@ -80,17 +83,17 @@ public class SideBar extends JPanel {
         btn.setHorizontalAlignment(SwingConstants.LEFT);
         btn.setIconTextGap(15);
 
-        // Button size
+        // button size
         btn.setPreferredSize(new Dimension(210, 60));
         btn.setMaximumSize(new Dimension(210, 60));
         btn.setMinimumSize(new Dimension(210, 60));
 
-        // Default: transparent
+        // default transparent
         btn.setContentAreaFilled(false);
         btn.setOpaque(false);
         btn.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 10));
 
-        // ===== HOVER EFFECT =====
+        // hover effect
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
 
             @Override
