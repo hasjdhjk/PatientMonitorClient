@@ -32,7 +32,7 @@ public class HomePage extends JPanel {
 
         add(top, BorderLayout.NORTH);
 
-        // Scrollable grid
+        // scrollable grid
         grid = new JPanel(new WrapLayout(FlowLayout.LEFT, 15, 15));
         grid.setBorder(BorderFactory.createEmptyBorder(0, 10, 20, 10));
 
