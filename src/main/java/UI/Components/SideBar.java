@@ -11,11 +11,10 @@ import java.util.List;
 public class SideBar extends JPanel {
 
     private List<JButton> allButtons = new ArrayList<>();
-    private Color selectedColor = new Color(255, 255, 255); // light gray highlight
-    private Color normalColor = new Color(230, 230, 230);   // sidebar background
+    private Color selectedColor = new Color(213, 213, 213); // light gray highlight
+    private Color normalColor = new Color(255, 255, 255);   // sidebar background
 
     public SideBar(MainWindow window) {
-
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(200, 0));
         setBackground(normalColor);
