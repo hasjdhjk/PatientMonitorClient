@@ -27,7 +27,7 @@ public class HomePage extends JPanel {
 
         // Scrollable grid
         JPanel grid = new JPanel(new GridLayout(0, 3, 15, 15));
-        grid.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
+        grid.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
 
         JScrollPane scroll = new JScrollPane(grid);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);

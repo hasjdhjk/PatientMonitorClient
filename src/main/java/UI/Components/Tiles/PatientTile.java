@@ -12,6 +12,7 @@ public class PatientTile extends BaseTile {
         super(300, 300, 30); // set background to round corner square
         setBackground(new Color(255, 255, 255));
 
+        setBorder(BorderFactory.createEmptyBorder(15, 30 , 15, 30));
         add(Box.createVerticalStrut(10));
         add(new JLabel(patient.getName()));
         add(new JLabel("HR: " + patient.getHeartRate()));
