@@ -4,6 +4,7 @@ import Models.AddedPatientDB;
 import Models.Patient;
 import UI.Components.SearchBar;
 import UI.Components.Tiles.AddTile;
+import UI.Components.WrapLayout;
 import UI.MainWindow;
 
 import UI.Components.Tiles.PatientTile;
@@ -32,7 +33,7 @@ public class HomePage extends JPanel {
         add(top, BorderLayout.NORTH);
 
         // Scrollable grid
-        grid = new JPanel(new GridLayout(2, 3, 15, 15));
+        grid = new JPanel(new WrapLayout(FlowLayout.LEFT, 15, 15));
         grid.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
 
         JScrollPane scroll = new JScrollPane(grid);
@@ -59,34 +60,16 @@ public class HomePage extends JPanel {
     }
 
     private void refreshGrid(List<Patient> patients) {
-
         grid.removeAll();
 
-        int maxSlots = 6;
-        int usedSlots = 0;
-
-        // add patient tiles
         for (Patient p : patients) {
-            if (usedSlots < maxSlots - 1) {          // keep last slot for AddTile
-                grid.add(new PatientTile(p, window));
-                usedSlots++;
-            } else break;
+            grid.add(new PatientTile(p, window));
         }
 
-        // add tile
+        // Add patient tile
         grid.add(new AddTile(window));
-        usedSlots++;
-
-        // fill remaining slots with empty panels
-        while (usedSlots < maxSlots) {
-            JPanel filler = new JPanel();
-            filler.setOpaque(false); // invisible
-            grid.add(filler);
-            usedSlots++;
-        }
 
         grid.revalidate();
         grid.repaint();
     }
-
 }
