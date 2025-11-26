@@ -8,10 +8,11 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class PatientTile extends JPanel {
+    private Color outlineColor = new Color(218, 218, 218);
 
     public PatientTile(Patient patient, MainWindow window) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        setBorder(BorderFactory.createLineBorder(outlineColor, 1));
         setBackground(new Color(255, 255, 255));
         setPreferredSize(new Dimension(150, 150));
 
