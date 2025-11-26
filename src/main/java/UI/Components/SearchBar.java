@@ -8,7 +8,7 @@ import java.awt.*;
 public class SearchBar extends BaseTile {
 
     public SearchBar() {
-        setPreferredSize(new Dimension(300, 50));
+        super(450, 65);
         setLayout(new BorderLayout());
 
         JTextField searchField = new JTextField();

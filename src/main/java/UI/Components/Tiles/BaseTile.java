@@ -11,9 +11,9 @@ public class BaseTile extends JPanel {
     private int shadowSize = 15;
     private Color tileColor = Color.WHITE;
 
-    public BaseTile() {
+    public BaseTile(int width, int height) {
         setOpaque(false);
-        setPreferredSize(new Dimension(300, 300));
+        setPreferredSize(new Dimension(width, height));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         addMouseListener(new MouseAdapter() {
