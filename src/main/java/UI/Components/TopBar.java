@@ -8,11 +8,12 @@ public class TopBar extends JPanel {
 
     public TopBar() {
         setLayout(new BorderLayout());
-        setPreferredSize(new Dimension(0, 50));
-        setBackground(new Color(245, 245, 245));
+        setPreferredSize(new Dimension(0, 90));
+        setBackground(new Color(63, 90, 227));
 
         JLabel title = new JLabel("Patient Monitor");
-        title.setFont(new Font("Arial", Font.BOLD, 20));
+        title.setFont(new Font("Arial", Font.BOLD, 40));
+        title.setForeground(Color.WHITE);
         title.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 0));
 
         add(title, BorderLayout.WEST);
