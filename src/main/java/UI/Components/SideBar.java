@@ -20,7 +20,7 @@ public class SideBar extends JPanel {
         setBackground(normalColor);
         setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
 
-        // ======= TOP BUTTONS =======
+        // top buttons
         JPanel topButtons = new JPanel();
         topButtons.setLayout(new BoxLayout(topButtons, BoxLayout.Y_AXIS));
         topButtons.setOpaque(false);
@@ -37,7 +37,7 @@ public class SideBar extends JPanel {
 
         add(topButtons, BorderLayout.NORTH);
 
-        // ======= BOTTOM (LOGOUT) =======
+        // logout always on the bottom
         JButton logoutBtn = createButton("Log Out");
         logoutBtn.addActionListener(e -> System.exit(0));
         JPanel bottomPanel = new JPanel(new BorderLayout());
@@ -48,7 +48,7 @@ public class SideBar extends JPanel {
     }
 
     // Create a normal sidebar button and register it in the list
-    private JButton makeSidebarButton(String text, String pageName, MainWindow window) {
+    private JButton makeSidebarButton(String text, String iconName, String pageName, MainWindow window) {
         JButton btn = createButton(text);
 
         btn.addActionListener(e -> {

@@ -6,9 +6,9 @@ import java.net.URL;
 
 public class ImageLoader {
 
-    public static ImageIcon loadIcon(String iconName, String folderName, int size) {
+    public static ImageIcon loadImage(String imageName, String folderName, int size) {
         try {
-            URL url = ImageIcon.class.getResource(folderName + iconName);
+            URL url = ImageIcon.class.getResource("/" + folderName +"/" + imageName + ".png");
             if (url == null) return null;
 
             Image img = new ImageIcon(url).getImage();
