@@ -26,20 +26,20 @@ public class SideBar extends JPanel {
         topButtons.setLayout(new BoxLayout(topButtons, BoxLayout.Y_AXIS));
         topButtons.setOpaque(false);
 
-        topButtons.add(makeSidebarButton("Home", "home",MainWindow.PAGE_HOME, window));
+        topButtons.add(makeSidebarButton("Home", "home", Color.BLACK, MainWindow.PAGE_HOME, window));
         topButtons.add(Box.createVerticalStrut(10));
-        topButtons.add(makeSidebarButton("Add Patient","add", MainWindow.PAGE_ADD, window));
+        topButtons.add(makeSidebarButton("Add Patient","add", Color.BLACK, MainWindow.PAGE_ADD, window));
         topButtons.add(Box.createVerticalStrut(10));
-        topButtons.add(makeSidebarButton("Status Tracker","status", MainWindow.PAGE_STATUS, window));
+        topButtons.add(makeSidebarButton("Status Tracker","status", Color.BLACK, MainWindow.PAGE_STATUS, window));
         topButtons.add(Box.createVerticalStrut(10));
-        topButtons.add(makeSidebarButton("Account", "account", MainWindow.PAGE_ACCOUNT, window));
+        topButtons.add(makeSidebarButton("Account", "account", Color.BLACK, MainWindow.PAGE_ACCOUNT, window));
         topButtons.add(Box.createVerticalStrut(10));
-        topButtons.add(makeSidebarButton("Settings","settings", MainWindow.PAGE_SETTINGS, window));
+        topButtons.add(makeSidebarButton("Settings","settings", Color.BLACK, MainWindow.PAGE_SETTINGS, window));
 
         add(topButtons, BorderLayout.NORTH);
 
         // logout always on the bottom
-        JButton logoutBtn = createButton("Log Out", "logout");
+        JButton logoutBtn = createButton("Log Out", "logout", Color.RED);
         logoutBtn.addActionListener(e -> System.exit(0));
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.setOpaque(false);
@@ -49,8 +49,8 @@ public class SideBar extends JPanel {
     }
 
     // Create a normal sidebar button and register it in the list
-    private JButton makeSidebarButton(String text, String iconName, String pageName, MainWindow window) {
-        JButton btn = createButton(text, iconName);
+    private JButton makeSidebarButton(String text, String iconName, Color textColor, String pageName, MainWindow window) {
+        JButton btn = createButton(text, iconName, textColor);
 
         btn.addActionListener(e -> {
             window.showPage(pageName);
@@ -62,10 +62,11 @@ public class SideBar extends JPanel {
     }
 
     // Reusable button creation method
-    private JButton createButton(String text, String iconName) {
+    private JButton createButton(String text, String iconName, Color textColor) {
         JButton btn = new JButton(text);
 
         btn.setFont(new Font("Arial", Font.PLAIN, 16));
+        btn.setForeground(textColor); // set the text color
         btn.setFocusPainted(false);
 
         // Load and assign icon
