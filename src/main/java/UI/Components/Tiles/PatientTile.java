@@ -9,7 +9,7 @@ import java.awt.event.*;
 
 public class PatientTile extends BaseTile {
     public PatientTile(Patient patient, MainWindow window) {
-        super(380, 300, 30); // set background to round corner square
+        super(390, 300, 30); // set background to round corner square
         setBackground(new Color(255, 255, 255));
 
         setBorder(BorderFactory.createEmptyBorder(15, 30 , 15, 30));
