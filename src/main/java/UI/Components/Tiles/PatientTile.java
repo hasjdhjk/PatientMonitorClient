@@ -8,8 +8,6 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class PatientTile extends BaseTile {
-    private Color outlineColor = new Color(218, 218, 218);
-
     public PatientTile(Patient patient, MainWindow window) {
         super(); // set background to round corner square
         setBackground(new Color(255, 255, 255));

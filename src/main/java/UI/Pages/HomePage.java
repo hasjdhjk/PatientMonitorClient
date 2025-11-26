@@ -1,6 +1,7 @@
 package UI.Pages;
 
 import Models.Patient;
+import UI.Components.Tiles.AddTile;
 import UI.MainWindow;
 
 import UI.Components.Tiles.PatientTile;
@@ -48,9 +49,6 @@ public class HomePage extends JPanel {
         }
 
         // Add patient tile
-        JButton addTile = new JButton("+");
-        addTile.setFont(new Font("Arial", Font.BOLD, 50));
-        addTile.addActionListener(e -> window.showPage(MainWindow.PAGE_ADD));
-        grid.add(addTile);
+        grid.add(new AddTile(window));
     }
 }
