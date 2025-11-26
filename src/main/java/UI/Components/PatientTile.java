@@ -11,7 +11,7 @@ public class PatientTile extends JPanel {
 
     public PatientTile(Patient patient, MainWindow window) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2));
+        setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         setBackground(new Color(255, 255, 255));
         setPreferredSize(new Dimension(150, 150));
 
