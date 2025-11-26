@@ -21,18 +21,18 @@ public class MainWindow extends JFrame {
 
     public MainWindow() {
         setTitle("Patient Monitor");
-        setSize(1200, 800);
+        setSize(1920, 1080);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // === Top Bar ===
+        // top bar
         add(new TopBar(), BorderLayout.NORTH);
 
-        // === Sidebar ===
+        // sidebar (tabs for page switching)
         SideBar sidebar = new SideBar(this);
         add(sidebar, BorderLayout.WEST);
 
-        // === Page Container (CardLayout) ===
+        // page container (card layout shows only 1 page at a time)
         cardLayout = new CardLayout();
         pageContainer = new JPanel(cardLayout);
 
