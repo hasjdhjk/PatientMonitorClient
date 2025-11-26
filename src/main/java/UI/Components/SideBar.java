@@ -114,11 +114,11 @@ public class SideBar extends JPanel {
         int w = getWidth();
         int h = getHeight();
 
-        // Draw the solid white sidebar RECTANGLE (200px wide)
+        // Draw the solid white sidebar on the left leave some space for shadow
         g2.setColor(normalColor);
         g2.fillRect(0, 0, 220, h);
 
-        // Draw shadow on the
+        // shadow on the right
         for (int i = 0; i < 10; i++) {
             int alpha = 40 - i * 4;
             if (alpha < 0) alpha = 0;
