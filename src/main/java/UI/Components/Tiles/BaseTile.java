@@ -7,11 +7,12 @@ import java.awt.event.MouseEvent;
 
 public class BaseTile extends JPanel {
 
-    private int radius = 30;
+    private int radius;
     private int shadowSize = 15;
     private Color tileColor = Color.WHITE;
 
-    public BaseTile(int width, int height) {
+    public BaseTile(int width, int height, int radius) {
+        this.radius = radius;
         setOpaque(false);
         setPreferredSize(new Dimension(width, height));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

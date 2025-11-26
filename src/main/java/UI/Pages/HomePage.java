@@ -19,7 +19,6 @@ public class HomePage extends JPanel {
 
         // initialize top panel
         JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
-        top.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
         // search bar
         top.add(new SearchBar());
@@ -28,7 +27,7 @@ public class HomePage extends JPanel {
 
         // Scrollable grid
         JPanel grid = new JPanel(new GridLayout(0, 3, 15, 15));
-        grid.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        grid.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
 
         JScrollPane scroll = new JScrollPane(grid);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);

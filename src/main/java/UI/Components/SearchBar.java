@@ -8,7 +8,7 @@ import java.awt.*;
 public class SearchBar extends BaseTile {
 
     public SearchBar() {
-        super(450, 65);
+        super(400, 65, 40);
         setLayout(new BorderLayout());
 
         JTextField searchField = new JTextField();
@@ -16,5 +16,6 @@ public class SearchBar extends BaseTile {
         searchField.setOpaque(false);
 
         add(searchField, BorderLayout.CENTER);
+        setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30)); // make sure text inside teh border
     }
 }
