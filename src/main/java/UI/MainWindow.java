@@ -1,10 +1,8 @@
 package UI;
 
-import UI.Pages.HomePage;
-import UI.Pages.PatientDetailPage;
-import UI.Pages.AddPatientPage;
-import UI.Pages.SettingsPage;
-import UI.Components.NavBar;
+import UI.Components.SideBar;
+import UI.Components.TopBar;
+import UI.Pages.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,58 +10,51 @@ import java.awt.*;
 public class MainWindow extends JFrame {
 
     private CardLayout cardLayout;
-    private JPanel mainPanel;
+    private JPanel pageContainer;
 
-    // Page identifiers
     public static final String PAGE_HOME = "home";
     public static final String PAGE_DETAILS = "details";
     public static final String PAGE_ADD = "add";
+    public static final String PAGE_STATUS = "status";
+    public static final String PAGE_ACCOUNT = "account";
     public static final String PAGE_SETTINGS = "settings";
 
-    private HomePage homePage;
-
     public MainWindow() {
-        setTitle("Patient Monitoring System");
-        setSize(1920, 1080);
+        setTitle("Patient Monitor");
+        setSize(1200, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Main center panel with pages
+        // === Top Bar ===
+        add(new TopBar(), BorderLayout.NORTH);
+
+        // === Sidebar ===
+        SideBar sidebar = new SideBar(this);
+        add(sidebar, BorderLayout.WEST);
+
+        // === Page Container (CardLayout) ===
         cardLayout = new CardLayout();
-        mainPanel = new JPanel(cardLayout);
+        pageContainer = new JPanel(cardLayout);
 
-        // initialize pages
-        homePage = new HomePage(this);
-        PatientDetailPage detailPage = new PatientDetailPage(this);
-//        AddPatientPage addPage = new AddPatientPage(this);
-//        SettingsPage settings = new SettingsPage();
+        // Pages
+        pageContainer.add(new HomePage(this), PAGE_HOME);
+//        pageContainer.add(new AddPatientPage(), PAGE_ADD);
+//        pageContainer.add(new SettingsPage(), PAGE_SETTINGS);
+//        pageContainer.add(new StatusTrackerPage(), PAGE_STATUS);
+//        pageContainer.add(new AccountPage(), PAGE_ACCOUNT);
 
-        // add pages to main panel
-        mainPanel.add(homePage, PAGE_HOME);
-        mainPanel.add(detailPage, PAGE_DETAILS);
-//        mainPanel.add(addPage, PAGE_ADD);
-//        mainPanel.add(settings, PAGE_SETTINGS);
-
-        // main panel to center
-        add(mainPanel, BorderLayout.CENTER);
-
-        // bottom navigation bar
-        NavBar nav = new NavBar(this);
-        add(nav, BorderLayout.SOUTH);
+        add(pageContainer, BorderLayout.CENTER);
 
         setVisible(true);
     }
 
-    // switch pages
     public void showPage(String pageName) {
-        cardLayout.show(mainPanel, pageName);
+        cardLayout.show(pageContainer, pageName);
     }
 
-    // pass data to detail page
-    public void showPatientDetail(Models.Patient p) {
-        PatientDetailPage detailPage = new PatientDetailPage(this);
-        detailPage.setPatient(p);
-        mainPanel.add(detailPage, PAGE_DETAILS); // overwrite previous
+    public void showPatientDetails(Models.Patient p) {
+        PatientDetailPage detailPage = new PatientDetailPage(this, p);
+        pageContainer.add(detailPage, PAGE_DETAILS); // replace
         showPage(PAGE_DETAILS);
     }
 }

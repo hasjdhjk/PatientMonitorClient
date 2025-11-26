@@ -1,8 +1,9 @@
 package UI.Pages;
 
-import UI.MainWindow;
-import UI.Components.PatientTile;
 import Models.Patient;
+import UI.MainWindow;
+
+import UI.Components.PatientTile;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,25 +12,31 @@ import java.util.List;
 
 public class HomePage extends JPanel {
 
-    private MainWindow window;
-
     public HomePage(MainWindow window) {
-        this.window = window;
         setLayout(new BorderLayout());
 
-        JLabel title = new JLabel("Home", SwingConstants.LEFT);
-        title.setFont(new Font("Arial", Font.BOLD, 24));
-        title.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20));
-        add(title, BorderLayout.NORTH);
+        // Top area with Search bar
+        JPanel top = new JPanel(new BorderLayout());
+        top.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // scrollable grid
-        JPanel grid = new JPanel(new GridLayout(0, 2, 10, 10));
-        grid.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JTextField searchField = new JTextField();
+        searchField.setPreferredSize(new Dimension(200, 35));
+        top.add(searchField, BorderLayout.CENTER);
+
+        JButton searchBtn = new JButton("🔍");
+        top.add(searchBtn, BorderLayout.EAST);
+
+        add(top, BorderLayout.NORTH);
+
+        // Scrollable grid
+        JPanel grid = new JPanel(new GridLayout(0, 3, 15, 15));
+        grid.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         JScrollPane scroll = new JScrollPane(grid);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         add(scroll, BorderLayout.CENTER);
 
-        // temporary mock data
+        // Mock Patients
         List<Patient> patients = new ArrayList<>();
         patients.add(new Patient(1, "Raymond", "Lee", 82, 36.8, "120/80"));
         patients.add(new Patient(2, "Jack", "Wong", 90, 37.0, "110/75"));
@@ -39,9 +46,9 @@ public class HomePage extends JPanel {
             grid.add(new PatientTile(p, window));
         }
 
-        // add tile for adding patients
+        // Add patient tile
         JButton addTile = new JButton("+");
-        addTile.setFont(new Font("Arial", Font.BOLD, 40));
+        addTile.setFont(new Font("Arial", Font.BOLD, 50));
         addTile.addActionListener(e -> window.showPage(MainWindow.PAGE_ADD));
         grid.add(addTile);
     }
