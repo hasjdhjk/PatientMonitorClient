@@ -8,14 +8,15 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+// each patient grid on front page
 public class PatientTile extends JPanel {
 
     public PatientTile(Patient patient, MainWindow window) {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+        setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
         setBackground(Color.WHITE);
-        setPreferredSize(new Dimension(150, 150));
+        setPreferredSize(new Dimension(80, 80));
 
         add(new JLabel(patient.getName()));
         add(new JLabel("HR: " + patient.getHeartRate()));
