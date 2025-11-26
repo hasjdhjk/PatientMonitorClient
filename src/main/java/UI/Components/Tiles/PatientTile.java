@@ -1,4 +1,4 @@
-package UI.Components;
+package UI.Components.Tiles;
 
 import Models.Patient;
 import UI.MainWindow;
@@ -7,14 +7,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class PatientTile extends JPanel {
+public class PatientTile extends BaseTile {
     private Color outlineColor = new Color(218, 218, 218);
 
     public PatientTile(Patient patient, MainWindow window) {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createLineBorder(outlineColor, 1));
+        super(); // set background to round corner square
         setBackground(new Color(255, 255, 255));
-        setPreferredSize(new Dimension(150, 150));
 
         add(Box.createVerticalStrut(10));
         add(new JLabel(patient.getName()));
@@ -48,5 +46,11 @@ public class PatientTile extends JPanel {
         menu.add(delete);
 
         menu.show(this, e.getX(), e.getY());
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(bgImage, 0, 0, getWidth(), getHeight(), this);
     }
 }

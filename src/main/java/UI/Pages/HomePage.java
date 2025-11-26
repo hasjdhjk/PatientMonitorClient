@@ -3,7 +3,7 @@ package UI.Pages;
 import Models.Patient;
 import UI.MainWindow;
 
-import UI.Components.PatientTile;
+import UI.Components.Tiles.PatientTile;
 
 import javax.swing.*;
 import java.awt.*;
