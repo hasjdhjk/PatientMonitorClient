@@ -34,6 +34,7 @@ public class HomePage extends JPanel {
 
         JScrollPane scroll = new JScrollPane(grid);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setBorder(null); // remove border
         add(scroll, BorderLayout.CENTER);
 
         // Mock Patients
