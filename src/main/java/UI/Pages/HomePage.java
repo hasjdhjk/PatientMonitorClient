@@ -24,11 +24,11 @@ public class HomePage extends JPanel {
         setLayout(new BorderLayout());
 
         // initialize top panel
-        JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
+        JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 15));
 
         // search bar
         SearchBar searchBar = new SearchBar();
-        top.add(searchBar);
+        top.add(searchBar, BorderLayout.CENTER);
 
         add(top, BorderLayout.NORTH);
 
