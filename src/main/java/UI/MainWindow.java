@@ -24,30 +24,30 @@ public class MainWindow extends JFrame {
 
     public MainWindow() {
         setTitle("Patient Monitoring System");
-        setSize(420, 800); // mobile-like aspect ratio
+        setSize(1920, 1080);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // === Main center panel with pages ===
+        // Main center panel with pages
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
-        // Create the pages
+        // initialize pages
         homePage = new HomePage(this);
         PatientDetailPage detailPage = new PatientDetailPage(this);
 //        AddPatientPage addPage = new AddPatientPage(this);
 //        SettingsPage settings = new SettingsPage();
 
-        // Add pages to card layout
+        // add pages to main panel
         mainPanel.add(homePage, PAGE_HOME);
         mainPanel.add(detailPage, PAGE_DETAILS);
 //        mainPanel.add(addPage, PAGE_ADD);
 //        mainPanel.add(settings, PAGE_SETTINGS);
 
-        // Add main panel to center
+        // main panel to center
         add(mainPanel, BorderLayout.CENTER);
 
-        // === Bottom Navigation Bar ===
+        // bottom navigation bar
         NavBar nav = new NavBar(this);
         add(nav, BorderLayout.SOUTH);
 
