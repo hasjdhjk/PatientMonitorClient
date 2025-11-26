@@ -4,16 +4,20 @@ import UI.Components.Tiles.BaseTile;
 import Utilities.ImageLoader;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.util.function.Consumer;
 
 public class SearchBar extends BaseTile {
+    private JTextField searchField;
 
     public SearchBar() {
         super(400, 65, 40);
         setLayout(new BorderLayout());
 
         // search field
-        JTextField searchField = new JTextField();
+        searchField = new JTextField();
         searchField.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
         searchField.setOpaque(false);
 
@@ -23,5 +27,25 @@ public class SearchBar extends BaseTile {
 
         add(searchField, BorderLayout.CENTER);
         setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30)); // make sure text inside teh border
+    }
+
+    // listen to live typing
+    public void addSearchListener(Consumer<String> listener) {
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                listener.accept(searchField.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                listener.accept(searchField.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                listener.accept(searchField.getText());
+            }
+        });
     }
 }

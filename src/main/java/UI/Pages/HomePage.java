@@ -1,5 +1,6 @@
 package UI.Pages;
 
+import Models.AddedPatientDB;
 import Models.Patient;
 import UI.Components.SearchBar;
 import UI.Components.Tiles.AddTile;
@@ -13,20 +14,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomePage extends JPanel {
+    private JPanel grid; // contains all patient grids
+    private MainWindow window;
 
     public HomePage(MainWindow window) {
+        this.window = window;
+
         setLayout(new BorderLayout());
 
         // initialize top panel
         JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
 
         // search bar
-        top.add(new SearchBar());
+        SearchBar searchBar = new SearchBar();
+        top.add(searchBar);
 
         add(top, BorderLayout.NORTH);
 
         // Scrollable grid
-        JPanel grid = new JPanel(new GridLayout(0, 3, 15, 15));
+        grid = new JPanel(new GridLayout(0, 3, 15, 15));
         grid.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
 
         JScrollPane scroll = new JScrollPane(grid);
@@ -35,16 +41,31 @@ public class HomePage extends JPanel {
         add(scroll, BorderLayout.CENTER);
 
         // Mock Patients
-        List<Patient> patients = new ArrayList<>();
-        patients.add(new Patient(1, "Raymond", "Lee", 82, 36.8, "120/80"));
-        patients.add(new Patient(2, "Jack", "Wong", 90, 37.0, "110/75"));
-        patients.add(new Patient(3, "David", "Chan", 130, 39.1, "160/95"));
+        AddedPatientDB.addPatient(new Patient(1, "Raymond", "Lee", 82, 36.8, "120/80"));
+        AddedPatientDB.addPatient(new Patient(2, "Jack", "Wong", 90, 37.0, "110/75"));
+        AddedPatientDB.addPatient(new Patient(3, "David", "Chan", 130, 39.1, "160/95"));
+        
+        // initial grid refresh
+        refreshGrid(AddedPatientDB.getAll());
+
+        // search function
+        searchBar.addSearchListener(text -> {
+            List<Patient> result = AddedPatientDB.search(text);
+            refreshGrid(result);
+        });
+    }
+
+    private void refreshGrid(List<Patient> patients) {
+        grid.removeAll();
 
         for (Patient p : patients) {
             grid.add(new PatientTile(p, window));
         }
 
-        // Add patient tile
+        // Always add the "+" tile
         grid.add(new AddTile(window));
+
+        grid.revalidate();
+        grid.repaint();
     }
 }
