@@ -5,14 +5,17 @@ import Utilities.ImageLoader;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SideBar extends JPanel {
 
     private List<JButton> allButtons = new ArrayList<>();
-    private Color selectedColor = new Color(213, 213, 213); // light gray highlight
-    private Color normalColor = new Color(255, 255, 255);   // sidebar background
+    private Color selectedColor = new Color(178, 198, 250, 255); // high light
+    private Color normalColor = new Color(255, 255, 255);   // button background
+    private Color hoverColor = new Color(240, 240, 240);
 
     public SideBar(MainWindow window) {
         setLayout(new BorderLayout());
@@ -68,26 +71,54 @@ public class SideBar extends JPanel {
         JButton btn = new JButton(text);
 
         btn.setFont(new Font("Arial", Font.PLAIN, 16));
-        btn.setForeground(textColor); // set the text color
+        btn.setForeground(textColor);
         btn.setFocusPainted(false);
 
-        // Load and assign icon
+        // Load icon
         ImageIcon icon = ImageLoader.loadImage("icon_" + iconName, "Icons", 22);
         btn.setIcon(icon);
         btn.setHorizontalAlignment(SwingConstants.LEFT);
-        btn.setIconTextGap(15); // spacing between icon and text
+        btn.setIconTextGap(15);
 
-        // button size
+        // Button size
         btn.setPreferredSize(new Dimension(210, 60));
         btn.setMaximumSize(new Dimension(210, 60));
         btn.setMinimumSize(new Dimension(210, 60));
 
-        // default no background (only background when selected)
+        // Default: transparent
         btn.setContentAreaFilled(false);
         btn.setOpaque(false);
         btn.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 10));
 
+        // ===== HOVER EFFECT =====
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                if (!isSelected(btn)) {
+                    btn.setOpaque(true);
+                    btn.setContentAreaFilled(true);
+                    btn.setBackground(hoverColor);
+                }
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                if (isSelected(btn)) {
+                    btn.setOpaque(true);
+                    btn.setContentAreaFilled(true);
+                    btn.setBackground(selectedColor);
+                } else {
+                    btn.setOpaque(false);
+                    btn.setContentAreaFilled(false);
+                }
+            }
+        });
+
         return btn;
+    }
+    private boolean isSelected(JButton btn) {
+        return btn.getBackground().equals(selectedColor) && btn.isOpaque();
     }
 
     // Highlight the selected button
