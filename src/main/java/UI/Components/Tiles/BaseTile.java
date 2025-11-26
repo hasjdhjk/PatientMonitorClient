@@ -2,16 +2,33 @@ package UI.Components.Tiles;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class BaseTile extends JPanel {
 
     private int radius = 30;
     private int shadowSize = 15;
+    private Color tileColor = Color.WHITE;
 
     public BaseTile() {
         setOpaque(false);
         setPreferredSize(new Dimension(300, 300));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                tileColor = new Color(240, 240, 240);
+                repaint();
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                tileColor = Color.WHITE;
+                repaint();
+            }
+        });
     }
 
     @Override
@@ -24,9 +41,9 @@ public class BaseTile extends JPanel {
         int w = getWidth();
         int h = getHeight();
 
-        // ==== BLURRED SHADOW ====
+        // blurry shadow
         for (int i = 0; i < shadowSize; i++) {
-            int alpha = (int) (1 - i * (1 / shadowSize)); // fade out
+            int alpha = (int) (1 - i * (1 / shadowSize));
             if (alpha < 0) alpha = 0;
 
             g2.setColor(new Color(0, 0, 0, alpha));
@@ -40,8 +57,8 @@ public class BaseTile extends JPanel {
             );
         }
 
-        // ==== MAIN WHITE TILE ====
-        g2.setColor(Color.WHITE);
+        // main background
+        g2.setColor(tileColor);
         g2.fillRoundRect(
                 shadowSize,
                 shadowSize,
@@ -55,4 +72,3 @@ public class BaseTile extends JPanel {
         super.paintComponent(g);
     }
 }
-
