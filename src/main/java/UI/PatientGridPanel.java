@@ -1,5 +1,7 @@
 package UI;
 
+import Models.Patient;
+
 import javax.swing.*;
 import java.awt.*;
 

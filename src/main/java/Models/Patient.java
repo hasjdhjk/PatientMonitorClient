@@ -25,6 +25,7 @@ public class Patient {
 
     // Getters
     public int getId() { return id; }
+    public String getName() { return givenName + " " + familyName; }
     public String getGivenName() { return givenName; }
     public String getFamilyName() { return familyName; }
     public int getHeartRate() { return heartRate; }
