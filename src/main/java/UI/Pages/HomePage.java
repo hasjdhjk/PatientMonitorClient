@@ -1,6 +1,7 @@
 package UI.Pages;
 
 import Models.Patient;
+import UI.Components.SearchBar;
 import UI.Components.Tiles.AddTile;
 import UI.MainWindow;
 
@@ -16,19 +17,14 @@ public class HomePage extends JPanel {
     public HomePage(MainWindow window) {
         setLayout(new BorderLayout());
 
-        // Top area with Search bar
+        // initialize top panel
         JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
         top.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-        // Search field (shorter width)
-        JTextField searchField = new JTextField();
-        searchField.setPreferredSize(new Dimension(250, 35)); // <-- set width here
-
-        // Add components
-        top.add(searchField);
+        // search bar
+        top.add(new SearchBar());
 
         add(top, BorderLayout.NORTH);
-
 
         // Scrollable grid
         JPanel grid = new JPanel(new GridLayout(0, 3, 15, 15));
