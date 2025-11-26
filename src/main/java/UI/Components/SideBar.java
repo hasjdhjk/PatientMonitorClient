@@ -28,7 +28,7 @@ public class SideBar extends JPanel {
 
         topButtons.add(makeSidebarButton("Home", "home",MainWindow.PAGE_HOME, window));
         topButtons.add(Box.createVerticalStrut(10));
-        topButtons.add(makeSidebarButton("+ Add Patient","add", MainWindow.PAGE_ADD, window));
+        topButtons.add(makeSidebarButton("Add Patient","add", MainWindow.PAGE_ADD, window));
         topButtons.add(Box.createVerticalStrut(10));
         topButtons.add(makeSidebarButton("Status Tracker","status", MainWindow.PAGE_STATUS, window));
         topButtons.add(Box.createVerticalStrut(10));
