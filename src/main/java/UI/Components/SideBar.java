@@ -16,8 +16,7 @@ public class SideBar extends JPanel {
 
     public SideBar(MainWindow window) {
         setLayout(new BorderLayout());
-        setPreferredSize(new Dimension(200, 0));
-        setBackground(normalColor);
+        setPreferredSize(new Dimension(230, 0));
         setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
 
         // top buttons
@@ -79,9 +78,9 @@ public class SideBar extends JPanel {
         btn.setIconTextGap(15); // spacing between icon and text
 
         // button size
-        btn.setPreferredSize(new Dimension(200, 60));
-        btn.setMaximumSize(new Dimension(200, 60));
-        btn.setMinimumSize(new Dimension(200, 60));
+        btn.setPreferredSize(new Dimension(220, 60));
+        btn.setMaximumSize(new Dimension(220, 60));
+        btn.setMinimumSize(new Dimension(220, 60));
 
         // default no background (only background when selected)
         btn.setContentAreaFilled(false);
@@ -103,4 +102,35 @@ public class SideBar extends JPanel {
         selected.setContentAreaFilled(true);
         selected.setBackground(selectedColor);
     }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+
+        int w = getWidth();
+        int h = getHeight();
+
+        // Draw the solid white sidebar RECTANGLE (200px wide)
+        g2.setColor(normalColor);
+        g2.fillRect(0, 0, 220, h);
+
+        // Draw shadow on the
+        for (int i = 0; i < 10; i++) {
+            int alpha = 40 - i * 4;
+            if (alpha < 0) alpha = 0;
+
+            g2.setColor(new Color(0, 0, 0, alpha));
+            g2.fillRect(220 + i, 0, 1, h); // start after 200px
+        }
+
+        g2.dispose();
+    }
+
+
+
 }
+
