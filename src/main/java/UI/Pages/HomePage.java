@@ -22,14 +22,14 @@ public class HomePage extends JPanel {
         title.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20));
         add(title, BorderLayout.NORTH);
 
-        // Scrollable grid
+        // scrollable grid
         JPanel grid = new JPanel(new GridLayout(0, 2, 10, 10));
         grid.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JScrollPane scroll = new JScrollPane(grid);
         add(scroll, BorderLayout.CENTER);
 
-        // Mock data
+        // temporary mock data
         List<Patient> patients = new ArrayList<>();
         patients.add(new Patient(1, "Raymond", "Lee", 82, 36.8, "120/80"));
         patients.add(new Patient(2, "Jack", "Wong", 90, 37.0, "110/75"));
@@ -39,7 +39,7 @@ public class HomePage extends JPanel {
             grid.add(new PatientTile(p, window));
         }
 
-        // Add tile (for adding patient)
+        // add tile for adding patients
         JButton addTile = new JButton("+");
         addTile.setFont(new Font("Arial", Font.BOLD, 40));
         addTile.addActionListener(e -> window.showPage(MainWindow.PAGE_ADD));

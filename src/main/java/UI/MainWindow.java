@@ -54,12 +54,12 @@ public class MainWindow extends JFrame {
         setVisible(true);
     }
 
-    // Method to switch pages
+    // switch pages
     public void showPage(String pageName) {
         cardLayout.show(mainPanel, pageName);
     }
 
-    // Pass data to detail page
+    // pass data to detail page
     public void showPatientDetail(Models.Patient p) {
         PatientDetailPage detailPage = new PatientDetailPage(this);
         detailPage.setPatient(p);
