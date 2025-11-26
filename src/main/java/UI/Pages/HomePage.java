@@ -17,17 +17,18 @@ public class HomePage extends JPanel {
         setLayout(new BorderLayout());
 
         // Top area with Search bar
-        JPanel top = new JPanel(new BorderLayout());
-        top.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
+        top.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
+        // Search field (shorter width)
         JTextField searchField = new JTextField();
-        searchField.setPreferredSize(new Dimension(200, 35));
-        top.add(searchField, BorderLayout.CENTER);
+        searchField.setPreferredSize(new Dimension(250, 35)); // <-- set width here
 
-        JButton searchBtn = new JButton("🔍");
-        top.add(searchBtn, BorderLayout.EAST);
+        // Add components
+        top.add(searchField);
 
         add(top, BorderLayout.NORTH);
+
 
         // Scrollable grid
         JPanel grid = new JPanel(new GridLayout(0, 3, 15, 15));

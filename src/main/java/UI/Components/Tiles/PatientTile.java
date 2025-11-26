@@ -18,7 +18,7 @@ public class PatientTile extends BaseTile {
         add(new JLabel("Temp: " + patient.getTemperature()));
         add(new JLabel("BP: " + patient.getBloodPressure()));
 
-        // Click → View details
+        // click to view details
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
