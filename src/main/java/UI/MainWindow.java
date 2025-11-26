@@ -1,48 +1,69 @@
 package UI;
 
-import Models.Patient;
+import UI.Pages.HomePage;
+import UI.Pages.PatientDetailPage;
+import UI.Pages.AddPatientPage;
+import UI.Pages.SettingsPage;
+import UI.Components.NavBar;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MainWindow extends JFrame {
 
-    private PatientGridPanel gridPanel;
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
+
+    // Page identifiers
+    public static final String PAGE_HOME = "home";
+    public static final String PAGE_DETAILS = "details";
+    public static final String PAGE_ADD = "add";
+    public static final String PAGE_SETTINGS = "settings";
+
+    private HomePage homePage;
 
     public MainWindow() {
         setTitle("Patient Monitoring System");
-        setSize(1000, 700);
+        setSize(420, 800); // mobile-like aspect ratio
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
 
+        // === Main center panel with pages ===
+        cardLayout = new CardLayout();
+        mainPanel = new JPanel(cardLayout);
 
-        gridPanel = new PatientGridPanel();
+        // Create the pages
+        homePage = new HomePage(this);
+        PatientDetailPage detailPage = new PatientDetailPage(this);
+//        AddPatientPage addPage = new AddPatientPage(this);
+//        SettingsPage settings = new SettingsPage();
 
-        add(new JScrollPane(gridPanel), BorderLayout.CENTER);
+        // Add pages to card layout
+        mainPanel.add(homePage, PAGE_HOME);
+        mainPanel.add(detailPage, PAGE_DETAILS);
+//        mainPanel.add(addPage, PAGE_ADD);
+//        mainPanel.add(settings, PAGE_SETTINGS);
 
-//        loadPatientsFromServer();
-        loadMockPatients();
+        // Add main panel to center
+        add(mainPanel, BorderLayout.CENTER);
+
+        // === Bottom Navigation Bar ===
+        NavBar nav = new NavBar(this);
+        add(nav, BorderLayout.SOUTH);
 
         setVisible(true);
     }
 
-//    private void loadPatientsFromServer() {
-//        List<Patient> patients = ApiClient.getPatients();
-//
-//        for (Patient p : patients) {
-//            gridPanel.addPatient(p);
-//        }
-//    }
-
-    // for testing only
-    private void loadMockPatients() {
-        java.util.List<Patient> mock = new java.util.ArrayList<>();
-        mock.add(new Patient(1, "John", "Doe", 82, 36.8, "120/80"));
-        mock.add(new Patient(2, "Sarah", "Smith", 95, 37.5, "140/90"));
-        mock.add(new Patient(3, "Michael", "Brown", 130, 39.2, "160/100"));
-
-        for (Patient p : mock) {
-            gridPanel.addPatient(p);
-        }
+    // Method to switch pages
+    public void showPage(String pageName) {
+        cardLayout.show(mainPanel, pageName);
     }
 
+    // Pass data to detail page
+    public void showPatientDetail(Models.Patient p) {
+        PatientDetailPage detailPage = new PatientDetailPage(this);
+        detailPage.setPatient(p);
+        mainPanel.add(detailPage, PAGE_DETAILS); // overwrite previous
+        showPage(PAGE_DETAILS);
+    }
 }
