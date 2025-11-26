@@ -1,24 +1,58 @@
 package UI.Components.Tiles;
 
-import Utilities.ImageLoader;
-
 import javax.swing.*;
 import java.awt.*;
 
-// to set the background a round circle rectangle
 public class BaseTile extends JPanel {
-    protected Image bgImage;
+
+    private int radius = 30;
+    private int shadowSize = 15;
 
     public BaseTile() {
-        bgImage = ImageLoader.loadImage("background_roundSquare", "Backgrounds", 300).getImage();
         setOpaque(false);
-        setPreferredSize(new Dimension(300,300));
+        setPreferredSize(new Dimension(300, 300));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
 
     @Override
     protected void paintComponent(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+
+        int w = getWidth();
+        int h = getHeight();
+
+        // ==== BLURRED SHADOW ====
+        for (int i = 0; i < shadowSize; i++) {
+            int alpha = (int) (1 - i * (1 / shadowSize)); // fade out
+            if (alpha < 0) alpha = 0;
+
+            g2.setColor(new Color(0, 0, 0, alpha));
+            g2.fillRoundRect(
+                    i,
+                    i,
+                    w - i * 2,
+                    h - i * 2,
+                    radius + i,
+                    radius + i
+            );
+        }
+
+        // ==== MAIN WHITE TILE ====
+        g2.setColor(Color.WHITE);
+        g2.fillRoundRect(
+                shadowSize,
+                shadowSize,
+                w - shadowSize * 2,
+                h - shadowSize * 2,
+                radius,
+                radius
+        );
+
+        g2.dispose();
         super.paintComponent(g);
-        g.drawImage(bgImage, 0, 0, getWidth(), getHeight(), this);
     }
 }
+
