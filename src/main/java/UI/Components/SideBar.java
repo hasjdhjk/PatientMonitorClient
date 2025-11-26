@@ -26,7 +26,11 @@ public class SideBar extends JPanel {
         topButtons.setLayout(new BoxLayout(topButtons, BoxLayout.Y_AXIS));
         topButtons.setOpaque(false);
 
-        topButtons.add(makeSidebarButton("Home", "home", Color.BLACK, MainWindow.PAGE_HOME, window));
+        // set home button as default selected
+        JButton homeButton = makeSidebarButton("Home", "home", Color.BLACK, MainWindow.PAGE_HOME, window);
+        setSelectedButton(homeButton);
+
+        topButtons.add(homeButton);
         topButtons.add(Box.createVerticalStrut(10));
         topButtons.add(makeSidebarButton("Add Patient","add", Color.BLACK, MainWindow.PAGE_ADD, window));
         topButtons.add(Box.createVerticalStrut(10));
