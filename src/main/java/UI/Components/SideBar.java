@@ -19,7 +19,7 @@ public class SideBar extends JPanel {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(200, 0));
         setBackground(normalColor);
-        setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
+        setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
 
         // top buttons
         JPanel topButtons = new JPanel();
@@ -76,14 +76,14 @@ public class SideBar extends JPanel {
         btn.setIconTextGap(15); // spacing between icon and text
 
         // button size
-        btn.setPreferredSize(new Dimension(180, 60));
-        btn.setMaximumSize(new Dimension(180, 60));
-        btn.setMinimumSize(new Dimension(180, 60));
+        btn.setPreferredSize(new Dimension(200, 60));
+        btn.setMaximumSize(new Dimension(200, 60));
+        btn.setMinimumSize(new Dimension(200, 60));
 
         // default no background (only background when selected)
         btn.setContentAreaFilled(false);
         btn.setOpaque(false);
-        btn.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        btn.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 10));
 
         return btn;
     }
