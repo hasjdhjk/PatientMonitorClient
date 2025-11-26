@@ -8,8 +8,11 @@ public class ImageLoader {
 
     public static ImageIcon loadImage(String imageName, String folderName, int size) {
         try {
-            URL url = ImageIcon.class.getResource("/" + folderName +"/" + imageName + ".png");
-            if (url == null) return null;
+            URL url = ImageLoader.class.getResource("/" + folderName +"/" + imageName + ".png");
+            if (url == null) {
+                System.out.println("icon not found: /" + folderName + "/" + imageName + ".png");
+                return null;
+            }
 
             Image img = new ImageIcon(url).getImage();
             Image scaled = img.getScaledInstance(size, size, Image.SCALE_SMOOTH);
