@@ -4,6 +4,7 @@ import Models.Patient;
 import UI.MainWindow;
 import UI.Components.ECGPanel;
 import UI.Components.StickyButton;
+import UI.Pages.HomePage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +12,7 @@ import java.awt.event.*;
 
 public class PatientTile extends BaseTile {
 
-    public PatientTile(Patient patient, MainWindow window) {
+    public PatientTile(Patient patient, MainWindow window, HomePage homePage) {
         super(390, 320, 30);
 
         setLayout(new BorderLayout());
@@ -26,7 +27,7 @@ public class PatientTile extends BaseTile {
         nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
         top.add(nameLabel, BorderLayout.WEST);
 
-        StickyButton star = new StickyButton(patient);
+        StickyButton star = new StickyButton(patient, homePage);
         top.add(star, BorderLayout.EAST);
 
         add(top, BorderLayout.NORTH);

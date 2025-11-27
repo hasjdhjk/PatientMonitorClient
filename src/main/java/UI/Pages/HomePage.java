@@ -17,6 +17,7 @@ import java.util.List;
 public class HomePage extends JPanel {
     private JPanel grid; // contains all patient grids
     private MainWindow window;
+    private String currentFilter = "";
 
     public HomePage(MainWindow window) {
         this.window = window;
@@ -50,20 +51,28 @@ public class HomePage extends JPanel {
         AddedPatientDB.addPatient(new Patient(6, "Harry", "Tan", 130, 39.1, "160/95"));
 
         // initial grid refresh
-        refreshGrid(AddedPatientDB.getAll());
+        refresh();
 
-        // search function
+        // search function – update filter text and refresh
         searchBar.addSearchListener(text -> {
-            List<Patient> result = AddedPatientDB.search(text);
-            refreshGrid(result);
+            currentFilter = text;
+            refresh();
         });
+    }
+
+    // refresh the list based on currentFilter and refresh grid
+    public void refresh() {
+        List<Patient> base = currentFilter == null || currentFilter.isEmpty()
+                ? AddedPatientDB.getAll()
+                : AddedPatientDB.search(currentFilter);
+        refreshGrid(base);
     }
 
     private void refreshGrid(List<Patient> patients) {
         grid.removeAll();
 
         for (Patient p : AddedPatientDB.getSorted(patients)) {
-            grid.add(new PatientTile(p, window));
+            grid.add(new PatientTile(p, window, this));
         }
 
         // Add patient tile

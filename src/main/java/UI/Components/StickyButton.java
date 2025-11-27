@@ -14,7 +14,7 @@ public class StickyButton extends JButton {
 
     private boolean selected = false;
 
-    public StickyButton(Patient patient) {
+    public StickyButton(Patient patient, HomePage homePage) {
         // set image
         ImageIcon normalImage = ImageLoader.loadImage("stickybutton", "UI", 40);
         ImageIcon selectedImage = ImageLoader.loadImage("stickybutton_highlight", "UI", 40);
@@ -33,6 +33,8 @@ public class StickyButton extends JButton {
                 selected = !selected;
                 patient.setSticky(selected);
                 setIcon(selected ? selectedImage : normalImage);
+
+                homePage.refresh();
             }
         });
     }
