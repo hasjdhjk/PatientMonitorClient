@@ -22,12 +22,12 @@ public class ECGPanel extends JPanel {
         int h = getHeight();
 
         // background rounded rectangle
-        g2.setColor(new Color(245, 245, 245));
-        g2.fillRoundRect(0, 0, w, h, 20, 20);
+        g2.setColor(new Color(234, 234, 234));
+        g2.fillRoundRect(0, 0, w, h, 30, 30);
 
-        g2.setColor(new Color(200, 200, 200));
-        g2.setStroke(new BasicStroke(2f));
-        g2.drawRoundRect(0, 0, w, h, 20, 20);
+//        g2.setColor(new Color(200, 200, 200));
+//        g2.setStroke(new BasicStroke(2f));
+//        g2.drawRoundRect(0, 0, w, h, 30, 30);
 
         // draw simple ECG wave mock
         g2.setColor(new Color(255, 0, 0));
