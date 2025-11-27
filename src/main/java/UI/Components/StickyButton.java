@@ -13,19 +13,24 @@ import java.awt.event.MouseEvent;
 public class StickyButton extends JButton {
 
     private boolean selected = false;
+    private final ImageIcon normalImage;
+    private final ImageIcon selectedImage;
 
     public StickyButton(Patient patient, HomePage homePage) {
         // set image
-        ImageIcon normalImage = ImageLoader.loadImage("stickybutton", "UI", 40);
-        ImageIcon selectedImage = ImageLoader.loadImage("stickybutton_highlight", "UI", 40);
-        setIcon(normalImage);
+        normalImage = ImageLoader.loadImage("stickybutton", "UI", 40);
+        selectedImage = ImageLoader.loadImage("stickybutton_highlight", "UI", 40);
+        selected = patient.isSticky();
 
-        // Appearance cleanup
+        // appearance cleanup
         setOpaque(false);
         setContentAreaFilled(false);
         setBorderPainted(false);
         setFocusPainted(false);
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        // set initial icon after configuring button
+        setIcon(selected ? selectedImage : normalImage);
 
         addMouseListener(new MouseAdapter() {
             @Override
