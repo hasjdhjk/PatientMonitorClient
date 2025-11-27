@@ -62,7 +62,7 @@ public class HomePage extends JPanel {
     private void refreshGrid(List<Patient> patients) {
         grid.removeAll();
 
-        for (Patient p : patients) {
+        for (Patient p : AddedPatientDB.getSorted(patients)) {
             grid.add(new PatientTile(p, window));
         }
 

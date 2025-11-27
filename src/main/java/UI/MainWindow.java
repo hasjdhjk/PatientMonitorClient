@@ -19,6 +19,8 @@ public class MainWindow extends JFrame {
     public static final String PAGE_ACCOUNT = "account";
     public static final String PAGE_SETTINGS = "settings";
 
+    private HomePage homePage;
+
     public MainWindow() {
         setTitle("Patient Monitor");
         setSize(1920, 1080);
@@ -37,7 +39,8 @@ public class MainWindow extends JFrame {
         pageContainer = new JPanel(cardLayout);
 
         // Pages
-        pageContainer.add(new HomePage(this), PAGE_HOME);
+        homePage = new HomePage(this);
+        pageContainer.add(homePage, PAGE_HOME);
 //        pageContainer.add(new AddPatientPage(), PAGE_ADD);
 //        pageContainer.add(new SettingsPage(), PAGE_SETTINGS);
 //        pageContainer.add(new StatusTrackerPage(), PAGE_STATUS);

@@ -34,5 +34,19 @@ public class AddedPatientDB {
         return result;
     }
 
+    public static List<Patient> getSorted(List<Patient> list) {
+        List<Patient> sorted = new ArrayList<>(list);
+
+        sorted.sort((a, b) -> {
+            // sticky patients first
+            if (a.isSticky() && !b.isSticky()) return -1;
+            if (!a.isSticky() && b.isSticky()) return 1;
+            // otherwise alphabetical
+            return a.getName().compareToIgnoreCase(b.getName());
+        });
+
+        return sorted;
+    }
+
     // later sync with backend servlet
 }

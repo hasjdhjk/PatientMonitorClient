@@ -1,5 +1,7 @@
 package UI.Components;
 
+import Models.Patient;
+import UI.Pages.HomePage;
 import Utilities.ImageLoader;
 
 import javax.swing.*;
@@ -12,7 +14,7 @@ public class StickyButton extends JButton {
 
     private boolean selected = false;
 
-    public StickyButton() {
+    public StickyButton(Patient patient) {
         // set image
         ImageIcon normalImage = ImageLoader.loadImage("stickybutton", "UI", 40);
         ImageIcon selectedImage = ImageLoader.loadImage("stickybutton_highlight", "UI", 40);
@@ -29,6 +31,7 @@ public class StickyButton extends JButton {
             @Override
             public void mouseClicked(MouseEvent e) {
                 selected = !selected;
+                patient.setSticky(selected);
                 setIcon(selected ? selectedImage : normalImage);
             }
         });

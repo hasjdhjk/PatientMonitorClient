@@ -26,7 +26,7 @@ public class PatientTile extends BaseTile {
         nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
         top.add(nameLabel, BorderLayout.WEST);
 
-        StickyButton star = new StickyButton();
+        StickyButton star = new StickyButton(patient);
         top.add(star, BorderLayout.EAST);
 
         add(top, BorderLayout.NORTH);

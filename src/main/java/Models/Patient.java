@@ -8,6 +8,7 @@ public class Patient {
     private int heartRate;
     private double temperature;
     private String bloodPressure;
+    private boolean sticky = false; // sticky on top
 
     public Patient() {}  // GSON requires a no-arg constructor
 
@@ -31,6 +32,7 @@ public class Patient {
     public int getHeartRate() { return heartRate; }
     public double getTemperature() { return temperature; }
     public String getBloodPressure() { return bloodPressure; }
+    public boolean isSticky() { return sticky; }
 
     // Setters
     public void setId(int id) { this.id = id; }
@@ -39,6 +41,7 @@ public class Patient {
     public void setHeartRate(int heartRate) { this.heartRate = heartRate; }
     public void setTemperature(double temperature) { this.temperature = temperature; }
     public void setBloodPressure(String bloodPressure) { this.bloodPressure = bloodPressure; }
+    public void setSticky(boolean sticky) { this.sticky = sticky; }
 
     @Override
     public String toString() {
