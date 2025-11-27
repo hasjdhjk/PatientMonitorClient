@@ -20,7 +20,7 @@ public class SideBar extends JPanel {
     public SideBar(MainWindow window) {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(220, 0));
-        setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
 
         // top buttons
         JPanel topButtons = new JPanel();
