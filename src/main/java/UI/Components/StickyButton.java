@@ -18,8 +18,8 @@ public class StickyButton extends JButton {
 
     public StickyButton(Patient patient, HomePage homePage) {
         // set image
-        normalImage = ImageLoader.loadImage("stickybutton", "UI", 30);
-        selectedImage = ImageLoader.loadImage("stickybutton_highlight", "UI", 30);
+        normalImage = ImageLoader.loadImage("stickybutton", "UI", 35);
+        selectedImage = ImageLoader.loadImage("stickybutton_highlight", "UI", 35);
         selected = patient.isSticky();
 
         // appearance cleanup
