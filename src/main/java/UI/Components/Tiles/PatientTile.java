@@ -16,14 +16,14 @@ public class PatientTile extends BaseTile {
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 
         // top: name + stick on top button
         JPanel top = new JPanel(new BorderLayout());
         top.setOpaque(false);
 
         JLabel nameLabel = new JLabel(patient.getName());
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
         top.add(nameLabel, BorderLayout.WEST);
 
         StickyButton star = new StickyButton();
