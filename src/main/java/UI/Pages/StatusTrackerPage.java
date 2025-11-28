@@ -46,9 +46,7 @@ public class StatusTrackerPage extends JPanel {
             currentPatient = allPatients.get(0);
         }
 
-        // ========================
-        // TOP: navigation bar
-        // ========================
+        // patient name and arrow to switch to next patient
         JPanel topBar = new JPanel(new BorderLayout());
         topBar.setOpaque(false);
         topBar.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -68,13 +66,11 @@ public class StatusTrackerPage extends JPanel {
 
         content.add(topBar);
 
-        // Arrow handling
+        // arrow
         leftArrow.addActionListener(e -> switchPatient(-1));
         rightArrow.addActionListener(e -> switchPatient(+1));
 
-        // ========================
-        // TIME SELECTOR (Hour Day Week Month)
-        // ========================
+        // select target time
         timeSelector = new BaseTile(600, 80, 30);
         timeSelector.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 20));
 
@@ -89,16 +85,12 @@ public class StatusTrackerPage extends JPanel {
 
         content.add(timeWrap);
 
-        // ========================
-        // METRIC TILES (Heart Rate, BP, etc.)
-        // ========================
+        // heart rate
         metricsContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 20));
         metricsContainer.setOpaque(false);
         content.add(metricsContainer);
 
-        // ========================
-        // ECG TILE
-        // ========================
+        // ecg
         ecgPanelContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
         ecgPanelContainer.setOpaque(false);
         content.add(ecgPanelContainer);
@@ -106,9 +98,7 @@ public class StatusTrackerPage extends JPanel {
         refreshDisplay();
     }
 
-    // ---------------------------------------
-    // Helper: create time-range selector button
-    // ---------------------------------------
+    // time selector buttons
     private void addTimeButton(JPanel container, String text) {
         JButton b = new JButton(text);
 
@@ -122,9 +112,7 @@ public class StatusTrackerPage extends JPanel {
         container.add(b);
     }
 
-    // ---------------------------------------
-    // Helper: style arrows
-    // ---------------------------------------
+    // arrows
     private void styleArrow(JButton arrow) {
         arrow.setFont(new Font("Arial", Font.BOLD, 30));
         arrow.setFocusPainted(false);
@@ -134,9 +122,7 @@ public class StatusTrackerPage extends JPanel {
         arrow.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
-    // ---------------------------------------
-    // Switch patient with looping
-    // ---------------------------------------
+    // switch patients (allow looping)
     private void switchPatient(int direction) {
         if (allPatients.isEmpty()) return;
 
@@ -146,15 +132,13 @@ public class StatusTrackerPage extends JPanel {
         refreshDisplay();
     }
 
-    // ---------------------------------------
-    // Redraw the page for the selected patient
-    // ---------------------------------------
+    // redraw page for patient
     private void refreshDisplay() {
         if (currentPatient == null) return;
 
         patientNameLabel.setText(currentPatient.getName());
 
-        // ===== METRICS =====
+        // metrics
         metricsContainer.removeAll();
 
         BaseTile heartRateTile = new BaseTile(300, 150, 30);
@@ -173,7 +157,7 @@ public class StatusTrackerPage extends JPanel {
         bpTile.add(makeMetricLabel(currentPatient.getBloodPressure()));
         metricsContainer.add(bpTile);
 
-        // ===== ECG =====
+        // ecg
         ecgPanelContainer.removeAll();
 
         BaseTile ecgTile = new BaseTile(700, 200, 30);
@@ -193,7 +177,7 @@ public class StatusTrackerPage extends JPanel {
         return l;
     }
 
-    // Called when clicking a tile on HomePage
+    // called when clicking a tile on home page
     public void setPatient(Patient p) {
         this.currentPatient = p;
         this.currentIndex = AddedPatientDB.getAll().indexOf(p);

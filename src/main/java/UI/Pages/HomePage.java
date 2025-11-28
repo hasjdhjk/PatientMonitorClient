@@ -46,7 +46,7 @@ public class HomePage extends JPanel {
         AddedPatientDB.addPatient(new Patient(1, "Raymond", "Ren", 82, 36.8, "120/80"));
         AddedPatientDB.addPatient(new Patient(2, "Jackson", "Zhou", 90, 37.0, "110/75"));
         AddedPatientDB.addPatient(new Patient(3, "David", "Wong", 130, 39.1, "160/95"));
-        AddedPatientDB.addPatient(new Patient(4, "Xuan", "LiFeng", 82, 36.8, "120/80"));
+        AddedPatientDB.addPatient(new Patient(4, "Xuan", "Li Feng", 82, 36.8, "120/80"));
         AddedPatientDB.addPatient(new Patient(5, "Martin", "Holloway", 90, 37.0, "110/75"));
         AddedPatientDB.addPatient(new Patient(6, "Harry", "Tan", 130, 39.1, "160/95"));
 
