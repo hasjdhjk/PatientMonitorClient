@@ -1,19 +1,14 @@
 package NetWork;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.IOException;
 
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import java.util.Collections;
-import java.util.List;
 
 public class ApiClient {
 
@@ -22,37 +17,18 @@ public class ApiClient {
 
     private static final Gson gson = new Gson();
 
-    // ------------------------------------------------------------
-    // Helper: GET requests (returns raw string)
-    // ------------------------------------------------------------
-    private static String getJson(String endpoint) throws IOException {
-        URL url = new URL(BASE_URL + endpoint);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
 
-        BufferedReader reader =
-                new BufferedReader(new InputStreamReader(conn.getInputStream()));
+    // ================================================================
+    // HELPER METHODS
+    // ================================================================
 
-        StringBuilder sb = new StringBuilder();
-        String line;
-
-        while ((line = reader.readLine()) != null) {
-            sb.append(line);
-        }
-
-        return sb.toString();
-    }
-
-    // ------------------------------------------------------------
-    // Helper: POST requests (returns raw string)
-    // ------------------------------------------------------------
     private static String postJson(String endpoint, String jsonBody) throws IOException {
         URL url = new URL(BASE_URL + endpoint);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
         conn.setRequestMethod("POST");
         conn.setDoOutput(true);
-        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
 
         try (OutputStream os = conn.getOutputStream()) {
             os.write(jsonBody.getBytes());
@@ -68,46 +44,87 @@ public class ApiClient {
             sb.append(line);
         }
 
+        conn.disconnect();
         return sb.toString();
     }
 
 
-    // ======================================================================
-    // AUTHENTICATION METHODS
-    // ======================================================================
+    // ================================================================
+    // REQUEST DTOs (these match your servlet expected fields)
+    // ================================================================
+
+    public static class LoginRequest {
+        String email;
+        String password;
+
+        LoginRequest(String email, String password) {
+            this.email = email;
+            this.password = password;
+        }
+    }
+
+    public static class RegisterRequest {
+        String email;
+        String password;
+        String givenName;
+        String familyName;
+
+        RegisterRequest(String email, String password, String givenName, String familyName) {
+            this.email = email;
+            this.password = password;
+            this.givenName = givenName;
+            this.familyName = familyName;
+        }
+    }
+
+    public static class ResetRequest {
+        String email;
+
+        ResetRequest(String email) {
+            this.email = email;
+        }
+    }
+
+    public static class ResetPasswordRequest {
+        String token;
+        String newPassword;
+
+        ResetPasswordRequest(String token, String newPassword) {
+            this.token = token;
+            this.newPassword = newPassword;
+        }
+    }
+
+
+    // ================================================================
+    // AUTHENTICATION METHODS (CLIENT FACING)
+    // ================================================================
 
     // ---------------------------
-    // 1. Login
+    // 1. LOGIN
     // ---------------------------
     public static LoginResponse login(String email, String password) {
         try {
-            String body = gson.toJson(new Object() {
-                String e = email;
-                String p = password;
-            });
+            LoginRequest req = new LoginRequest(email, password);
+            String body = gson.toJson(req);
 
             String json = postJson("/login", body);
             return gson.fromJson(json, LoginResponse.class);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return null; // will be handled by UI
         }
     }
 
     // ---------------------------
-    // 2. Register
+    // 2. REGISTER
     // ---------------------------
     public static SimpleResponse register(String email, String password,
                                           String givenName, String familyName) {
-
         try {
-            String body = gson.toJson(new Object() {
-                String em = email;
-                String pw = password;
-                String gn = givenName;
-                String fn = familyName;
-            });
+            RegisterRequest req = new RegisterRequest(email, password, givenName, familyName);
+            String body = gson.toJson(req);
 
             String json = postJson("/register", body);
             return gson.fromJson(json, SimpleResponse.class);
@@ -119,13 +136,12 @@ public class ApiClient {
     }
 
     // ---------------------------
-    // 3. Request Password Reset
+    // 3. REQUEST PASSWORD RESET
     // ---------------------------
     public static SimpleResponse requestPasswordReset(String email) {
         try {
-            String body = gson.toJson(new Object() {
-                String em = email;
-            });
+            ResetRequest req = new ResetRequest(email);
+            String body = gson.toJson(req);
 
             String json = postJson("/requestPasswordReset", body);
             return gson.fromJson(json, SimpleResponse.class);
@@ -137,14 +153,12 @@ public class ApiClient {
     }
 
     // ---------------------------
-    // 4. Reset Password
+    // 4. RESET PASSWORD
     // ---------------------------
     public static SimpleResponse resetPassword(String token, String newPassword) {
         try {
-            String body = gson.toJson(new Object() {
-                String t = token;
-                String np = newPassword;
-            });
+            ResetPasswordRequest req = new ResetPasswordRequest(token, newPassword);
+            String body = gson.toJson(req);
 
             String json = postJson("/resetPassword", body);
             return gson.fromJson(json, SimpleResponse.class);
@@ -156,11 +170,10 @@ public class ApiClient {
     }
 
 
-    // ======================================================================
-    // RESPONSE CLASSES (client-side DTOs)
-    // ======================================================================
+    // ================================================================
+    // RESPONSE DTOs
+    // ================================================================
 
-    // Represent JSON returned by LoginServlet
     public static class LoginResponse {
         public String status;
         public String message;
@@ -170,7 +183,6 @@ public class ApiClient {
         public String familyName;
     }
 
-    // Generic response for register, resetPassword, requestReset
     public static class SimpleResponse {
         public String status;
         public String message;
