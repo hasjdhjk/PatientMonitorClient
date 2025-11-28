@@ -30,7 +30,7 @@ public class RegisterPage extends JPanel {
         subtitleLeft.setAlignmentX(Component.CENTER_ALIGNMENT);
         subtitleLeft.setBorder(BorderFactory.createEmptyBorder(15, 0, 10, 0));
 
-        BaseTile loginTile = new BaseTile(200, 60, 40, true);
+        BaseTile loginTile = new BaseTile(160, 65, 40, true);
         loginTile.setMaximumSize(new Dimension(200, 60));
         loginTile.setBackground(Color.WHITE);
         loginTile.setLayout(new BorderLayout());
@@ -205,10 +205,10 @@ public class RegisterPage extends JPanel {
         return tile;
     }
 
-    // Style text field
+    // text field
     private void styleTextField(JTextField field) {
         field.setFont(new Font("Arial", Font.PLAIN, 16));
-        field.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        field.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 15));
         field.setOpaque(false);
     }
 }
