@@ -32,7 +32,7 @@ public class MainWindow extends JFrame {
         setSize(1920, 1080);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-        
+
         // --- CardLayout container ---
         cardLayout = new CardLayout();
         pageContainer = new JPanel(cardLayout);
