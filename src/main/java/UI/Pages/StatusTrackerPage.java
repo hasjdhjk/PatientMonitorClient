@@ -47,9 +47,10 @@ public class StatusTrackerPage extends JPanel {
         }
 
         // patient name and arrow to switch to next patient
-        JPanel topBar = new JPanel(new BorderLayout());
+        JPanel topBar = new JPanel();
+        topBar.setLayout(new BoxLayout(topBar, BoxLayout.X_AXIS));
         topBar.setOpaque(false);
-        topBar.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        topBar.setBorder(BorderFactory.createEmptyBorder(30, 0, 20, 0));
 
         JButton leftArrow = new JButton("<");
         styleArrow(leftArrow);
@@ -58,11 +59,13 @@ public class StatusTrackerPage extends JPanel {
         styleArrow(rightArrow);
 
         patientNameLabel = new JLabel("", SwingConstants.CENTER);
-        patientNameLabel.setFont(new Font("Arial", Font.BOLD, 30));
+        patientNameLabel.setFont(new Font("Arial", Font.BOLD, 25));
 
-        topBar.add(leftArrow, BorderLayout.WEST);
-        topBar.add(patientNameLabel, BorderLayout.CENTER);
-        topBar.add(rightArrow, BorderLayout.EAST);
+        topBar.add(leftArrow);
+        topBar.add(Box.createHorizontalStrut(20));
+        topBar.add(patientNameLabel);
+        topBar.add(Box.createHorizontalStrut(20));
+        topBar.add(rightArrow);
 
         content.add(topBar);
 
@@ -85,7 +88,7 @@ public class StatusTrackerPage extends JPanel {
 
         content.add(timeWrap);
 
-        // heart rate
+        // vitals
         metricsContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 20));
         metricsContainer.setOpaque(false);
         content.add(metricsContainer);
@@ -141,7 +144,7 @@ public class StatusTrackerPage extends JPanel {
         // metrics
         metricsContainer.removeAll();
 
-        BaseTile heartRateTile = new BaseTile(300, 150, 30);
+        BaseTile heartRateTile = new BaseTile(360, 400, 50);
         heartRateTile.setLayout(new BoxLayout(heartRateTile, BoxLayout.Y_AXIS));
         heartRateTile.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         heartRateTile.add(makeMetricLabel("Heart Rate"));
@@ -149,7 +152,7 @@ public class StatusTrackerPage extends JPanel {
         heartRateTile.add(makeMetricLabel(currentPatient.getHeartRate() + " bpm"));
         metricsContainer.add(heartRateTile);
 
-        BaseTile bpTile = new BaseTile(300, 150, 30);
+        BaseTile bpTile = new BaseTile(360, 400, 50);
         bpTile.setLayout(new BoxLayout(bpTile, BoxLayout.Y_AXIS));
         bpTile.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         bpTile.add(makeMetricLabel("Blood Pressure"));
@@ -157,10 +160,18 @@ public class StatusTrackerPage extends JPanel {
         bpTile.add(makeMetricLabel(currentPatient.getBloodPressure()));
         metricsContainer.add(bpTile);
 
+        BaseTile tempTile = new BaseTile(360, 400, 50);
+        tempTile.setLayout(new BoxLayout(tempTile, BoxLayout.Y_AXIS));
+        tempTile.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        tempTile.add(makeMetricLabel("Body Temperature"));
+        tempTile.add(Box.createVerticalStrut(10));
+        tempTile.add(makeMetricLabel("" + currentPatient.getTemperature()));
+        metricsContainer.add(tempTile);
+
         // ecg
         ecgPanelContainer.removeAll();
 
-        BaseTile ecgTile = new BaseTile(700, 200, 30);
+        BaseTile ecgTile = new BaseTile(1180, 200, 30);
         ecgTile.setLayout(new BorderLayout());
         ecgTile.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         ecgTile.add(new ECGPanel(), BorderLayout.CENTER);
