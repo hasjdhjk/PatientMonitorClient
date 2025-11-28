@@ -3,13 +3,14 @@ package UI.Pages;
 import NetWork.ApiClient;
 import UI.Components.PlaceholderTextField;
 import UI.Components.Tiles.BaseTile;
+import UI.MainWindow;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class LoginPage extends JPanel {
 
-    public LoginPage() {
+    public LoginPage(MainWindow mainWindow) {
         setLayout(new BorderLayout());
         setBackground(new Color(245, 245, 245));
 
@@ -128,7 +129,7 @@ public class LoginPage extends JPanel {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 // TODO: switch to your RegisterPage
-                System.out.println("Open register page");
+                mainWindow.showRegisterPage();
             }
         });
 
