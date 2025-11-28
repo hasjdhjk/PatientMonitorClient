@@ -22,7 +22,7 @@ public class LoginPage extends JPanel {
         JPanel centerWrap = new JPanel(new GridBagLayout());
         centerWrap.setOpaque(false);
 
-        // ----- LOGIN PANEL -----
+        // login panel
         BaseTile card = new BaseTile(420, 460, 40, false);   // disabled hover
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
@@ -32,31 +32,31 @@ public class LoginPage extends JPanel {
         title.setFont(new Font("Arial", Font.BOLD, 22));
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Email Label
+        // email label
         JLabel emailLabel = new JLabel("Email");
         emailLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         emailLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // Email field wrapped in BaseTile
-        BaseTile emailFieldTile = new BaseTile(320, 50, 35, true);
+        // email field (base tile)
+        BaseTile emailFieldTile = new BaseTile(320, 60, 40, true);
         emailFieldTile.setLayout(new BorderLayout());
         PlaceholderTextField emailField = new PlaceholderTextField("Enter your email");
         styleTextField(emailField);
         emailFieldTile.add(emailField, BorderLayout.CENTER);
 
-        // Password label
+        // password label
         JLabel pwdLabel = new JLabel("Password");
         pwdLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         pwdLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // Password field inside BaseTile
-        BaseTile pwdFieldTile = new BaseTile(320, 50, 35, true);
+        // password field
+        BaseTile pwdFieldTile = new BaseTile(320, 60, 40, true);
         pwdFieldTile.setLayout(new BorderLayout());
         PlaceholderTextField passwordField = new PlaceholderTextField("Enter your password");
         styleTextField(passwordField);
         pwdFieldTile.add(passwordField, BorderLayout.CENTER);
 
-        // Sign-in button inside BaseTile
+        // sign in button
         BaseTile signInTile = new BaseTile(320, 60, 40, true);
         signInTile.setBackground(new Color(68, 104, 140)); // override BaseTile color
         signInTile.setLayout(new BorderLayout());
@@ -71,7 +71,7 @@ public class LoginPage extends JPanel {
 
         signInTile.add(loginBtn, BorderLayout.CENTER);
 
-        // footer
+        // reset password and register
         JPanel footer = new JPanel(new BorderLayout());
         footer.setOpaque(false);
 
