@@ -1,4 +1,4 @@
-package UI.Components;
+package UI.Components.PlaceHolders;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,7 +1,8 @@
 package UI.Pages;
 
 import NetWork.ApiClient;
-import UI.Components.PlaceholderTextField;
+import UI.Components.PlaceHolders.PlaceholderPasswordField;
+import UI.Components.PlaceHolders.PlaceholderTextField;
 import UI.Components.Tiles.BaseTile;
 import UI.MainWindow;
 
@@ -75,7 +76,7 @@ public class RegisterPage extends JPanel {
         JLabel passwordLabel = label("Password");
         passwordLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
         BaseTile passwordTile = inputTile();
-        PlaceholderTextField passwordField = new PlaceholderTextField("Enter password");
+        PlaceholderPasswordField passwordField = new PlaceholderPasswordField("Enter password");
         styleTextField(passwordField);
         passwordTile.add(passwordField);
 

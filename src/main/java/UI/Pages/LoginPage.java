@@ -1,7 +1,8 @@
 package UI.Pages;
 
 import NetWork.ApiClient;
-import UI.Components.PlaceholderTextField;
+import UI.Components.PlaceHolders.PlaceholderPasswordField;
+import UI.Components.PlaceHolders.PlaceholderTextField;
 import UI.Components.Tiles.BaseTile;
 import UI.MainWindow;
 
@@ -54,7 +55,7 @@ public class LoginPage extends JPanel {
         // password field
         BaseTile pwdFieldTile = new BaseTile(320, 60, 40, true);
         pwdFieldTile.setLayout(new BorderLayout());
-        PlaceholderTextField passwordField = new PlaceholderTextField("Enter your password");
+        PlaceholderPasswordField passwordField = new PlaceholderPasswordField("Enter your password");
         styleTextField(passwordField);
         pwdFieldTile.add(passwordField, BorderLayout.CENTER);
 
