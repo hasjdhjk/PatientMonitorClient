@@ -79,7 +79,7 @@ public class StatusTrackerPage extends JPanel {
         rightArrow.addActionListener(e -> switchPatient(+1));
 
         // select target time
-        timeSelector = new BaseTile(600, 80, 30);
+        timeSelector = new BaseTile(600, 80, 30, true);
         timeSelector.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 20));
 
         addTimeButton(timeSelector, "Hour");
@@ -149,7 +149,7 @@ public class StatusTrackerPage extends JPanel {
         // metrics
         metricsContainer.removeAll();
 
-        BaseTile heartRateTile = new BaseTile(360, 400, 50);
+        BaseTile heartRateTile = new BaseTile(360, 400, 50, true);
         heartRateTile.setLayout(new BoxLayout(heartRateTile, BoxLayout.Y_AXIS));
         heartRateTile.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         heartRateTile.add(makeMetricLabel("Heart Rate"));
@@ -157,7 +157,7 @@ public class StatusTrackerPage extends JPanel {
         heartRateTile.add(makeMetricLabel(currentPatient.getHeartRate() + " bpm"));
         metricsContainer.add(heartRateTile);
 
-        BaseTile bpTile = new BaseTile(360, 400, 50);
+        BaseTile bpTile = new BaseTile(360, 400, 50, true);
         bpTile.setLayout(new BoxLayout(bpTile, BoxLayout.Y_AXIS));
         bpTile.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         bpTile.add(makeMetricLabel("Blood Pressure"));
@@ -165,7 +165,7 @@ public class StatusTrackerPage extends JPanel {
         bpTile.add(makeMetricLabel(currentPatient.getBloodPressure()));
         metricsContainer.add(bpTile);
 
-        BaseTile tempTile = new BaseTile(360, 400, 50);
+        BaseTile tempTile = new BaseTile(360, 400, 50, true);
         tempTile.setLayout(new BoxLayout(tempTile, BoxLayout.Y_AXIS));
         tempTile.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         tempTile.add(makeMetricLabel("Body Temperature"));
@@ -176,7 +176,7 @@ public class StatusTrackerPage extends JPanel {
         // ecg
         ecgPanelContainer.removeAll();
 
-        BaseTile ecgTile = new BaseTile(1160, 250, 30);
+        BaseTile ecgTile = new BaseTile(1160, 250, 30, true);
         ecgTile.setLayout(new BorderLayout());
         ecgTile.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         ecgTile.add(new ECGPanel(), BorderLayout.CENTER);

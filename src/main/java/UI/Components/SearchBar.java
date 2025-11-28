@@ -13,7 +13,7 @@ public class SearchBar extends BaseTile {
     private JTextField searchField;
 
     public SearchBar() {
-        super(400, 65, 40);
+        super(400, 65, 40, true);
         setLayout(new BorderLayout());
 
         // search field

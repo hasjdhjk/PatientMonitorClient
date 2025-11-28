@@ -30,32 +30,45 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // top bar
-        add(new TopBar(), BorderLayout.NORTH);
-
-        // sidebar (tabs for page switching)
-        sidebar = new SideBar(this);
-        add(sidebar, BorderLayout.WEST);
-
-        // page container (card layout shows only 1 page at a time)
-        cardLayout = new CardLayout();
-        pageContainer = new JPanel(cardLayout);
-
-        // Pages
-        homePage = new HomePage(this);
-        pageContainer.add(homePage, PAGE_HOME);
-
-        statusTrackerPage = new StatusTrackerPage(this);
-        pageContainer.add(statusTrackerPage, PAGE_STATUS);
-
-//        pageContainer.add(new AddPatientPage(), PAGE_ADD);
-//        pageContainer.add(new SettingsPage(), PAGE_SETTINGS);
-//        pageContainer.add(new AccountPage(), PAGE_ACCOUNT);
-
-        add(pageContainer, BorderLayout.CENTER);
+        LoginPage login = new LoginPage();
+        add(login, BorderLayout.CENTER);
 
         setVisible(true);
     }
+
+
+//    public MainWindow() {
+//        setTitle("Patient Monitor");
+//        setSize(1920, 1080);
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setLayout(new BorderLayout());
+//
+//        // top bar
+//        add(new TopBar(), BorderLayout.NORTH);
+//
+//        // sidebar (tabs for page switching)
+//        sidebar = new SideBar(this);
+//        add(sidebar, BorderLayout.WEST);
+//
+//        // page container (card layout shows only 1 page at a time)
+//        cardLayout = new CardLayout();
+//        pageContainer = new JPanel(cardLayout);
+//
+//        // Pages
+//        homePage = new HomePage(this);
+//        pageContainer.add(homePage, PAGE_HOME);
+//
+//        statusTrackerPage = new StatusTrackerPage(this);
+//        pageContainer.add(statusTrackerPage, PAGE_STATUS);
+//
+////        pageContainer.add(new AddPatientPage(), PAGE_ADD);
+////        pageContainer.add(new SettingsPage(), PAGE_SETTINGS);
+////        pageContainer.add(new AccountPage(), PAGE_ACCOUNT);
+//
+//        add(pageContainer, BorderLayout.CENTER);
+//
+//        setVisible(true);
+//    }
 
     public void showPage(String pageName) {
         cardLayout.show(pageContainer, pageName);

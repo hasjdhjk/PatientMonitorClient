@@ -10,26 +10,29 @@ public class BaseTile extends JPanel {
     private int radius;
     private int shadowSize = 15;
     private Color tileColor = Color.WHITE;
+    private boolean hasHoverEffect;
 
-    public BaseTile(int width, int height, int radius) {
+    public BaseTile(int width, int height, int radius, boolean hasHoverEffect) {
         this.radius = radius;
         setOpaque(false);
         setPreferredSize(new Dimension(width, height));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                tileColor = new Color(240, 240, 240);
-                repaint();
-            }
+        if (hasHoverEffect) {
+            addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    tileColor = new Color(240, 240, 240);
+                    repaint();
+                }
 
-            @Override
-            public void mouseExited(MouseEvent e) {
-                tileColor = Color.WHITE;
-                repaint();
-            }
-        });
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    tileColor = Color.WHITE;
+                    repaint();
+                }
+            });
+        }
     }
 
     @Override
