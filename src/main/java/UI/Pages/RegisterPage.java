@@ -14,9 +14,7 @@ public class RegisterPage extends JPanel {
 
         setLayout(new GridLayout(1, 2));
 
-        // ============================================================
-        // LEFT BLUE PANEL
-        // ============================================================
+        // left blue
         JPanel leftPanel = new JPanel();
         leftPanel.setBackground(new Color(65, 88, 208));
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
@@ -53,54 +51,51 @@ public class RegisterPage extends JPanel {
         leftPanel.add(loginTile);
         leftPanel.add(Box.createVerticalGlue());
 
-
-        // ============================================================
-        // RIGHT PANEL — SIMPLE & CLEAN (NO GBC)
-        // ============================================================
+        // right
         JPanel rightPanel = new JPanel();
         rightPanel.setBackground(Color.WHITE);
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-        rightPanel.setBorder(BorderFactory.createEmptyBorder(60, 120, 60, 120));
+        rightPanel.setBorder(BorderFactory.createEmptyBorder(120, 120, 120, 120));
 
         JLabel title = new JLabel("Create Account");
         title.setFont(new Font("Arial", Font.BOLD, 28));
         title.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // --------- EMAIL FIELD ----------
+        // email
         JLabel emailLabel = label("Email");
         BaseTile emailTile = inputTile();
         PlaceholderTextField emailField = new PlaceholderTextField("Enter email");
         styleTextField(emailField);
         emailTile.add(emailField);
 
-        // --------- PASSWORD FIELD ----------
+        // password
         JLabel passwordLabel = label("Password");
         BaseTile passwordTile = inputTile();
         PlaceholderTextField passwordField = new PlaceholderTextField("Enter password");
         styleTextField(passwordField);
         passwordTile.add(passwordField);
 
-        // --------- GIVEN NAME ----------
+        // given name
         JLabel givenLabel = label("Given Name");
         BaseTile givenTile = inputTile();
         PlaceholderTextField givenField = new PlaceholderTextField("Enter first name");
         styleTextField(givenField);
         givenTile.add(givenField);
 
-        // --------- FAMILY NAME ----------
+        // family name
         JLabel familyLabel = label("Family Name");
         BaseTile familyTile = inputTile();
         PlaceholderTextField familyField = new PlaceholderTextField("Enter last name");
         styleTextField(familyField);
         familyTile.add(familyField);
 
-        // --------- TERMS CHECKBOX ----------
+        // check box
         JCheckBox termsCheck = new JCheckBox("I accept the terms of the agreement");
         termsCheck.setFont(new Font("Arial", Font.PLAIN, 14));
         termsCheck.setBackground(Color.WHITE);
         termsCheck.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // --------- SIGN UP BUTTON ----------
+        // sign up button
         BaseTile signUpTile = new BaseTile(320, 60, 40, true);
         signUpTile.setBackground(new Color(68, 104, 140));
         signUpTile.setLayout(new BorderLayout());
@@ -113,7 +108,7 @@ public class RegisterPage extends JPanel {
         signUpTile.add(signUpBtn, BorderLayout.CENTER);
         signUpTile.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // --------- SIGN UP LOGIC ----------
+        // sign up
         signUpBtn.addActionListener(e -> {
 
             if (!termsCheck.isSelected()) {
@@ -156,10 +151,7 @@ public class RegisterPage extends JPanel {
         });
 
 
-        // ============================================================
-        // ADD COMPONENTS TO RIGHT PANEL — simple vertical stack
-        // ============================================================
-
+        // add to right panel
         rightPanel.add(title);
         rightPanel.add(Box.createVerticalStrut(20));
 
@@ -189,7 +181,7 @@ public class RegisterPage extends JPanel {
     }
 
 
-    // Helper: create label
+    // create label
     private JLabel label(String text) {
         JLabel lbl = new JLabel(text);
         lbl.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -197,15 +189,14 @@ public class RegisterPage extends JPanel {
         return lbl;
     }
 
-    // Helper: create BaseTile input wrapper
     private BaseTile inputTile() {
-        BaseTile tile = new BaseTile(320, 55, 30, false);
+        BaseTile tile = new BaseTile(320, 40, 50, false);
         tile.setLayout(new BorderLayout());
         tile.setAlignmentX(Component.LEFT_ALIGNMENT);
         return tile;
     }
 
-    // Helper: Style text field
+    // Style text field
     private void styleTextField(JTextField field) {
         field.setFont(new Font("Arial", Font.PLAIN, 16));
         field.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
