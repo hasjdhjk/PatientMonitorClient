@@ -75,4 +75,10 @@ public class BaseTile extends JPanel {
         g2.dispose();
         super.paintComponent(g);
     }
+
+    @Override
+    public void setBackground(Color bg) {
+        this.tileColor = bg;
+        repaint();
+    }
 }

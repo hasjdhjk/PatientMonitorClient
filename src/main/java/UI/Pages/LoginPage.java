@@ -1,5 +1,6 @@
 package UI.Pages;
 
+import UI.Components.PlaceholderTextField;
 import UI.Components.Tiles.BaseTile;
 
 import javax.swing.*;
@@ -21,38 +22,56 @@ public class LoginPage extends JPanel {
         JPanel centerWrap = new JPanel(new GridBagLayout());
         centerWrap.setOpaque(false);
 
-        // ----- CENTER LOGIN CARD (BaseTile) -----
-        BaseTile card = new BaseTile(420, 420, 40, false);
+        // ----- LOGIN PANEL -----
+        BaseTile card = new BaseTile(420, 460, 40, false);   // disabled hover
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
-        card.setOpaque(false);  // BaseTile handles background
 
         // title
         JLabel title = new JLabel("Doctor Login", SwingConstants.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 22));
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // email field
-        JTextField emailField = new JTextField();
-        styleTextField(emailField, "Enter your email");
+        // Email Label
+        JLabel emailLabel = new JLabel("Email");
+        emailLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        emailLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // password field
-        JPasswordField passwordField = new JPasswordField();
-        styleTextField(passwordField, "Enter your password");
+        // Email field wrapped in BaseTile
+        BaseTile emailFieldTile = new BaseTile(320, 50, 35, true);
+        emailFieldTile.setLayout(new BorderLayout());
+        PlaceholderTextField emailField = new PlaceholderTextField("Enter your email");
+        styleTextField(emailField);
+        emailFieldTile.add(emailField, BorderLayout.CENTER);
 
-        // sign in button
+        // Password label
+        JLabel pwdLabel = new JLabel("Password");
+        pwdLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        pwdLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        // Password field inside BaseTile
+        BaseTile pwdFieldTile = new BaseTile(320, 50, 35, true);
+        pwdFieldTile.setLayout(new BorderLayout());
+        PlaceholderTextField passwordField = new PlaceholderTextField("Enter your password");
+        styleTextField(passwordField);
+        pwdFieldTile.add(passwordField, BorderLayout.CENTER);
+
+        // Sign-in button inside BaseTile
+        BaseTile signInTile = new BaseTile(320, 60, 40, true);
+        signInTile.setBackground(new Color(68, 104, 140)); // override BaseTile color
+        signInTile.setLayout(new BorderLayout());
+
         JButton loginBtn = new JButton("Sign In");
-        loginBtn.setFont(new Font("Arial", Font.BOLD, 16));
-        loginBtn.setBackground(new Color(68, 104, 140));
+        loginBtn.setFont(new Font("Arial", Font.BOLD, 14));
         loginBtn.setForeground(Color.WHITE);
         loginBtn.setFocusPainted(false);
-        loginBtn.setPreferredSize(new Dimension(300, 45));
-        loginBtn.setMaximumSize(new Dimension(300, 45));
-        loginBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        loginBtn.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        loginBtn.setContentAreaFilled(false);
+        loginBtn.setBorderPainted(false);
         loginBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        // footer: forgot password + register
+        signInTile.add(loginBtn, BorderLayout.CENTER);
+
+        // footer
         JPanel footer = new JPanel(new BorderLayout());
         footer.setOpaque(false);
 
@@ -66,21 +85,29 @@ public class LoginPage extends JPanel {
         footer.add(forgot, BorderLayout.WEST);
         footer.add(register, BorderLayout.EAST);
 
-        // Add components to card
+        // add components to card
         card.add(title);
         card.add(Box.createVerticalStrut(25));
-        card.add(emailField);
+
+        card.add(wrapLeft(emailLabel));
+        card.add(Box.createVerticalStrut(5));
+        card.add(emailFieldTile);
         card.add(Box.createVerticalStrut(20));
-        card.add(passwordField);
+
+        card.add(wrapLeft(pwdLabel));
+        card.add(Box.createVerticalStrut(5));
+        card.add(pwdFieldTile);
         card.add(Box.createVerticalStrut(25));
-        card.add(loginBtn);
+
+        card.add(signInTile);
         card.add(Box.createVerticalStrut(20));
+
         card.add(footer);
 
         centerWrap.add(card);
         add(centerWrap, BorderLayout.CENTER);
 
-        // copyright
+        // footer copyright
         JLabel copyright = new JLabel(
                 "© 2025 HealthTrack. All Rights Reserved.",
                 SwingConstants.CENTER
@@ -89,13 +116,18 @@ public class LoginPage extends JPanel {
         add(copyright, BorderLayout.SOUTH);
     }
 
-    private void styleTextField(JTextField field, String placeholder) {
-        field.setPreferredSize(new Dimension(300, 40));
-        field.setMaximumSize(new Dimension(300, 40));
+    private void styleTextField(JTextField field) {
+        field.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 15));
         field.setFont(new Font("Arial", Font.PLAIN, 16));
-        field.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
-                BorderFactory.createEmptyBorder(10, 15, 10, 15)
-        ));
+        field.setOpaque(false); // BaseTile draws background
     }
+
+    // force the label in the box layout to left
+    private JPanel wrapLeft(JComponent c) {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 0));
+        panel.setOpaque(false);
+        panel.add(c);
+        return panel;
+    }
+
 }
