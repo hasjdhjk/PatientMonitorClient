@@ -1,5 +1,6 @@
 package UI;
 
+import Models.Patient;
 import UI.Components.SideBar;
 import UI.Components.TopBar;
 import UI.Pages.*;
@@ -11,6 +12,7 @@ public class MainWindow extends JFrame {
 
     private CardLayout cardLayout;
     private JPanel pageContainer;
+    private SideBar sidebar;
 
     public static final String PAGE_HOME = "home";
     public static final String PAGE_DETAILS = "details";
@@ -31,7 +33,7 @@ public class MainWindow extends JFrame {
         add(new TopBar(), BorderLayout.NORTH);
 
         // sidebar (tabs for page switching)
-        SideBar sidebar = new SideBar(this);
+        sidebar = new SideBar(this);
         add(sidebar, BorderLayout.WEST);
 
         // page container (card layout shows only 1 page at a time)
@@ -55,9 +57,15 @@ public class MainWindow extends JFrame {
         cardLayout.show(pageContainer, pageName);
     }
 
-    public void showPatientDetails(Models.Patient p) {
-        PatientDetailPage detailPage = new PatientDetailPage(this, p);
-        pageContainer.add(detailPage, PAGE_DETAILS); // replace
-        showPage(PAGE_DETAILS);
+    public void showStatusTracker(Patient patient) {
+        sidebar.setSelected("Status Tracker");  // you already have something similar
+        statusTrackerPage.setPatient(patient);  // new function we will add
+        showPage(PAGE_STATUS);
     }
+
+//    public void showPatientDetails(Models.Patient p) {
+//        PatientDetailPage detailPage = new PatientDetailPage(this, p);
+//        pageContainer.add(detailPage, PAGE_DETAILS); // replace
+//        showPage(PAGE_DETAILS);
+//    }
 }
