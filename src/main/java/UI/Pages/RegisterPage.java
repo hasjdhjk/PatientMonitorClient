@@ -56,11 +56,12 @@ public class RegisterPage extends JPanel {
         JPanel rightPanel = new JPanel();
         rightPanel.setBackground(Color.WHITE);
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-        rightPanel.setBorder(BorderFactory.createEmptyBorder(120, 120, 120, 120));
+        rightPanel.setBorder(BorderFactory.createEmptyBorder(120, 120, 100, 120));
 
         JLabel title = new JLabel("Create Account");
         title.setFont(new Font("Arial", Font.BOLD, 28));
         title.setAlignmentX(Component.LEFT_ALIGNMENT);
+        title.setBorder(BorderFactory.createEmptyBorder(0, 150, 0, 150));
 
         // email
         JLabel emailLabel = label("Email");
@@ -97,7 +98,8 @@ public class RegisterPage extends JPanel {
         termsCheck.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // sign up button
-        BaseTile signUpTile = new BaseTile(320, 40, 50, true);
+        BaseTile signUpTile = new BaseTile(650, 75, 50, true);
+        signUpTile.setMaximumSize(new Dimension(650, 75));
         signUpTile.setBackground(new Color(68, 104, 140));
         signUpTile.setLayout(new BorderLayout());
         JButton signUpBtn = new JButton("Sign up");
@@ -192,7 +194,8 @@ public class RegisterPage extends JPanel {
 
     // input fields
     private BaseTile inputTile() {
-        BaseTile tile = new BaseTile(320, 20, 50, false);
+        BaseTile tile = new BaseTile(650, 75, 50, false);
+        tile.setMaximumSize(new Dimension(650, 75));
         tile.setLayout(new BorderLayout());
         tile.setAlignmentX(Component.LEFT_ALIGNMENT);
         return tile;
