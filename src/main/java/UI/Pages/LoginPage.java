@@ -1,5 +1,6 @@
 package UI.Pages;
 
+import NetWork.ApiClient;
 import UI.Components.PlaceholderTextField;
 import UI.Components.Tiles.BaseTile;
 
@@ -70,6 +71,35 @@ public class LoginPage extends JPanel {
         loginBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         signInTile.add(loginBtn, BorderLayout.CENTER);
+        loginBtn.addActionListener(e -> {
+            String email = emailField.getText().trim();
+            String password = passwordField.getText().trim();
+
+            ApiClient.LoginResponse res = ApiClient.login(email, password);
+
+            if (res == null) {
+                JOptionPane.showMessageDialog(this,
+                        "Cannot connect to server.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (!"ok".equals(res.status)) {
+                JOptionPane.showMessageDialog(this,
+                        res.message,
+                        "Login Failed",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            JOptionPane.showMessageDialog(this,
+                    "Welcome Dr. " + res.familyName + "!",
+                    "Login Successful",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+            // TODO: switch to dashboard
+        });
 
         // reset password and register
         JPanel footer = new JPanel(new BorderLayout());
@@ -79,11 +109,28 @@ public class LoginPage extends JPanel {
         forgot.setForeground(Color.GRAY);
         forgot.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         forgot.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0)); // left padding +30
+        // hook up with api client (backend)
+        forgot.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                // TODO: open reset password dialog
+                System.out.println("Open forgot password dialog");
+            }
+        });
 
+        // register
         JLabel register = new JLabel("Register");
         register.setForeground(new Color(50, 100, 200));
         register.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         register.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 20)); // left padding +30
+        // hook up with api client (backend)
+        register.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                // TODO: switch to your RegisterPage
+                System.out.println("Open register page");
+            }
+        });
 
         footer.add(forgot, BorderLayout.WEST);
         footer.add(register, BorderLayout.EAST);
