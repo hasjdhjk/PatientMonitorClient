@@ -20,7 +20,7 @@ public class RegisterPage extends JPanel {
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
         JLabel titleLeft = new JLabel("Get Started", SwingConstants.CENTER);
-        titleLeft.setFont(new Font("Arial", Font.BOLD, 36));
+        titleLeft.setFont(new Font("Arial", Font.BOLD, 50));
         titleLeft.setForeground(Color.WHITE);
         titleLeft.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -30,7 +30,8 @@ public class RegisterPage extends JPanel {
         subtitleLeft.setAlignmentX(Component.CENTER_ALIGNMENT);
         subtitleLeft.setBorder(BorderFactory.createEmptyBorder(15, 0, 10, 0));
 
-        BaseTile loginTile = new BaseTile(200, 50, 40, true);
+        BaseTile loginTile = new BaseTile(200, 60, 40, true);
+        loginTile.setMaximumSize(new Dimension(200, 60));
         loginTile.setBackground(Color.WHITE);
         loginTile.setLayout(new BorderLayout());
 
@@ -96,11 +97,11 @@ public class RegisterPage extends JPanel {
         termsCheck.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // sign up button
-        BaseTile signUpTile = new BaseTile(320, 60, 40, true);
+        BaseTile signUpTile = new BaseTile(320, 40, 50, true);
         signUpTile.setBackground(new Color(68, 104, 140));
         signUpTile.setLayout(new BorderLayout());
         JButton signUpBtn = new JButton("Sign up");
-        signUpBtn.setFont(new Font("Arial", Font.BOLD, 16));
+        signUpBtn.setFont(new Font("Arial", Font.BOLD, 14));
         signUpBtn.setForeground(Color.WHITE);
         signUpBtn.setContentAreaFilled(false);
         signUpBtn.setBorderPainted(false);
@@ -189,8 +190,9 @@ public class RegisterPage extends JPanel {
         return lbl;
     }
 
+    // input fields
     private BaseTile inputTile() {
-        BaseTile tile = new BaseTile(320, 40, 50, false);
+        BaseTile tile = new BaseTile(320, 20, 50, false);
         tile.setLayout(new BorderLayout());
         tile.setAlignmentX(Component.LEFT_ALIGNMENT);
         return tile;
