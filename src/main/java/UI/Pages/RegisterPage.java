@@ -65,6 +65,7 @@ public class RegisterPage extends JPanel {
 
         // email
         JLabel emailLabel = label("Email");
+        emailLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
         BaseTile emailTile = inputTile();
         PlaceholderTextField emailField = new PlaceholderTextField("Enter email");
         styleTextField(emailField);
@@ -72,6 +73,7 @@ public class RegisterPage extends JPanel {
 
         // password
         JLabel passwordLabel = label("Password");
+        passwordLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
         BaseTile passwordTile = inputTile();
         PlaceholderTextField passwordField = new PlaceholderTextField("Enter password");
         styleTextField(passwordField);
@@ -79,6 +81,7 @@ public class RegisterPage extends JPanel {
 
         // given name
         JLabel givenLabel = label("Given Name");
+        givenLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
         BaseTile givenTile = inputTile();
         PlaceholderTextField givenField = new PlaceholderTextField("Enter first name");
         styleTextField(givenField);
@@ -86,6 +89,7 @@ public class RegisterPage extends JPanel {
 
         // family name
         JLabel familyLabel = label("Family Name");
+        familyLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
         BaseTile familyTile = inputTile();
         PlaceholderTextField familyField = new PlaceholderTextField("Enter last name");
         styleTextField(familyField);
