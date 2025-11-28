@@ -40,6 +40,11 @@ public class StatusTrackerPage extends JPanel {
         scroll.getVerticalScrollBar().setUnitIncrement(16);
         add(scroll, BorderLayout.CENTER);
 
+        // set background color
+        Color bg = new Color(240, 240, 240);
+        content.setBackground(bg);
+        scroll.getViewport().setBackground(bg);
+
         // Load all patients
         allPatients = AddedPatientDB.getAll();
         if (!allPatients.isEmpty()) {
