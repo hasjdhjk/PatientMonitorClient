@@ -11,159 +11,131 @@ import java.awt.*;
 public class RegisterPage extends JPanel {
 
     public RegisterPage(MainWindow mainWindow) {
+
         setLayout(new GridLayout(1, 2));
-        setBackground(Color.WHITE);
 
         // ============================================================
         // LEFT BLUE PANEL
         // ============================================================
         JPanel leftPanel = new JPanel();
-        leftPanel.setBackground(new Color(65, 88, 208));   // beautiful blue
+        leftPanel.setBackground(new Color(65, 88, 208));
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
-        JLabel getStarted = new JLabel("Get Started", SwingConstants.CENTER);
-        getStarted.setFont(new Font("Arial", Font.BOLD, 32));
-        getStarted.setForeground(Color.WHITE);
-        getStarted.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel titleLeft = new JLabel("Get Started", SwingConstants.CENTER);
+        titleLeft.setFont(new Font("Arial", Font.BOLD, 36));
+        titleLeft.setForeground(Color.WHITE);
+        titleLeft.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel haveAcc = new JLabel("Already have an account?");
-        haveAcc.setFont(new Font("Arial", Font.PLAIN, 16));
-        haveAcc.setForeground(Color.white);
-        haveAcc.setAlignmentX(Component.CENTER_ALIGNMENT);
-        haveAcc.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        JLabel subtitleLeft = new JLabel("Already have an account?");
+        subtitleLeft.setFont(new Font("Arial", Font.PLAIN, 16));
+        subtitleLeft.setForeground(Color.WHITE);
+        subtitleLeft.setAlignmentX(Component.CENTER_ALIGNMENT);
+        subtitleLeft.setBorder(BorderFactory.createEmptyBorder(15, 0, 10, 0));
 
-        // Login button to go back
         BaseTile loginTile = new BaseTile(200, 50, 40, true);
-        loginTile.setBackground(new Color(255, 255, 255));  // white button
+        loginTile.setBackground(Color.WHITE);
         loginTile.setLayout(new BorderLayout());
 
         JButton loginBtn = new JButton("Log in");
         loginBtn.setFont(new Font("Arial", Font.BOLD, 16));
         loginBtn.setForeground(new Color(65, 88, 208));
-        loginBtn.setFocusPainted(false);
         loginBtn.setContentAreaFilled(false);
         loginBtn.setBorderPainted(false);
-        loginBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
+        loginBtn.setFocusPainted(false);
         loginTile.add(loginBtn, BorderLayout.CENTER);
 
-        loginBtn.addActionListener(e -> {
-            mainWindow.showLoginPage();
-        });
+        loginBtn.addActionListener(e -> mainWindow.showLoginPage());
 
         leftPanel.add(Box.createVerticalGlue());
-        leftPanel.add(getStarted);
-        leftPanel.add(haveAcc);
+        leftPanel.add(titleLeft);
+        leftPanel.add(subtitleLeft);
         leftPanel.add(Box.createVerticalStrut(20));
         leftPanel.add(loginTile);
         leftPanel.add(Box.createVerticalGlue());
 
 
         // ============================================================
-        // RIGHT WHITE PANEL
+        // RIGHT PANEL — SIMPLE & CLEAN (NO GBC)
         // ============================================================
-        JPanel rightPanel = new JPanel(new GridBagLayout());
+        JPanel rightPanel = new JPanel();
         rightPanel.setBackground(Color.WHITE);
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.insets = new Insets(8, 10, 8, 10);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        rightPanel.setBorder(BorderFactory.createEmptyBorder(60, 120, 60, 120));
 
         JLabel title = new JLabel("Create Account");
-        title.setFont(new Font("Arial", Font.BOLD, 26));
-        gbc.gridy = 0;
-        rightPanel.add(title, gbc);
+        title.setFont(new Font("Arial", Font.BOLD, 28));
+        title.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // Email field
-        gbc.gridy++;
-        JLabel emailLabel = new JLabel("Email");
-        emailLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        rightPanel.add(emailLabel, gbc);
-
-        gbc.gridy++;
+        // --------- EMAIL FIELD ----------
+        JLabel emailLabel = label("Email");
+        BaseTile emailTile = inputTile();
         PlaceholderTextField emailField = new PlaceholderTextField("Enter email");
-        styleField(emailField);
-        rightPanel.add(emailField, gbc);
+        styleTextField(emailField);
+        emailTile.add(emailField);
 
-        // Password field
-        gbc.gridy++;
-        JLabel passLabel = new JLabel("Password");
-        passLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        rightPanel.add(passLabel, gbc);
-
-        gbc.gridy++;
+        // --------- PASSWORD FIELD ----------
+        JLabel passwordLabel = label("Password");
+        BaseTile passwordTile = inputTile();
         PlaceholderTextField passwordField = new PlaceholderTextField("Enter password");
-        styleField(passwordField);
-        rightPanel.add(passwordField, gbc);
+        styleTextField(passwordField);
+        passwordTile.add(passwordField);
 
-        // Given name
-        gbc.gridy++;
-        JLabel givenLabel = new JLabel("Given Name");
-        givenLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        rightPanel.add(givenLabel, gbc);
-
-        gbc.gridy++;
+        // --------- GIVEN NAME ----------
+        JLabel givenLabel = label("Given Name");
+        BaseTile givenTile = inputTile();
         PlaceholderTextField givenField = new PlaceholderTextField("Enter first name");
-        styleField(givenField);
-        rightPanel.add(givenField, gbc);
+        styleTextField(givenField);
+        givenTile.add(givenField);
 
-        // Family name
-        gbc.gridy++;
-        JLabel familyLabel = new JLabel("Family Name");
-        familyLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        rightPanel.add(familyLabel, gbc);
-
-        gbc.gridy++;
+        // --------- FAMILY NAME ----------
+        JLabel familyLabel = label("Family Name");
+        BaseTile familyTile = inputTile();
         PlaceholderTextField familyField = new PlaceholderTextField("Enter last name");
-        styleField(familyField);
-        rightPanel.add(familyField, gbc);
+        styleTextField(familyField);
+        familyTile.add(familyField);
 
-        // Checkbox
-        gbc.gridy++;
+        // --------- TERMS CHECKBOX ----------
         JCheckBox termsCheck = new JCheckBox("I accept the terms of the agreement");
         termsCheck.setFont(new Font("Arial", Font.PLAIN, 14));
         termsCheck.setBackground(Color.WHITE);
-        rightPanel.add(termsCheck, gbc);
+        termsCheck.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // Sign up button
-        gbc.gridy++;
+        // --------- SIGN UP BUTTON ----------
         BaseTile signUpTile = new BaseTile(320, 60, 40, true);
         signUpTile.setBackground(new Color(68, 104, 140));
         signUpTile.setLayout(new BorderLayout());
-
         JButton signUpBtn = new JButton("Sign up");
         signUpBtn.setFont(new Font("Arial", Font.BOLD, 16));
         signUpBtn.setForeground(Color.WHITE);
-        signUpBtn.setFocusPainted(false);
         signUpBtn.setContentAreaFilled(false);
         signUpBtn.setBorderPainted(false);
-        signUpBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
+        signUpBtn.setFocusPainted(false);
         signUpTile.add(signUpBtn, BorderLayout.CENTER);
+        signUpTile.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        rightPanel.add(signUpTile, gbc);
-
-        // Hook button logic
+        // --------- SIGN UP LOGIC ----------
         signUpBtn.addActionListener(e -> {
+
             if (!termsCheck.isSelected()) {
                 JOptionPane.showMessageDialog(this,
                         "You must accept the terms before continuing.",
-                        "Warning", JOptionPane.WARNING_MESSAGE);
+                        "Warning",
+                        JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            ApiClient.SimpleResponse res =
-                    ApiClient.register(
-                            emailField.getText().trim(),
-                            passwordField.getText().trim(),
-                            givenField.getText().trim(),
-                            familyField.getText().trim()
-                    );
+            ApiClient.SimpleResponse res = ApiClient.register(
+                    emailField.getText().trim(),
+                    passwordField.getText().trim(),
+                    givenField.getText().trim(),
+                    familyField.getText().trim()
+            );
 
             if (res == null) {
                 JOptionPane.showMessageDialog(this,
                         "Unable to connect to server.",
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -176,7 +148,7 @@ public class RegisterPage extends JPanel {
             }
 
             JOptionPane.showMessageDialog(this,
-                    "Registration successful! Check your email to verify your account.",
+                    "Registration successful! Check your email.",
                     "Success",
                     JOptionPane.INFORMATION_MESSAGE);
 
@@ -184,15 +156,59 @@ public class RegisterPage extends JPanel {
         });
 
 
-        // Add left + right panels
+        // ============================================================
+        // ADD COMPONENTS TO RIGHT PANEL — simple vertical stack
+        // ============================================================
+
+        rightPanel.add(title);
+        rightPanel.add(Box.createVerticalStrut(20));
+
+        rightPanel.add(emailLabel);
+        rightPanel.add(emailTile);
+        rightPanel.add(Box.createVerticalStrut(15));
+
+        rightPanel.add(passwordLabel);
+        rightPanel.add(passwordTile);
+        rightPanel.add(Box.createVerticalStrut(15));
+
+        rightPanel.add(givenLabel);
+        rightPanel.add(givenTile);
+        rightPanel.add(Box.createVerticalStrut(15));
+
+        rightPanel.add(familyLabel);
+        rightPanel.add(familyTile);
+        rightPanel.add(Box.createVerticalStrut(20));
+
+        rightPanel.add(termsCheck);
+        rightPanel.add(Box.createVerticalStrut(20));
+
+        rightPanel.add(signUpTile);
+
         add(leftPanel);
         add(rightPanel);
     }
 
 
-    private void styleField(JTextField field) {
-        field.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+    // Helper: create label
+    private JLabel label(String text) {
+        JLabel lbl = new JLabel(text);
+        lbl.setFont(new Font("Arial", Font.PLAIN, 16));
+        lbl.setAlignmentX(Component.LEFT_ALIGNMENT);
+        return lbl;
+    }
+
+    // Helper: create BaseTile input wrapper
+    private BaseTile inputTile() {
+        BaseTile tile = new BaseTile(320, 55, 30, false);
+        tile.setLayout(new BorderLayout());
+        tile.setAlignmentX(Component.LEFT_ALIGNMENT);
+        return tile;
+    }
+
+    // Helper: Style text field
+    private void styleTextField(JTextField field) {
         field.setFont(new Font("Arial", Font.PLAIN, 16));
-        field.setPreferredSize(new Dimension(320, 45));
+        field.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        field.setOpaque(false);
     }
 }
