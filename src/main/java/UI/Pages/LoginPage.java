@@ -77,6 +77,7 @@ public class LoginPage extends JPanel {
 
         JLabel forgot = new JLabel("Forgot Password?");
         forgot.setForeground(Color.GRAY);
+        forgot.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         forgot.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0)); // left padding +30
 
         JLabel register = new JLabel("Register");
