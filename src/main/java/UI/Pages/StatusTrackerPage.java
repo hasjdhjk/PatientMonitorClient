@@ -55,7 +55,7 @@ public class StatusTrackerPage extends JPanel {
         JPanel topBar = new JPanel();
         topBar.setLayout(new BoxLayout(topBar, BoxLayout.X_AXIS));
         topBar.setOpaque(false);
-        topBar.setBorder(BorderFactory.createEmptyBorder(30, 0, 20, 0));
+        topBar.setBorder(BorderFactory.createEmptyBorder(30, 0, 10, 0));
 
         JButton leftArrow = new JButton("<");
         styleArrow(leftArrow);
@@ -176,7 +176,7 @@ public class StatusTrackerPage extends JPanel {
         // ecg
         ecgPanelContainer.removeAll();
 
-        BaseTile ecgTile = new BaseTile(1180, 200, 30);
+        BaseTile ecgTile = new BaseTile(1160, 250, 30);
         ecgTile.setLayout(new BorderLayout());
         ecgTile.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         ecgTile.add(new ECGPanel(), BorderLayout.CENTER);
