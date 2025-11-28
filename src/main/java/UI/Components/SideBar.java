@@ -137,6 +137,32 @@ public class SideBar extends JPanel {
         selected.setBackground(selectedColor);
     }
 
+    // method to select a button by its text label
+    public void setSelected(String label) {
+        for (JButton b : allButtons) {
+
+            // Find the matching button
+            if (b.getText().equalsIgnoreCase(label)) {
+
+                // Set selected appearance
+                b.setOpaque(true);
+                b.setContentAreaFilled(true);
+                b.setBackground(selectedColor);
+
+                // Unselect all others
+                for (JButton other : allButtons) {
+                    if (other != b) {
+                        other.setOpaque(false);
+                        other.setContentAreaFilled(false);
+                    }
+                }
+                return;
+            }
+        }
+
+        System.out.println("⚠ Sidebar button not found: " + label);
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
