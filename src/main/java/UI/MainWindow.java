@@ -22,6 +22,7 @@ public class MainWindow extends JFrame {
     public static final String PAGE_SETTINGS = "settings";
 
     private HomePage homePage;
+    private StatusTrackerPage statusTrackerPage;
 
     public MainWindow() {
         setTitle("Patient Monitor");
@@ -43,9 +44,12 @@ public class MainWindow extends JFrame {
         // Pages
         homePage = new HomePage(this);
         pageContainer.add(homePage, PAGE_HOME);
+
+        statusTrackerPage = new StatusTrackerPage(this);
+        pageContainer.add(statusTrackerPage, PAGE_STATUS);
+
 //        pageContainer.add(new AddPatientPage(), PAGE_ADD);
 //        pageContainer.add(new SettingsPage(), PAGE_SETTINGS);
-//        pageContainer.add(new StatusTrackerPage(), PAGE_STATUS);
 //        pageContainer.add(new AccountPage(), PAGE_ACCOUNT);
 
         add(pageContainer, BorderLayout.CENTER);

@@ -54,7 +54,7 @@ public class PatientTile extends BaseTile {
         addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (!SwingUtilities.isRightMouseButton(e)) {
-                    window.showPatientDetails(patient);
+                    window.showStatusTracker(patient);
                 }
             }
         });
