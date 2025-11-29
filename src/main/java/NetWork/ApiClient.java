@@ -12,15 +12,10 @@ import java.net.URL;
 
 public class ApiClient {
 
-    // CHANGE WHEN DEPLOYED TO TSURU
-    private static final String BASE_URL = "https://bioeng-fguys-app.impaas.uk";
+//    private static final String BASE_URL = "https://bioeng-fguys-app.impaas.uk"; // tsuru
+    private static final String BASE_URL = "https://bioeng-fguys-app.impaas.uk"; // testing server
 
     private static final Gson gson = new Gson();
-
-
-    // ================================================================
-    // HELPER METHODS
-    // ================================================================
 
     private static String postJson(String endpoint, String jsonBody) throws IOException {
         URL url = new URL(BASE_URL + endpoint);
@@ -49,10 +44,7 @@ public class ApiClient {
     }
 
 
-    // ================================================================
-    // REQUEST DTOs (these match your servlet expected fields)
-    // ================================================================
-
+    // requests
     public static class LoginRequest {
         String email;
         String password;
@@ -96,13 +88,9 @@ public class ApiClient {
     }
 
 
-    // ================================================================
-    // AUTHENTICATION METHODS (CLIENT FACING)
-    // ================================================================
+    // authetication
 
-    // ---------------------------
-    // 1. LOGIN
-    // ---------------------------
+    // login
     public static LoginResponse login(String email, String password) {
         try {
             LoginRequest req = new LoginRequest(email, password);
@@ -117,9 +105,6 @@ public class ApiClient {
         }
     }
 
-    // ---------------------------
-    // 2. REGISTER
-    // ---------------------------
     public static SimpleResponse register(String email, String password,
                                           String givenName, String familyName) {
         try {
@@ -130,14 +115,13 @@ public class ApiClient {
             return gson.fromJson(json, SimpleResponse.class);
 
         } catch (Exception e) {
+            System.out.println("REGISTER FAILED:");
             e.printStackTrace();
             return null;
         }
     }
 
-    // ---------------------------
-    // 3. REQUEST PASSWORD RESET
-    // ---------------------------
+    // request password reset
     public static SimpleResponse requestPasswordReset(String email) {
         try {
             ResetRequest req = new ResetRequest(email);
@@ -152,9 +136,7 @@ public class ApiClient {
         }
     }
 
-    // ---------------------------
-    // 4. RESET PASSWORD
-    // ---------------------------
+     // reset password
     public static SimpleResponse resetPassword(String token, String newPassword) {
         try {
             ResetPasswordRequest req = new ResetPasswordRequest(token, newPassword);
@@ -170,10 +152,8 @@ public class ApiClient {
     }
 
 
-    // ================================================================
-    // RESPONSE DTOs
-    // ================================================================
-
+    // response
+    
     public static class LoginResponse {
         public String status;
         public String message;
