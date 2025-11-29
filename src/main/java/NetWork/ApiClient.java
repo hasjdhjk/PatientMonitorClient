@@ -13,7 +13,7 @@ import java.net.URL;
 public class ApiClient {
 
 //    private static final String BASE_URL = "https://bioeng-fguys-app.impaas.uk"; // tsuru
-    private static final String BASE_URL = "https://bioeng-fguys-app.impaas.uk"; // testing server
+    private static final String BASE_URL = "http://localhost:8080/PatientServer"; // testing server
 
     private static final Gson gson = new Gson();
 
@@ -153,7 +153,7 @@ public class ApiClient {
 
 
     // response
-    
+
     public static class LoginResponse {
         public String status;
         public String message;
