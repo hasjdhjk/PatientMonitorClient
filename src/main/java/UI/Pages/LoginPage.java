@@ -11,6 +11,9 @@ import java.awt.*;
 
 public class LoginPage extends JPanel {
 
+    private PlaceholderTextField emailField;
+    private PlaceholderPasswordField passwordField;
+
     public LoginPage(MainWindow mainWindow) {
         setLayout(new BorderLayout());
         setBackground(new Color(245, 245, 245));
@@ -43,7 +46,7 @@ public class LoginPage extends JPanel {
         // email field (base tile)
         BaseTile emailFieldTile = new BaseTile(320, 60, 40, true);
         emailFieldTile.setLayout(new BorderLayout());
-        PlaceholderTextField emailField = new PlaceholderTextField("Enter your email");
+        emailField = new PlaceholderTextField("Enter your email");
         styleTextField(emailField);
         emailFieldTile.add(emailField, BorderLayout.CENTER);
 
@@ -55,7 +58,7 @@ public class LoginPage extends JPanel {
         // password field
         BaseTile pwdFieldTile = new BaseTile(320, 60, 40, true);
         pwdFieldTile.setLayout(new BorderLayout());
-        PlaceholderPasswordField passwordField = new PlaceholderPasswordField("Enter your password");
+        passwordField = new PlaceholderPasswordField("Enter your password");
         styleTextField(passwordField);
         pwdFieldTile.add(passwordField, BorderLayout.CENTER);
 
@@ -177,4 +180,8 @@ public class LoginPage extends JPanel {
         return panel;
     }
 
+    public void clearFields() {
+        emailField.setText("");
+        passwordField.setText("");
+    }
 }

@@ -63,7 +63,7 @@ public class MainWindow extends JFrame {
 
         setVisible(true);
     }
-    
+
     public void showLoginPage() {
         showPage(PAGE_LOGIN);
     }
@@ -87,6 +87,8 @@ public class MainWindow extends JFrame {
 
         sidebar.setVisible(!isAuthPage);
         topBar.setVisible(!isAuthPage);
+        if (pageName.equals(PAGE_LOGIN)) loginPage.clearFields();
+
         cardLayout.show(pageContainer, pageName);
 
         revalidate();
