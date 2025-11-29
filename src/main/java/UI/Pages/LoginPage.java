@@ -23,7 +23,7 @@ public class LoginPage extends ImagePanel {
 
         // top logo bar
         // Logo image at top
-        ImageIcon logoImg = ImageLoader.loadImage("icon_logo", "Icons", 220);
+        ImageIcon logoImg = ImageLoader.loadImageScaled("icon_logo", "Icons", 300);
         JLabel logo = new JLabel(logoImg);
         logo.setHorizontalAlignment(SwingConstants.CENTER);
         logo.setBorder(BorderFactory.createEmptyBorder(50, 0, 20, 0));
