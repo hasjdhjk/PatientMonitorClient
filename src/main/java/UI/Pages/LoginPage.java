@@ -26,7 +26,7 @@ public class LoginPage extends ImagePanel {
         ImageIcon logoImg = ImageLoader.loadImageScaled("icon_logo", "Icons", 300);
         JLabel logo = new JLabel(logoImg);
         logo.setHorizontalAlignment(SwingConstants.CENTER);
-        logo.setBorder(BorderFactory.createEmptyBorder(50, 0, 20, 0));
+        logo.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
         add(logo, BorderLayout.NORTH);
 
         // center wrapper
@@ -142,7 +142,7 @@ public class LoginPage extends ImagePanel {
 
         // add components to card
         card.add(title);
-        card.add(Box.createVerticalStrut(25));
+        card.add(Box.createVerticalStrut(10));
 
         card.add(wrapLeft(emailLabel));
         card.add(Box.createVerticalStrut(5));
