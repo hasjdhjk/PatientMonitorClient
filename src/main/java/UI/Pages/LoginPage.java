@@ -95,12 +95,7 @@ public class LoginPage extends JPanel {
                 return;
             }
 
-            JOptionPane.showMessageDialog(this,
-                    "Welcome Dr. " + res.familyName + "!",
-                    "Login Successful",
-                    JOptionPane.INFORMATION_MESSAGE);
-
-            // TODO: switch to dashboard
+            mainWindow.showHomePage();
         });
 
         // reset password and register
@@ -129,7 +124,7 @@ public class LoginPage extends JPanel {
         register.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                // TODO: switch to your RegisterPage
+                // register page
                 mainWindow.showRegisterPage();
             }
         });
