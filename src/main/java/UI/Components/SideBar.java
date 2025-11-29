@@ -46,7 +46,7 @@ public class SideBar extends JPanel {
         // logout always on the bottom
         JButton logoutBtn = createButton("Log Out", "logout", Color.RED);
 
-        logoutBtn.addActionListener(e -> System.exit(0));
+        logoutBtn.addActionListener(e -> window.showPage(MainWindow.PAGE_LOGIN));
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
         bottomPanel.setOpaque(false);
