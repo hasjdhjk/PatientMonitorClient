@@ -1,25 +1,29 @@
 package UI.Pages;
 
 import NetWork.ApiClient;
+import UI.Components.ImagePanel;
 import UI.Components.PlaceHolders.PlaceholderPasswordField;
 import UI.Components.PlaceHolders.PlaceholderTextField;
 import UI.Components.Tiles.BaseTile;
 import UI.MainWindow;
+import Utilities.ImageLoader;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class LoginPage extends JPanel {
+public class LoginPage extends ImagePanel {
 
     private PlaceholderTextField emailField;
     private PlaceholderPasswordField passwordField;
 
     public LoginPage(MainWindow mainWindow) {
+        super(ImageLoader.loadImage("bg", "UI", 1000).getImage());
         setLayout(new BorderLayout());
         setBackground(new Color(245, 245, 245));
 
         // top logo bar
-        JLabel logo = new JLabel("HealthTrack", SwingConstants.CENTER);
+        JLabel logo = new JLabel("Health Tracker", SwingConstants.CENTER);
+        logo.setForeground(new Color(0, 0, 0));
         logo.setFont(new Font("Arial", Font.BOLD, 40));
         logo.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
         add(logo, BorderLayout.NORTH);
@@ -162,6 +166,7 @@ public class LoginPage extends JPanel {
                 "© 2025 HealthTrack. All Rights Reserved.",
                 SwingConstants.CENTER
         );
+        copyright.setForeground(new Color(255, 255, 255));
         copyright.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
         add(copyright, BorderLayout.SOUTH);
     }
