@@ -13,7 +13,7 @@ import java.net.URL;
 public class ApiClient {
 
     // CHANGE WHEN DEPLOYED TO TSURU
-    private static final String BASE_URL = "http://localhost:8080/PatientServer";
+    private static final String BASE_URL = "https://bioeng-fguys-app.impaas.uk";
 
     private static final Gson gson = new Gson();
 
