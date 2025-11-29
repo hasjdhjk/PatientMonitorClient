@@ -5,6 +5,7 @@ import UI.Components.PlaceHolders.PlaceholderPasswordField;
 import UI.Components.PlaceHolders.PlaceholderTextField;
 import UI.Components.Tiles.BaseTile;
 import UI.MainWindow;
+import Utilities.ImageLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -76,9 +77,37 @@ public class RegisterPage extends JPanel {
         JLabel passwordLabel = label("Password");
         passwordLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
         BaseTile passwordTile = inputTile();
+        passwordTile.setLayout(new BorderLayout());
+        // password field
         PlaceholderPasswordField passwordField = new PlaceholderPasswordField("At least 10 characters");
         styleTextField(passwordField);
-        passwordTile.add(passwordField);
+        passwordTile.add(passwordField, BorderLayout.CENTER);
+        // visibility button
+        JButton toggleBtn = new JButton();
+        toggleBtn.setPreferredSize(new Dimension(50, 50));
+        toggleBtn.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
+        toggleBtn.setFocusPainted(false);
+        toggleBtn.setContentAreaFilled(false);
+        toggleBtn.setBorderPainted(false);
+        // load icons
+        ImageIcon showIcon = ImageLoader.loadImage("icon_visible", "Icons", 24);
+        ImageIcon hideIcon = ImageLoader.loadImage("icon_invisible", "Icons", 24);
+        // initial icon is "hidden"
+        toggleBtn.setIcon(hideIcon);
+        // toggle logic
+        toggleBtn.addActionListener(ev -> {
+            if (passwordField.getEchoChar() == 0) {
+                // currently visible, hide it
+                passwordField.setEchoChar('*');
+                toggleBtn.setIcon(hideIcon);
+            } else {
+                // currently hidden, show it
+                passwordField.setEchoChar((char) 0);
+                toggleBtn.setIcon(showIcon);
+            }
+        });
+        passwordTile.add(toggleBtn, BorderLayout.EAST);
+
 
         // given name
         JLabel givenLabel = label("Given Name");
