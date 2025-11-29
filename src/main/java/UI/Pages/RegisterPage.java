@@ -1,6 +1,7 @@
 package UI.Pages;
 
 import NetWork.ApiClient;
+import UI.Components.ImagePanel;
 import UI.Components.PlaceHolders.PlaceholderPasswordField;
 import UI.Components.PlaceHolders.PlaceholderTextField;
 import UI.Components.Tiles.BaseTile;
@@ -17,8 +18,11 @@ public class RegisterPage extends JPanel {
         setLayout(new GridLayout(1, 2));
 
         // left blue
-        JPanel leftPanel = new JPanel();
-        leftPanel.setBackground(new Color(65, 88, 208));
+        // load image
+        Image bgImage = ImageLoader.loadImage("bg_left", "UI", 1000).getImage();
+
+        // use ImagePanel instead of plain JPanel
+        ImagePanel leftPanel = new ImagePanel(bgImage);
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
         JLabel titleLeft = new JLabel("Get Started", SwingConstants.CENTER);
