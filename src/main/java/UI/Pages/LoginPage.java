@@ -20,8 +20,8 @@ public class LoginPage extends JPanel {
 
         // top logo bar
         JLabel logo = new JLabel("HealthTrack", SwingConstants.CENTER);
-        logo.setFont(new Font("Arial", Font.BOLD, 28));
-        logo.setBorder(BorderFactory.createEmptyBorder(30, 0, 20, 0));
+        logo.setFont(new Font("Arial", Font.BOLD, 40));
+        logo.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
         add(logo, BorderLayout.NORTH);
 
         // center wrapper
