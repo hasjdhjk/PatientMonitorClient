@@ -26,12 +26,7 @@ public class LoginPage extends ImagePanel {
         ImageIcon logoImg = ImageLoader.loadImageScaled("icon_logo", "Icons", 300);
         JLabel logo = new JLabel(logoImg);
         logo.setHorizontalAlignment(SwingConstants.CENTER);
-        logo.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
-        add(logo, BorderLayout.NORTH);
-
-        // center wrapper
-        JPanel centerWrap = new JPanel(new GridBagLayout());
-        centerWrap.setOpaque(false);
+        logo.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 100));
 
         // login panel
         BaseTile card = new BaseTile(420, 460, 40, false);   // disabled hover
@@ -159,8 +154,20 @@ public class LoginPage extends ImagePanel {
 
         card.add(footer);
 
-        centerWrap.add(card);
+        JPanel vertical = new JPanel();
+        vertical.setLayout(new BoxLayout(vertical, BoxLayout.Y_AXIS));
+        vertical.setOpaque(false);
+
+        vertical.add(logo);
+        vertical.add(Box.createVerticalStrut(15)); // space between logo and card
+        vertical.add(card);
+
+        JPanel centerWrap = new JPanel(new GridBagLayout());
+        centerWrap.setOpaque(false);
+        centerWrap.add(vertical);
+
         add(centerWrap, BorderLayout.CENTER);
+
 
         // footer copyright
         JLabel copyright = new JLabel(
