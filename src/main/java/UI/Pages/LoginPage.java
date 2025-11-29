@@ -26,7 +26,7 @@ public class LoginPage extends ImagePanel {
         ImageIcon logoImg = ImageLoader.loadImageScaled("icon_logo", "Icons", 300);
         JLabel logo = new JLabel(logoImg);
         logo.setHorizontalAlignment(SwingConstants.CENTER);
-        logo.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 100));
+        logo.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 100));
 
         // login panel
         BaseTile card = new BaseTile(420, 460, 40, false);   // disabled hover
