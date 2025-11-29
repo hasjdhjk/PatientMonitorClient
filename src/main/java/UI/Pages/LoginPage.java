@@ -22,10 +22,11 @@ public class LoginPage extends ImagePanel {
         setBackground(new Color(245, 245, 245));
 
         // top logo bar
-        JLabel logo = new JLabel("Health Tracker", SwingConstants.CENTER);
-        logo.setForeground(new Color(0, 0, 0));
-        logo.setFont(new Font("Arial", Font.BOLD, 40));
-        logo.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
+        // Logo image at top
+        ImageIcon logoImg = ImageLoader.loadImage("icon_logo", "Icons", 220);
+        JLabel logo = new JLabel(logoImg);
+        logo.setHorizontalAlignment(SwingConstants.CENTER);
+        logo.setBorder(BorderFactory.createEmptyBorder(50, 0, 20, 0));
         add(logo, BorderLayout.NORTH);
 
         // center wrapper
