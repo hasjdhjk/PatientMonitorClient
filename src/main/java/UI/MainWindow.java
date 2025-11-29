@@ -12,6 +12,7 @@ public class MainWindow extends JFrame {
 
     private CardLayout cardLayout;
     private JPanel pageContainer;
+    private TopBar topBar;
     private SideBar sidebar;
 
     public static final String PAGE_HOME = "home";
@@ -33,17 +34,24 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // --- CardLayout container ---
+        // initialize sidebar and top bar
+        topBar = new TopBar();
+        sidebar = new SideBar(this);
+        add(topBar, BorderLayout.NORTH);
+        add(sidebar, BorderLayout.WEST);
+        topBar.setVisible(false);
+        sidebar.setVisible(false);
+
+        // card layout
         cardLayout = new CardLayout();
         pageContainer = new JPanel(cardLayout);
 
-        // --- Create pages ONCE ---
+        // initialize pages
         loginPage = new LoginPage(this);
         registerPage = new RegisterPage(this);
         homePage = new HomePage(this);
         statusTrackerPage = new StatusTrackerPage(this);
 
-        // --- Add pages to CardLayout ---
         pageContainer.add(loginPage, PAGE_LOGIN);
         pageContainer.add(registerPage, PAGE_REGISTER);
         pageContainer.add(homePage, PAGE_HOME);
@@ -109,7 +117,14 @@ public class MainWindow extends JFrame {
     }
 
     public void showPage(String pageName) {
+        boolean isAuthPage = pageName.equals(PAGE_LOGIN) || pageName.equals(PAGE_REGISTER);
+
+        sidebar.setVisible(!isAuthPage);
+        topBar.setVisible(!isAuthPage);
         cardLayout.show(pageContainer, pageName);
+
+        revalidate();
+        repaint();
     }
 
 }
