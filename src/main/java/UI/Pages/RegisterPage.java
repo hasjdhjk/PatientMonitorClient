@@ -76,7 +76,7 @@ public class RegisterPage extends JPanel {
         JLabel passwordLabel = label("Password");
         passwordLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
         BaseTile passwordTile = inputTile();
-        PlaceholderPasswordField passwordField = new PlaceholderPasswordField("Enter password");
+        PlaceholderPasswordField passwordField = new PlaceholderPasswordField("At least 10 characters");
         styleTextField(passwordField);
         passwordTile.add(passwordField);
 
