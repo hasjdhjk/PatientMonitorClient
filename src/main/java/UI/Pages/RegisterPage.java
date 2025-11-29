@@ -156,6 +156,16 @@ public class RegisterPage extends JPanel {
                 return;
             }
 
+            String password = new String(passwordField.getPassword()).trim();
+            // password length check
+            if (password.length() < 10) {
+                JOptionPane.showMessageDialog(this,
+                        "Password must be at least 10 characters long.",
+                        "Invalid Password",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
             ApiClient.SimpleResponse res = ApiClient.register(
                     emailField.getText().trim(),
                     passwordField.getText().trim(),
