@@ -1,0 +1,165 @@
+package UI.Components;
+
+import Models.PatientRecord;
+import Models.PatientRecordIO;
+import Models.PatientRecordRenderer;
+import UI.Components.PlaceHolders.PlaceholderTextField;
+import UI.Components.Tiles.RoundedButton;
+import UI.Components.Tiles.RoundedPanel;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Collections;
+import java.util.List;
+
+public class PatientRecordsPanel extends RoundedPanel {
+
+    private DefaultListModel<PatientRecord> recordModel = new DefaultListModel<>();
+    private DefaultListModel<PatientRecord> filteredModel = new DefaultListModel<>();
+    private JList<PatientRecord> recordList;
+    private PlaceholderTextField searchField;
+
+    public PatientRecordsPanel(Runnable onBack) {
+        super(new BorderLayout(20, 20));
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // ---- Buttons ----
+        RoundedButton backBtn = new RoundedButton("← Back");
+        backBtn.addActionListener(e -> onBack.run());
+
+        RoundedButton importBtn = new RoundedButton("Import CSV");
+        RoundedButton deleteBtn = new RoundedButton("Delete Selected");
+        RoundedButton clearBtn = new RoundedButton("Clear All");
+
+        searchField = new PlaceholderTextField("Search...");
+        searchField.setPreferredSize(new Dimension(200, 34));
+
+        // ---- Top Bar ----
+        JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        topBar.setOpaque(false);
+        topBar.add(backBtn);
+        topBar.add(importBtn);
+        topBar.add(deleteBtn);
+        topBar.add(clearBtn);
+        topBar.add(searchField);
+
+        // ---- List ----
+        recordList = new JList<>(filteredModel);
+        recordList.setCellRenderer(new PatientRecordRenderer());
+        recordList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    PatientRecord r = recordList.getSelectedValue();
+                    if (r != null) showRecordPreview(r);
+                }
+            }
+        });
+
+        // ---- Search ----
+        searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            private void filter() {
+                String q = searchField.getText().trim().toLowerCase();
+                filteredModel.clear();
+
+                if (q.isEmpty()) {
+                    resetFilter();
+                    return;
+                }
+
+                for (int i = 0; i < recordModel.size(); i++) {
+                    PatientRecord r = recordModel.get(i);
+                    if (r.matches(q)) filteredModel.addElement(r);
+                }
+            }
+
+            @Override public void insertUpdate(javax.swing.event.DocumentEvent e) { filter(); }
+            @Override public void removeUpdate(javax.swing.event.DocumentEvent e) { filter(); }
+            @Override public void changedUpdate(javax.swing.event.DocumentEvent e) { filter(); }
+        });
+
+        // ---- Import CSV ----
+        importBtn.addActionListener(e -> {
+            List<PatientRecord> newOnes = PatientRecordIO.importCSV(null);
+            for (PatientRecord pr : newOnes)
+                recordModel.addElement(pr);
+
+            resetFilter();
+            saveToJson();
+        });
+
+        // ---- Delete Selected ----
+        deleteBtn.addActionListener(e -> {
+            PatientRecord selected = recordList.getSelectedValue();
+            if (selected == null) {
+                JOptionPane.showMessageDialog(this, "Please select a record to delete.");
+                return;
+            }
+
+            int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "Delete this record?",
+                    "Confirm Delete",
+                    JOptionPane.YES_NO_OPTION
+            );
+            if (confirm != JOptionPane.YES_OPTION) return;
+
+            // Remove from filteredModel
+            filteredModel.removeElement(selected);
+
+            // Remove from main model
+            recordModel.removeElement(selected);
+
+            saveToJson();
+        });
+
+        // ---- Clear All ----
+        clearBtn.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "Are you sure you want to delete ALL records?",
+                    "Clear All",
+                    JOptionPane.YES_NO_OPTION
+            );
+            if (confirm != JOptionPane.YES_OPTION) return;
+
+            recordModel.clear();
+            filteredModel.clear();
+            saveToJson();
+        });
+
+        // ---- Init Load ----
+        loadFromJson();
+        resetFilter();
+
+        add(topBar, BorderLayout.NORTH);
+        add(new JScrollPane(recordList), BorderLayout.CENTER);
+    }
+
+    // ===================== DATA FUNCTIONS =====================
+    private void resetFilter() {
+        filteredModel.clear();
+        for (int i = 0; i < recordModel.size(); i++)
+            filteredModel.addElement(recordModel.get(i));
+    }
+
+    private void loadFromJson() {
+        recordModel.clear();
+        for (PatientRecord r : PatientRecordIO.loadRecords())
+            recordModel.addElement(r);
+    }
+
+    private void saveToJson() {
+        PatientRecordIO.saveRecords(Collections.list(recordModel.elements()));
+    }
+
+    private void showRecordPreview(PatientRecord r) {
+        String msg = "Name: " + r.getPatientName() + "\n"
+                + "Record ID: " + r.getRecordId() + "\n"
+                + "Diagnosis: " + r.getDiagnosis() + "\n"
+                + "Date: " + r.getDate();
+
+        JOptionPane.showMessageDialog(
+                this, msg, "Record Details", JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+}
