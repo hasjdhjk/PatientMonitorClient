@@ -27,6 +27,9 @@ public class MainWindow extends JFrame {
     private LoginPage loginPage;
     private RegisterPage registerPage;
     private StatusTrackerPage statusTrackerPage;
+    private SettingsPage settingsPage;
+    private AddPatientPage addPatientPage;
+    private JPanel cardPanel;
 
     public MainWindow() {
         setTitle("Patient Monitor");
@@ -39,8 +42,8 @@ public class MainWindow extends JFrame {
         sidebar = new SideBar(this);
         add(topBar, BorderLayout.NORTH);
         add(sidebar, BorderLayout.WEST);
-        topBar.setVisible(false);
-        sidebar.setVisible(false);
+        topBar.setVisible(true);
+        sidebar.setVisible(true);
 
         // card layout
         cardLayout = new CardLayout();
@@ -51,18 +54,58 @@ public class MainWindow extends JFrame {
         registerPage = new RegisterPage(this);
         homePage = new HomePage(this);
         statusTrackerPage = new StatusTrackerPage(this);
+        settingsPage = new SettingsPage(this);
+        //addPatientPage = new AddPatientPage(this);
 
         pageContainer.add(loginPage, PAGE_LOGIN);
         pageContainer.add(registerPage, PAGE_REGISTER);
         pageContainer.add(homePage, PAGE_HOME);
         pageContainer.add(statusTrackerPage, PAGE_STATUS);
+        pageContainer.add(settingsPage, PAGE_SETTINGS);
+        //pageContainer.add(addPatientPage, PAGE_ADD);
 
         // show login at start
         add(pageContainer, BorderLayout.CENTER);
-        cardLayout.show(pageContainer, PAGE_LOGIN);
-
+        cardLayout.show(pageContainer,PAGE_SETTINGS );
+        //PAGE_LOGIN
         setVisible(true);
+        cardPanel.add(new SettingsPage(this), "settings");
     }
+//    public MainWindow() {
+//        setTitle("Patient Monitor");
+//        setSize(1920, 1080);
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setLayout(new BorderLayout());
+//
+//        // initialize sidebar and top bar
+//        topBar = new TopBar();
+//        sidebar = new SideBar(this);
+//        add(topBar, BorderLayout.NORTH);
+//        add(sidebar, BorderLayout.WEST);
+//        topBar.setVisible(false);
+//        sidebar.setVisible(false);
+//
+//        // card layout
+//        cardLayout = new CardLayout();
+//        pageContainer = new JPanel(cardLayout);
+//
+//        // initialize pages
+//        loginPage = new LoginPage(this);
+//        registerPage = new RegisterPage(this);
+//        homePage = new HomePage(this);
+//        statusTrackerPage = new StatusTrackerPage(this);
+//
+//        pageContainer.add(loginPage, PAGE_LOGIN);
+//        pageContainer.add(registerPage, PAGE_REGISTER);
+//        pageContainer.add(homePage, PAGE_HOME);
+//        pageContainer.add(statusTrackerPage, PAGE_STATUS);
+//
+//        // show login at start
+//        add(pageContainer, BorderLayout.CENTER);
+//        cardLayout.show(pageContainer, PAGE_LOGIN);
+//
+//        setVisible(true);
+//    }
 
     public void showLoginPage() {
         showPage(PAGE_LOGIN);
@@ -95,4 +138,7 @@ public class MainWindow extends JFrame {
         repaint();
     }
 
+    public void navigateTo(String pageName){
+        cardLayout.show(cardPanel, pageName);
+    }
 }
