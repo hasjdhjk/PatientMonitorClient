@@ -1,6 +1,9 @@
 package Models;
 
-public class PatientRecord {
+import java.io.Serializable;
+
+public class PatientRecord implements Serializable {
+
     private String patientName;
     private String recordId;
     private String diagnosis;
@@ -13,13 +16,22 @@ public class PatientRecord {
         this.date = date;
     }
 
+    // Getters
     public String getPatientName() { return patientName; }
     public String getRecordId() { return recordId; }
     public String getDiagnosis() { return diagnosis; }
     public String getDate() { return date; }
 
+    // Search helper
+    public boolean matches(String q) {
+        q = q.toLowerCase();
+        return patientName.toLowerCase().contains(q)
+                || recordId.toLowerCase().contains(q)
+                || diagnosis.toLowerCase().contains(q);
+    }
+
     @Override
     public String toString() {
-        return patientName + " - " + recordId;
+        return patientName + " (" + recordId + ")";
     }
 }
