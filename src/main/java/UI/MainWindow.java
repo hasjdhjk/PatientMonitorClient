@@ -30,6 +30,7 @@ public class MainWindow extends JFrame {
     private RegisterPage registerPage;
     private StatusTrackerPage statusTrackerPage;
     private SettingsPage settingsPage;
+    private AccountPage accountPage;
     private AddPatientPage addPatientPage;
     private JPanel cardPanel;
 
@@ -57,6 +58,9 @@ public class MainWindow extends JFrame {
         registerPage = new RegisterPage(this);
         homePage = new HomePage(this);
         statusTrackerPage = new StatusTrackerPage(this);
+        //settingsPage = new SettingsPage(this);
+        accountPage = new AccountPage(this);
+        //addPatientPage = new AddPatientPage(this);
         settingsPage = new SettingsPage(this);
         addPatientPage = new AddPatientPage(this);
 
@@ -64,15 +68,18 @@ public class MainWindow extends JFrame {
         pageContainer.add(registerPage, PAGE_REGISTER);
         pageContainer.add(homePage, PAGE_HOME);
         pageContainer.add(statusTrackerPage, PAGE_STATUS);
+        //pageContainer.add(settingsPage, PAGE_SETTINGS);
+        pageContainer.add(accountPage, PAGE_ACCOUNT);
+        //pageContainer.add(addPatientPage, PAGE_ADD);
         pageContainer.add(settingsPage, PAGE_SETTINGS);
         pageContainer.add(addPatientPage, PAGE_ADD);
 
         // show login at start
         add(pageContainer, BorderLayout.CENTER);
-        cardLayout.show(pageContainer,PAGE_SETTINGS );
+        cardLayout.show(pageContainer,PAGE_ACCOUNT);
         //PAGE_LOGIN
         setVisible(true);
-        cardPanel.add(new SettingsPage(this), "settings");
+        cardPanel.add(new AccountPage(this), "Account");
     }
 //    public MainWindow() {
 //        setTitle("Patient Monitor");
