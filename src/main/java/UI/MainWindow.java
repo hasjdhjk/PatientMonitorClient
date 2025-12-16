@@ -34,6 +34,7 @@ public class MainWindow extends JFrame {
     private AddPatientPage addPatientPage;
     private JPanel cardPanel;
 
+
     public MainWindow() {
         setTitle("Patient Monitor");
         setSize(1920, 1080);
@@ -60,6 +61,8 @@ public class MainWindow extends JFrame {
         //settingsPage = new SettingsPage(this);
         accountPage = new AccountPage(this);
         //addPatientPage = new AddPatientPage(this);
+        settingsPage = new SettingsPage(this);
+        addPatientPage = new AddPatientPage(this);
 
         pageContainer.add(loginPage, PAGE_LOGIN);
         pageContainer.add(registerPage, PAGE_REGISTER);
@@ -68,6 +71,8 @@ public class MainWindow extends JFrame {
         //pageContainer.add(settingsPage, PAGE_SETTINGS);
         pageContainer.add(accountPage, PAGE_ACCOUNT);
         //pageContainer.add(addPatientPage, PAGE_ADD);
+        pageContainer.add(settingsPage, PAGE_SETTINGS);
+        pageContainer.add(addPatientPage, PAGE_ADD);
 
         // show login at start
         add(pageContainer, BorderLayout.CENTER);
