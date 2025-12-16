@@ -119,6 +119,7 @@ public class MainWindow extends JFrame {
     }
 
     public void showHomePage() {
+        homePage.onPageShown();
         showPage(PAGE_HOME);
     }
 
