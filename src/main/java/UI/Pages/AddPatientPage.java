@@ -2,18 +2,17 @@ package UI.Pages;
 
 import Models.AddedPatientDB;
 import Models.Patient;
+import UI.Components.PlaceHolders.PlaceholderTextField;
 import UI.Components.Tiles.BaseTile;
 import UI.MainWindow;
-import UI.Components.PlaceHolders.PlaceholderTextField;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class AddPatientPage extends JPanel {
 
-    private MainWindow mainWindow;
+    private final MainWindow mainWindow;
 
-    // ---------- UI components ----------
     private PlaceholderTextField givenNameField;
     private PlaceholderTextField familyNameField;
     private PlaceholderTextField idField;
@@ -21,183 +20,152 @@ public class AddPatientPage extends JPanel {
     private PlaceholderTextField temperatureField;
     private PlaceholderTextField bloodPressureField;
 
-
-    private JButton addButton;
-    private JButton cancelButton;
-
-    // ---------- constructor ----------
     public AddPatientPage(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
         initUI();
-        initActions();
     }
 
-    // ---------- build UI ----------
+    // initialize ui
     private void initUI() {
         setLayout(new BorderLayout());
         setBackground(new Color(245, 245, 245));
 
-        // Title
-        JLabel titleLabel = new JLabel("Add Patient");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        add(titleLabel, BorderLayout.NORTH);
+        // title
+        JLabel title = new JLabel("Add Patient", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 28));
+        title.setBorder(BorderFactory.createEmptyBorder(30, 0, 30, 0));
+        add(title, BorderLayout.NORTH);
 
-        // Form panel (center)
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
-        formPanel.setBackground(Color.WHITE);
+        // wrapper
+        JPanel wrapper = new JPanel();
+        wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.Y_AXIS));
+        wrapper.setBackground(new Color(245, 245, 245));
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        wrapper.add(Box.createVerticalGlue());
 
-        // Row 1: Given name
-        gbc.gridx = 0; gbc.gridy = 0;
-        formPanel.add(new JLabel("Given Name:"), gbc);
+        // container
+        BaseTile form = new BaseTile(720, 800, 45, false);
+        form.setBackground(Color.WHITE);
+        form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
+        form.setMaximumSize(new Dimension(720, 800));
+        form.setAlignmentX(Component.CENTER_ALIGNMENT);
+        form.setBorder(BorderFactory.createEmptyBorder(40, 60, 40, 60));
 
-        gbc.gridx = 1;
-        givenNameField = new PlaceholderTextField("Please Eneter the Given Name");
-        formPanel.add(givenNameField, gbc);
+        // Fields (left aligned)
+        givenNameField = field(form, "Given Name", "Enter first name");
+        familyNameField = field(form, "Family Name", "Enter last name");
+        idField = field(form, "Patient ID", "e.g. 100001");
+        heartRateField = field(form, "Heart Rate (bpm)", "e.g. 72");
+        temperatureField = field(form, "Temperature (°C)", "e.g. 36.5");
+        bloodPressureField = field(form, "Blood Pressure", "e.g. 120/80");
 
-        // Row 2: Family name
-        gbc.gridx = 0; gbc.gridy++;
-        formPanel.add(new JLabel("Family Name:"), gbc);
+        form.add(Box.createVerticalStrut(25));
 
-        gbc.gridx = 1;
-        familyNameField = new PlaceholderTextField("Please Enter family name");
-        formPanel.add(familyNameField, gbc);
+        // buttons
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
+        buttonPanel.setOpaque(false);
+        buttonPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // Row 3: Patient ID
-        gbc.gridx = 0; gbc.gridy++;
-        formPanel.add(new JLabel("Patient ID:"), gbc);
+        JButton cancelBtn = new JButton("Cancel");
+        JButton addBtn = new JButton("Add Patient");
 
-        gbc.gridx = 1;
-        idField = new PlaceholderTextField("e.g. 100001");
-        formPanel.add(idField, gbc);
+        buttonPanel.add(cancelBtn);
+        buttonPanel.add(addBtn);
+        form.add(buttonPanel);
 
-        // Row 4: Heart rate
-        gbc.gridx = 0; gbc.gridy++;
-        formPanel.add(new JLabel("Heart Rate (bpm):"), gbc);
+        wrapper.add(form);
+        wrapper.add(Box.createVerticalGlue());
 
-        gbc.gridx = 1;
-        heartRateField = new PlaceholderTextField("e.g. 72");
-        formPanel.add(heartRateField, gbc);
+        // scroll
+        JScrollPane scrollPane = new JScrollPane(wrapper);
+        scrollPane.setBorder(null);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
-        // Row 5: Temperature
-        gbc.gridx = 0; gbc.gridy++;
-        formPanel.add(new JLabel("Temperature (°C):"), gbc);
+        add(scrollPane, BorderLayout.CENTER);
 
-        gbc.gridx = 1;
-        temperatureField = new PlaceholderTextField("e.g. 36.5");
-        formPanel.add(temperatureField, gbc);
-
-        // Row 6: Blood pressure
-        gbc.gridx = 0; gbc.gridy++;
-        formPanel.add(new JLabel("Blood Pressure (e.g. 120/80):"), gbc);
-
-        gbc.gridx = 1;
-        BaseTile bpTile = new BaseTile(650, 75, 50, false);
-        bloodPressureField = new PlaceholderTextField("Enter email");
-        bpTile.add(bloodPressureField);
-        formPanel.add(bloodPressureField, gbc);
-
-        add(formPanel, BorderLayout.CENTER);
-
-        // Buttons (bottom)
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
-        buttonPanel.setBackground(new Color(245, 245, 245));
-
-        cancelButton = new JButton("Cancel");
-        addButton = new JButton("Add Patient");
-
-        buttonPanel.add(cancelButton);
-        buttonPanel.add(addButton);
-
-        add(buttonPanel, BorderLayout.SOUTH);
+        // button action
+        cancelBtn.addActionListener(e -> mainWindow.showHomePage());
+        addBtn.addActionListener(e -> addPatient());
     }
 
-    // ---------- actions ----------
-    private void initActions() {
+    // helpers
+    private PlaceholderTextField field(JPanel parent, String labelText, String placeholder) {
+        JLabel label = new JLabel(labelText);
+        label.setFont(new Font("Arial", Font.PLAIN, 16));
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        label.setBorder(BorderFactory.createEmptyBorder(0, 10, 5, 0));
 
-        // Cancel -> go back home
-        cancelButton.addActionListener(e -> mainWindow.showHomePage());
+        BaseTile tile = new BaseTile(600, 65, 40, false);
+        tile.setMaximumSize(new Dimension(600, 65));
+        tile.setLayout(new BorderLayout());
 
-        // Add patient
-        addButton.addActionListener(e -> {
+        tile.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-            try {
-                // Read inputs
-                String givenName = givenNameField.getText().trim();
-                String familyName = familyNameField.getText().trim();
-                int id = Integer.parseInt(idField.getText().trim());
-                int heartRate = Integer.parseInt(heartRateField.getText().trim());
-                double temperature = Double.parseDouble(temperatureField.getText().trim());
-                String bloodPressure = bloodPressureField.getText().trim();
+        PlaceholderTextField field = new PlaceholderTextField(placeholder);
+        field.setFont(new Font("Arial", Font.PLAIN, 16));
+        field.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 15));
+        field.setOpaque(false);
 
-                // Validation
-                if (givenName.isEmpty() || familyName.isEmpty()) {
-                    showError("Name cannot be empty");
-                    return;
-                }
+        tile.add(field, BorderLayout.CENTER);
 
-                if (heartRate < 30 || heartRate > 200) {
-                    showError("Heart rate must be between 30 and 200 bpm");
-                    return;
-                }
+        parent.add(label);
+        parent.add(tile);
+        parent.add(Box.createVerticalStrut(15));
 
-                if (temperature < 30 || temperature > 45) {
-                    showError("Temperature must be between 30 and 45 °C");
-                    return;
-                }
+        return field;
+    }
 
-                if (bloodPressure.isEmpty() || !bloodPressure.contains("/")) {
-                    showError("Blood pressure format should be like 120/80");
-                    return;
-                }
+    private void addPatient() {
+        try {
+            String given = givenNameField.getText().trim();
+            String family = familyNameField.getText().trim();
+            int id = Integer.parseInt(idField.getText().trim());
+            int hr = Integer.parseInt(heartRateField.getText().trim());
+            double temp = Double.parseDouble(temperatureField.getText().trim());
+            String bp = bloodPressureField.getText().trim();
 
-                // Create patient
-                Patient patient = new Patient(
-                        id,
-                        givenName,
-                        familyName,
-                        heartRate,
-                        temperature,
-                        bloodPressure
-                );
-
-                // Save
-                AddedPatientDB.addPatient(patient);
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Patient added successfully",
-                        "Success",
-                        JOptionPane.INFORMATION_MESSAGE
-                );
-
-                // Back to home
-                clearFields();
-                mainWindow.showHomePage();
-
-            } catch (NumberFormatException ex) {
-                showError("Please enter valid numeric values");
+            if (given.isEmpty() || family.isEmpty()) {
+                error("Name cannot be empty");
+                return;
             }
-        });
+
+            if (hr < 30 || hr > 200) {
+                error("Heart rate must be between 30 and 200 bpm");
+                return;
+            }
+
+            if (temp < 30 || temp > 45) {
+                error("Temperature must be between 30 and 45 °C");
+                return;
+            }
+
+            if (!bp.contains("/")) {
+                error("Blood pressure format should be like 120/80");
+                return;
+            }
+
+            Patient patient = new Patient(id, given, family, hr, temp, bp);
+            AddedPatientDB.addPatient(patient);
+
+            JOptionPane.showMessageDialog(this,
+                    "Patient added successfully",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+            clear();
+            mainWindow.showHomePage();
+
+        } catch (NumberFormatException e) {
+            error("Please enter valid numeric values");
+        }
     }
 
-    // ---------- helpers ----------
-    private void showError(String message) {
-        JOptionPane.showMessageDialog(
-                this,
-                message,
-                "Input Error",
-                JOptionPane.ERROR_MESSAGE
-        );
+    private void error(String msg) {
+        JOptionPane.showMessageDialog(this, msg, "Input Error", JOptionPane.ERROR_MESSAGE);
     }
 
-    private void clearFields() {
+    private void clear() {
         givenNameField.setText("");
         familyNameField.setText("");
         idField.setText("");
