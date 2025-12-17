@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Clinician Monitoring Dashboard</title>
+
+    <style>
+        :root{
+            --bg0:#020617;
+            --bg1:#0b1020;
+            --panel:rgba(17,24,39,.92);
+            --stroke:#1e293b;
+            --muted:rgba(229,231,235,.75);
+            --shadow:0 0 30px rgba(59,130,246,.12);
+            --r:18px;
+            --rr: 16;
+            --hr: 80;
+        }
+
+        body{
+            margin:0;
+            background:radial-gradient(circle at top,var(--bg1),var(--bg0));
+            color:#e5e7eb;
+            font-family:Arial,sans-serif;
+        }
+        h1{
+            text-align:center;
+            margin:16px 0;
+            font-weight:600;
+            letter-spacing:.2px;
+        }
+        .sub{
+            text-align:center;
+            margin:-8px 0 14px;
+            color:var(--muted);
+            font-size:12px;
+        }
+
+        /* ===== APP LAYOUT (RESTORED PROPORTIONS) ===== */
+        .app{
+            max-width:1400px;
+            margin:0 auto;
+            display:grid;
+            grid-template-columns:300px 1.1fr 360px;
+            gap:40px;
+            padding:0 24px 32px;
+            align-items:start;
+        }
+
+        /* ===== PANELS ===== */
+        .panel{
+            background:var(--panel);
+            border-radius:var(--r);
+            padding:18px;
+            box-shadow:inset 0 0 0 1px var(--stroke), var(--shadow);
+            min-height: 640px;
+        }
+        .panel h3{
+            text-align:center;
+            margin:0 0 14px;
+        }
+
+        /* ===== FORMS ===== */
+        select, textarea, input, button{
+            width:100%;
+            box-sizing:border-box;
+            padding:10px;
+            border-radius:12px;
+            background:var(--bg0);
+            color:#fff;
+            border:1px solid var(--stroke);
+            margin-bottom:10px;
+            outline:none;
+        }
+        textarea{ resize:none; min-height:84px; }
+        button{
+            cursor:pointer;
+            background:linear-gradient(180deg,#0f172a,#020617);
+        }
+        button:hover{ filter:brightness(1.08); }
+
+        /* ===== LEFT CARDS ===== */
+        .metric{
+            background:linear-gradient(180deg,#0f172a,#020617);
+            padding:12px;
+            margin-bottom:12px;
+            border-radius:14px;
+            box-shadow:inset 0 0 0 1px var(--stroke);
+            font-size:14px;
+        }
+        .metric .title{
+            font-weight:700;
+            margin-bottom:8px;
+        }
+
+        /* Health record chips (no bullets) */
+        .chips{
+            display:flex;
+            flex-wrap:wrap;
+            gap:8px;
+        }
+        .chip{
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            padding:6px 10px;
+            border-radius:999px;
+            background:#020617;
+            border:1px solid var(--stroke);
+            font-size:12px;
+            white-space:nowrap;
+        }
+        .dot{width:8px;height:8px;border-radius:999px;display:inline-block;}
+        .dot.card{background:#ef4444;}
+        .dot.resp{background:#60a5fa;}
+        .dot.met{background:#a855f7;}
+        .dot.other{background:#94a3b8;}
+
+        /* ===== ANNOTATIONS UI (ENHANCED) ===== */
+        .annoGrid{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:10px;
+        }
+        .pillRow{
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+            margin:6px 0 8px;
+        }
+        .pill{
+            padding:6px 10px;
+            border-radius:999px;
+            border:1px solid var(--stroke);
+            background:#020617;
+            font-size:12px;
+            cursor:pointer;
+            user-select:none;
+        }
+        .pill.active{ box-shadow:0 0 0 2px rgba(56,189,248,.25) inset; }
+        .pill.info{ border-color:rgba(56,189,248,.45); }
+        .pill.warn{ border-color:rgba(250,204,21,.45); }
+        .pill.crit{ border-color:rgba(239,68,68,.45); }
+
+        .quickRow{
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+            margin-bottom:10px;
+        }
+        .quickBtn{
+            width:auto;
+            padding:6px 10px;
+            border-radius:999px;
+            border:1px solid var(--stroke);
+            background:#020617;
+            font-size:12px;
+            cursor:pointer;
+        }
+
+        #notes{
+            max-height:260px;
+            overflow:auto;
+            padding-right:4px;
+        }
+        .noteCard{
+            background:#020617;
+            border:1px solid var(--stroke);
+            border-radius:14px;
+            padding:10px;
+            margin-bottom:8px;
+        }
+        .noteTop{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:10px;
+            margin-bottom:6px;
+        }
+        .sevBadge{
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            padding:4px 10px;
+            border-radius:999px;
+            font-size:11px;
+            border:1px solid var(--stroke);
+        }
+        .sevBadge.info{ border-color:rgba(56,189,248,.65); color:#7dd3fc; }
+        .sevBadge.warn{ border-color:rgba(250,204,21,.65); color:#fde68a; }
+        .sevBadge.crit{ border-color:rgba(239,68,68,.65); color:#fecaca; }
+        .noteTime{
+            font-size:11px;
+            opacity:.65;
+            white-space:nowrap;
+        }
+        .noteText{
+            font-size:13px;
+            line-height:1.35;
+        }
+        .delBtn{
+            width:auto;
+            padding:4px 8px;
+            border-radius:10px;
+            border:1px solid var(--stroke);
+            background:#0b1020;
+            font-size:11px;
+            cursor:pointer;
+        }
+
+        /* ===== CENTER (LOCKED BODY: DOES NOT RESIZE WHEN NOTES GROW) ===== */
+        .center{
+            display:flex;
+            justify-content:center;
+            align-items:flex-start;
+        }
+        .twinWrap{
+            width:420px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:14px;
+        }
+        .twin{
+            position:relative;
+            width:380px;
+            height:620px;       /* LOCKED */
+            flex-shrink:0;      /* LOCKED */
+        }
+        .twin img,.twin svg{
+            position:absolute;
+            inset:0;
+            width:100%;
+            height:100%;
+        }
+
+        /* ===== ORGANS ===== */
+        #lungs{
+            fill:rgba(96,165,250,0.35);
+            filter:drop-shadow(0 0 14px rgba(96,165,250,0.5));
+        }
+        #heart path{
+            fill:rgba(239,68,68,0.45);
+            filter:drop-shadow(0 0 18px rgba(239,68,68,0.6));
+        }
+
+        /* ===== ORIGINAL ANIMATIONS ===== */
+        .beat{
+            animation:beat calc(85s / var(--hr)) infinite;
+            transform-origin:50% 40%;
+            transform-box:fill-box;
+        }
+        @keyframes beat{
+            0%{transform:scale(1)}
+            20%{transform:scale(1.06)}
+            40%{transform:scale(1)}
+        }
+
+        .breathe{
+            animation:breathe calc(60s / var(--rr)) infinite ease-in-out;
+            transform-origin:center;
+            transform-box:fill-box;
+        }
+        @keyframes breathe{
+            50%{transform:scale(1.12,1.08) translateY(-6px)}
+        }
+
+        /* ===== BODY LABELS (CONDITION ONLY – NO DOCTOR NOTES HERE) ===== */
+        .condition-line{stroke-width:2;stroke-dasharray:4 4}
+        .label-bg{fill:rgba(2,6,23,0.8);}
+        .condition-label{font-size:13px;font-weight:600;letter-spacing:.2px}
+        .cardiac{stroke:#ef4444;fill:#ef4444}
+        .respiratory{stroke:#60a5fa;fill:#60a5fa}
+        .metabolic{stroke:#a855f7;fill:#a855f7}
+        .hidden{opacity:0}
+
+        /* ===== RIGHT PANEL ===== */
+        .graph{
+            background:#020617;
+            border-radius:14px;
+            padding:12px;
+            margin-bottom:14px;
+            box-shadow:inset 0 0 0 1px var(--stroke);
+        }
+        .graph h4{
+            margin:0 0 8px;
+            font-weight:700;
+            font-size:13px;
+            color:var(--muted);
+            letter-spacing:.2px;
+        }
+        svg.wave{width:100%;height:90px}
+
+        .deviceGrid{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:12px;
+        }
+        .device{
+            background:#020617;
+            border-radius:16px;
+            padding:12px;
+            box-shadow:inset 0 0 0 1px var(--stroke);
+            text-align:center;
+        }
+        .device .label{font-size:12px;opacity:.8}
+        .device .value{font-size:32px;font-weight:700}
+        .hr{color:#ef4444}
+        .spo2{color:#22c55e}
+        .bp{color:#60a5fa}
+        .temp{color:#facc15}
+        .rr{color:#a78bfa}
+    </style>
+</head>
+
+<body>
+<h1>Clinician Monitoring Dashboard</h1>
+<div class="sub">Real-time telemetry + prior health records (synthetic demo data) • Notes are stored client-side only</div>
+
+<div class="app">
+
+    <!-- LEFT -->
+    <div class="panel">
+        <h3>Patient Overview</h3>
+        <select id="patientSelect" onchange="switchPatient()"></select>
+
+        <div class="metric" id="demographics"></div>
+
+        <div class="metric">
+            <div class="title">Health Records</div>
+            <div id="records" class="chips"></div>
+        </div>
+
+        <div class="metric">
+            <div class="title">Doctor Annotations</div>
+
+            <!-- Quick templates -->
+            <div class="quickRow">
+                <button class="quickBtn" type="button" onclick="quickNote('Review vitals trend and reassess.')">Trend review</button>
+                <button class="quickBtn" type="button" onclick="quickNote('Medication review required.')">Medication</button>
+                <button class="quickBtn" type="button" onclick="quickNote('Escalate for senior review.')">Escalate</button>
+            </div>
+
+            <textarea id="noteText" placeholder="Enter clinical note..."></textarea>
+
+            <!-- Severity pills (also synced with dropdown for WebView consistency) -->
+            <div class="annoGrid">
+                <div>
+                    <select id="noteLevel">
+                        <option value="info">Info</option>
+                        <option value="warn">Warning</option>
+                        <option value="crit">Critical</option>
+                    </select>
+                </div>
+                <div>
+                    <button type="button" onclick="addNote()">Add Note</button>
+                </div>
+            </div>
+
+            <div class="pillRow">
+                <div class="pill info" id="pillInfo" onclick="setLevel('info')">Info</div>
+                <div class="pill warn" id="pillWarn" onclick="setLevel('warn')">Warning</div>
+                <div class="pill crit" id="pillCrit" onclick="setLevel('crit')">Critical</div>
+            </div>
+
+            <div id="notes"></div>
+        </div>
+    </div>
+
+    <!-- CENTER -->
+    <div class="center">
+        <div class="twinWrap">
+            <div class="twin">
+                <img src="body.png" alt="Body" />
+
+                <svg viewBox="0 0 660 1066">
+                    <!-- LUNGS -->
+                    <g id="lungs" class="breathe">
+                        <ellipse cx="285" cy="325" rx="85" ry="135"/>
+                        <ellipse cx="375" cy="325" rx="85" ry="135"/>
+                    </g>
+
+                    <!-- HEART -->
+                    <g transform="translate(10,-115)">
+                        <g id="heart" class="beat" style="--hr:80">
+                            <path d="M330 395 C305 360 260 360 260 405
+                       C260 455 330 495 330 495
+                       C330 495 400 455 400 405
+                       C400 360 355 360 330 395 Z"/>
+                        </g>
+                    </g>
+
+                    <!-- BODY CONDITION LABELS (NOT DOCTOR NOTES) -->
+                    <g font-family="Arial">
+                        <g id="lblCard" class="cardiac hidden">
+                            <line x1="330" y1="360" x2="80" y2="360" class="condition-line cardiac"/>
+                            <rect x="10" y="340" width="220" height="28" rx="6" class="label-bg"/>
+                            <text id="labCard" x="20" y="360" class="condition-label cardiac"></text>
+                        </g>
+
+                        <g id="lblResp" class="respiratory hidden">
+                            <line x1="300" y1="260" x2="80" y2="220" class="condition-line respiratory"/>
+                            <rect x="10" y="340" width="220" height="28" rx="6" class="label-bg"/>
+                            <text id="labResp" x="20" y="220" class="condition-label respiratory"></text>
+                        </g>
+
+                        <g id="lblMet" class="metabolic hidden">
+                            <line x1="330" y1="600" x2="80" y2="600" class="condition-line metabolic"/>
+                            <rect x="10" y="340" width="220" height="28" rx="6" class="label-bg"/>
+                            <text id="labMet" x="20" y="600" class="condition-label metabolic"></text>
+                        </g>
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="panel">
+        <h3>Live Telemetry</h3>
+
+        <div class="graph">
+            <h4>ECG</h4>
+            <svg id="ecg" class="wave" viewBox="0 0 300 100"></svg>
+        </div>
+
+        <div class="graph">
+            <h4>Respiration</h4>
+            <svg id="resp" class="wave" viewBox="0 0 300 100"></svg>
+        </div>
+
+        <div class="deviceGrid">
+            <div class="device hr"><div class="label">Heart Rate</div><div id="dHR" class="value">--</div></div>
+            <div class="device rr"><div class="label">Resp Rate</div><div id="dRR" class="value">--</div></div>
+            <div class="device spo2"><div class="label">SpO₂</div><div id="dSpO2" class="value">--</div></div>
+            <div class="device bp"><div class="label">Blood Pressure</div><div id="dBP" class="value">--/--</div></div>
+            <div class="device temp"><div class="label">Temperature</div><div id="dTemp" class="value">--.-</div></div>
+            <div class="device"><div class="label">Status</div><div id="dStatus" class="value" style="font-size:20px">--</div></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    /* ===== PATIENT DATA (8) ===== */
+    const patients=[
+        {
+            name:"Alice Smith", age:58, gender:"Female",
+            records:["Cardiovascular Disease","Type 2 Diabetes"],
+            labels:{card:"Cardiovascular Disease",resp:null,met:"Type 2 Diabetes"},
+            notes:[],
+            v:{ hr:110, rr:24, spo2:92, bp:[150,95], temp:38.2 },
+            range:{ hr:5, rr:2, spo2:2, bp:7, temp:0.2 },
+            signal:{ ecgAmp:34, ecgSharp:22, ecgNoise:2.0, respAmp:20, respSmooth:0.035 }
+        },
+        {
+            name:"Bob Johnson", age:45, gender:"Male",
+            records:["Hypertension"],
+            labels:{card:"Hypertension",resp:null,met:null},
+            notes:[],
+            v:{ hr:78, rr:16, spo2:97, bp:[135,85], temp:36.8 },
+            range:{ hr:3, rr:1, spo2:1, bp:5, temp:0.15 },
+            signal:{ ecgAmp:28, ecgSharp:26, ecgNoise:1.0, respAmp:16, respSmooth:0.040 }
+        },
+        {
+            name:"Clara Evans", age:24, gender:"Female",
+            records:["Asthma"],
+            labels:{card:null,resp:"Asthma",met:null},
+            notes:[],
+            v:{ hr:88, rr:20, spo2:94, bp:[125,80], temp:37.1 },
+            range:{ hr:4, rr:2, spo2:2, bp:4, temp:0.2 },
+            signal:{ ecgAmp:30, ecgSharp:24, ecgNoise:1.5, respAmp:24, respSmooth:0.050 }
+        },
+        {
+            name:"Daniel Wu", age:52, gender:"Male",
+            records:["Post-operative"],
+            labels:{card:null,resp:null,met:null},
+            notes:[],
+            v:{ hr:95, rr:18, spo2:96, bp:[140,90], temp:37.8 },
+            range:{ hr:4, rr:1, spo2:1, bp:6, temp:0.2 },
+            signal:{ ecgAmp:32, ecgSharp:23, ecgNoise:2.0, respAmp:18, respSmooth:0.038 }
+        },
+        {
+            name:"Fatima Khan", age:60, gender:"Female",
+            records:["Type 2 Diabetes"],
+            labels:{card:null,resp:null,met:"Type 2 Diabetes"},
+            notes:[],
+            v:{ hr:82, rr:15, spo2:98, bp:[130,85], temp:36.9 },
+            range:{ hr:3, rr:1, spo2:1, bp:5, temp:0.15 },
+            signal:{ ecgAmp:26, ecgSharp:28, ecgNoise:1.0, respAmp:14, respSmooth:0.042 }
+        },
+        {
+            name:"George Miller", age:67, gender:"Male",
+            records:["COPD","Hypertension"],
+            labels:{card:"Hypertension",resp:"COPD",met:null},
+            notes:[],
+            v:{ hr:105, rr:26, spo2:89, bp:[155,100], temp:37.6 },
+            range:{ hr:6, rr:3, spo2:3, bp:8, temp:0.2 },
+            signal:{ ecgAmp:24, ecgSharp:16, ecgNoise:4.0, respAmp:30, respSmooth:0.020 }
+        },
+        {
+            name:"Hannah Lee", age:71, gender:"Female",
+            records:["Sepsis"],
+            labels:{card:null,resp:null,met:null},
+            notes:[],
+            v:{ hr:118, rr:28, spo2:91, bp:[90,60], temp:39.1 },
+            range:{ hr:7, rr:3, spo2:2, bp:9, temp:0.25 },
+            signal:{ ecgAmp:36, ecgSharp:18, ecgNoise:3.0, respAmp:26, respSmooth:0.030 }
+        },
+        {
+            name:"Ibrahim Noor", age:63, gender:"Male",
+            records:["Atrial Fibrillation"],
+            labels:{card:"Arrhythmia",resp:null,met:null},
+            notes:[],
+            v:{ hr:130, rr:20, spo2:95, bp:[145,90], temp:37.4 },
+            range:{ hr:10, rr:2, spo2:2, bp:6, temp:0.2 },
+            signal:{ ecgAmp:20, ecgSharp:12, ecgNoise:6.0, respAmp:18, respSmooth:0.036 }
+        }
+    ];
+
+    const sel = document.getElementById("patientSelect");
+    patients.forEach((p,i)=> sel.innerHTML += `<option value="${i}">${p.name}</option>`);
+
+    // “Live state” per selected patient (so values truly change over time)
+    let live = null;
+
+    // waveform phases
+    let ecgP=0, respP=0;
+
+    // severity UI sync
+    function setLevel(level){
+        noteLevel.value = level;
+        pillInfo.classList.toggle("active", level==="info");
+        pillWarn.classList.toggle("active", level==="warn");
+        pillCrit.classList.toggle("active", level==="crit");
+    }
+    noteLevel.addEventListener("change", ()=> setLevel(noteLevel.value));
+    setLevel("info");
+
+    function quickNote(text){
+        noteText.value = text;
+        noteText.focus();
+    }
+
+    function statusFromVitals(v){
+        // simple (non-diagnostic) UI triage indicator
+        let score = 0;
+        if(v.spo2 < 92) score++;
+        if(v.hr > 120 || v.hr < 55) score++;
+        if(v.rr > 24 || v.rr < 10) score++;
+        if(v.temp > 38.5) score++;
+        if(v.bp[0] > 160 || v.bp[0] < 95) score++;
+        if(score >= 3) return {txt:"Critical", color:"#ef4444"};
+        if(score === 2) return {txt:"Warning", color:"#facc15"};
+        return {txt:"Stable", color:"#22c55e"};
+    }
+
+    function switchPatient(){
+        const p = patients[sel.value];
+
+        demographics.innerHTML =
+            `<strong>Demographics</strong><br>
+       Gender: ${p.gender}<br>
+       Age: ${p.age}`;
+
+        // Health records as chips
+        records.innerHTML = p.records.map(r=>{
+            const t = r.toLowerCase();
+            let cls = "other";
+            if(t.includes("cardio") || t.includes("hyper") || t.includes("arrhy")) cls="card";
+            else if(t.includes("copd") || t.includes("asth") || t.includes("resp")) cls="resp";
+            else if(t.includes("diab")) cls="met";
+            return `<span class="chip"><span class="dot ${cls}"></span>${r}</span>`;
+        }).join("");
+
+        // Body labels (condition name only)
+        labCard.textContent = p.labels.card || "";
+        labResp.textContent = p.labels.resp || "";
+        labMet.textContent  = p.labels.met  || "";
+
+        lblCard.classList.toggle("hidden", !p.labels.card);
+        lblResp.classList.toggle("hidden", !p.labels.resp);
+        lblMet.classList.toggle("hidden", !p.labels.met);
+
+        // lock animations to patient baseline
+        heart.style.setProperty("--hr", p.v.hr);
+        lungs.style.setProperty("--rr", p.v.rr);
+
+        // create “live” state copy for real-time drift
+        live = {
+            hr: p.v.hr,
+            rr: p.v.rr,
+            spo2: p.v.spo2,
+            bpS: p.v.bp[0],
+            bpD: p.v.bp[1],
+            temp: p.v.temp
+        };
+
+        renderNotes();
+        paintVitals();
+    }
+
+    function addNote(){
+        const p = patients[sel.value];
+        const text = noteText.value.trim();
+        if(!text) return;
+
+        p.notes.unshift({
+            text,
+            level: noteLevel.value,
+            time: new Date().toLocaleString()
+        });
+
+        noteText.value="";
+        renderNotes();
+    }
+
+    function delNote(idx){
+        const p = patients[sel.value];
+        p.notes.splice(idx,1);
+        renderNotes();
+    }
+
+    function renderNotes(){
+        const p = patients[sel.value];
+        notes.innerHTML = p.notes.length ? p.notes.map((n,i)=>`
+      <div class="noteCard">
+        <div class="noteTop">
+          <span class="sevBadge ${n.level}">
+            ${n.level.toUpperCase()}
+          </span>
+          <span class="noteTime">${n.time}</span>
+          <button class="delBtn" type="button" onclick="delNote(${i})">Delete</button>
+        </div>
+        <div class="noteText">${escapeHtml(n.text)}</div>
+      </div>
+    `).join("") : `<div style="opacity:.7;font-size:13px">No notes yet. Add a note to document observations.</div>`;
+    }
+
+    function escapeHtml(str){
+        return str.replace(/[&<>"']/g, m => ({
+            "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+        }[m]));
+    }
+
+    /* ===== REAL-TIME VITALS DRIFT ===== */
+    function stepToward(value, target, maxStep){
+        const diff = target - value;
+        const step = Math.max(-maxStep, Math.min(maxStep, diff));
+        return value + step;
+    }
+
+    function updateVitals(){
+        if(!live) return;
+        const p = patients[sel.value];
+
+        // targets wander around baseline with randomness
+        const tHR   = p.v.hr   + rand(-p.range.hr,   p.range.hr);
+        const tRR   = p.v.rr   + rand(-p.range.rr,   p.range.rr);
+        const tSpO2 = p.v.spo2 + rand(-p.range.spo2, p.range.spo2);
+        const tBPS  = p.v.bp[0]+ rand(-p.range.bp,   p.range.bp);
+        const tBPD  = p.v.bp[1]+ rand(-p.range.bp,   p.range.bp);
+        const tTemp = p.v.temp + rand(-p.range.temp, p.range.temp);
+
+        // smooth drift
+        live.hr   = stepToward(live.hr,   tHR,   1.2);
+        live.rr   = stepToward(live.rr,   tRR,   0.6);
+        live.spo2 = stepToward(live.spo2, tSpO2, 0.4);
+        live.bpS  = stepToward(live.bpS,  tBPS,  1.5);
+        live.bpD  = stepToward(live.bpD,  tBPD,  1.2);
+        live.temp = stepToward(live.temp, tTemp, 0.06);
+
+        // clamp realistic ranges (still synthetic)
+        live.hr   = clamp(live.hr, 40, 180);
+        live.rr   = clamp(live.rr, 8, 40);
+        live.spo2 = clamp(live.spo2, 80, 100);
+        live.bpS  = clamp(live.bpS, 80, 200);
+        live.bpD  = clamp(live.bpD, 45, 140);
+        live.temp = clamp(live.temp, 34.0, 41.5);
+
+        // update animation rate too (so beat/breathe feel real-time)
+        heart.style.setProperty("--hr", Math.round(live.hr));
+        lungs.style.setProperty("--rr", Math.round(live.rr));
+
+        paintVitals();
+    }
+
+    function paintVitals(){
+        if(!live) return;
+        dHR.textContent   = Math.round(live.hr);
+        dRR.textContent   = Math.round(live.rr);
+        dSpO2.textContent = Math.round(live.spo2);
+        dBP.textContent   = `${Math.round(live.bpS)}/${Math.round(live.bpD)}`;
+        dTemp.textContent = live.temp.toFixed(1);
+
+        const st = statusFromVitals({
+            hr: Math.round(live.hr),
+            rr: Math.round(live.rr),
+            spo2: Math.round(live.spo2),
+            bp: [Math.round(live.bpS), Math.round(live.bpD)],
+            temp: live.temp
+        });
+        dStatus.textContent = st.txt;
+        dStatus.style.color = st.color;
+    }
+
+    function rand(a,b){ return a + Math.random()*(b-a); }
+    function clamp(x,a,b){ return Math.max(a, Math.min(b,x)); }
+
+    /* ===== ECG (PATIENT-SPECIFIC MORPHOLOGY) ===== */
+    function ecgSample(x,p){
+        // synthetic, parameter-driven (no patient data)
+        const qrs = Math.exp(-Math.pow(x-30,2)/p.signal.ecgSharp) * p.signal.ecgAmp;
+        const s   = -Math.exp(-Math.pow(x-36,2)/(p.signal.ecgSharp*1.4)) * (p.signal.ecgAmp/3);
+        const pW  =  Math.exp(-Math.pow(x-18,2)/(p.signal.ecgSharp*3.0)) * (p.signal.ecgAmp/8);
+        const tW  =  Math.exp(-Math.pow(x-55,2)/(p.signal.ecgSharp*2.5)) * (p.signal.ecgAmp/6);
+        const noise = (Math.random()-.5) * p.signal.ecgNoise;
+        return qrs + s + pW + tW + noise;
+    }
+
+    setInterval(()=>{
+        const p = patients[sel.value];
+        let d="M0 50 ";
+        for(let x=0;x<300;x++){
+            d += `L${x} ${50-ecgSample((x+ecgP)%80,p)}`;
+        }
+        ecg.innerHTML = `<path d="${d}" stroke="#38bdf8" stroke-width="2" fill="none" />`;
+        // speed based on live HR if available
+        const useHR = live ? live.hr : p.v.hr;
+        ecgP += useHR/25;
+    },40);
+
+    /* ===== RESP (PATIENT-SPECIFIC DEPTH + SMOOTHNESS) ===== */
+    setInterval(()=>{
+        const p = patients[sel.value];
+        let d="M0 50 ";
+        for(let x=0;x<300;x++){
+            const amp = p.signal.respAmp;
+            const sm  = p.signal.respSmooth;
+            d += `L${x} ${50 + Math.sin((x+respP)*sm) * amp}`;
+        }
+        resp.innerHTML = `<path d="${d}" stroke="#22c55e" stroke-width="2" fill="none" />`;
+        const useRR = live ? live.rr : p.v.rr;
+        respP += useRR/8;
+    },80);
+
+    // Real-time vitals update timer
+    setInterval(updateVitals, 900);
+
+    // init
+    switchPatient();
+</script>
+
+<script>
+    // Called by Java via engine.executeScript(...)
+    function switchToVitalsFromJava(hr, rr, spo2, bpS, bpD, temp) {
+        // Ensure live exists (your code creates it in switchPatient())
+        if (!window.live) {
+            // if not initialized yet, initialize with something sensible
+            window.live = { hr, rr, spo2, bpS, bpD, temp };
+        } else {
+            live.hr = hr;
+            live.rr = rr;
+            live.spo2 = spo2;
+            live.bpS = bpS;
+            live.bpD = bpD;
+            live.temp = temp;
+        }
+
+        // Also update animation speed + UI
+        heart.style.setProperty("--hr", Math.round(hr));
+        lungs.style.setProperty("--rr", Math.round(rr));
+        paintVitals();
+    }
+</script>
+
+
+</body>
+</html>
