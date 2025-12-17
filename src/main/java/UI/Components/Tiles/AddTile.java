@@ -11,7 +11,7 @@ import java.awt.event.MouseEvent;
 public class AddTile extends BaseTile {
 
     public AddTile(MainWindow window) {
-        super(370, 300, 30, true);
+        super(370, 320, 30, true);
 
         JLabel plus = new JLabel("+");
         plus.setFont(new Font("Arial", Font.BOLD, 50));
