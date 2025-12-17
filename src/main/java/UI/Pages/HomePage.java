@@ -46,7 +46,7 @@ public class HomePage extends JPanel {
 
         // Mock Patients
         AddedPatientDB.addPatient(new Patient(1, "Stupid", "Raymond", 82, 36.8, "120/80"));
-//        AddedPatientDB.addPatient(new Patient(2, "Jackson", "Zhou", 90, 37.0, "110/75"));
+        AddedPatientDB.addPatient(new Patient(2, "Genius", "Harry", 90, 37.0, "110/75"));
 //        AddedPatientDB.addPatient(new Patient(3, "David", "Wong", 130, 39.1, "160/95"));
 //        AddedPatientDB.addPatient(new Patient(4, "Xuan", "Li Feng", 82, 36.8, "120/80"));
 //        AddedPatientDB.addPatient(new Patient(5, "Martin", "Holloway", 90, 37.0, "110/75"));
