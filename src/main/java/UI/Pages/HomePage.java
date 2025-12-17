@@ -19,6 +19,8 @@ public class HomePage extends JPanel {
     private MainWindow window;
     private String currentFilter = "";
 
+
+
     public HomePage(MainWindow window) {
         this.window = window;
 
@@ -43,12 +45,12 @@ public class HomePage extends JPanel {
         add(scroll, BorderLayout.CENTER);
 
         // Mock Patients
-        AddedPatientDB.addPatient(new Patient(1, "Raymond", "Ren", 82, 36.8, "120/80"));
-        AddedPatientDB.addPatient(new Patient(2, "Jackson", "Zhou", 90, 37.0, "110/75"));
-        AddedPatientDB.addPatient(new Patient(3, "David", "Wong", 130, 39.1, "160/95"));
-        AddedPatientDB.addPatient(new Patient(4, "Xuan", "Li Feng", 82, 36.8, "120/80"));
-        AddedPatientDB.addPatient(new Patient(5, "Martin", "Holloway", 90, 37.0, "110/75"));
-        AddedPatientDB.addPatient(new Patient(6, "Harry", "Tan", 130, 39.1, "160/95"));
+        AddedPatientDB.addPatient(new Patient(1, "RaymondTheLadyMagnet", "Ren", 82, 36.8, "120/80"));
+//        AddedPatientDB.addPatient(new Patient(2, "Jackson", "Zhou", 90, 37.0, "110/75"));
+//        AddedPatientDB.addPatient(new Patient(3, "David", "Wong", 130, 39.1, "160/95"));
+//        AddedPatientDB.addPatient(new Patient(4, "Xuan", "Li Feng", 82, 36.8, "120/80"));
+//        AddedPatientDB.addPatient(new Patient(5, "Martin", "Holloway", 90, 37.0, "110/75"));
+//        AddedPatientDB.addPatient(new Patient(6, "Harry", "Tan", 130, 39.1, "160/95"));
 
         // initial grid refresh
         refresh();
@@ -81,4 +83,9 @@ public class HomePage extends JPanel {
         grid.revalidate();
         grid.repaint();
     }
+
+    public void onPageShown() {
+        refresh();
+    }
+
 }
