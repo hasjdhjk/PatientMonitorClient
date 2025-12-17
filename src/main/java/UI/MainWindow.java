@@ -61,7 +61,6 @@ public class MainWindow extends JFrame {
         //settingsPage = new SettingsPage(this);
         accountPage = new AccountPage(this);
         //addPatientPage = new AddPatientPage(this);
-        settingsPage = new SettingsPage(this);
         addPatientPage = new AddPatientPage(this);
 
         pageContainer.add(loginPage, PAGE_LOGIN);
@@ -71,7 +70,6 @@ public class MainWindow extends JFrame {
         //pageContainer.add(settingsPage, PAGE_SETTINGS);
         pageContainer.add(accountPage, PAGE_ACCOUNT);
         //pageContainer.add(addPatientPage, PAGE_ADD);
-        pageContainer.add(settingsPage, PAGE_SETTINGS);
         pageContainer.add(addPatientPage, PAGE_ADD);
 
         // show login at start
