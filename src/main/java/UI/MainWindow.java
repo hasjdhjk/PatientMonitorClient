@@ -79,7 +79,6 @@ public class MainWindow extends JFrame {
         cardLayout.show(pageContainer,PAGE_ACCOUNT);
         //PAGE_LOGIN
         setVisible(true);
-        cardPanel.add(new AccountPage(this), "Account");
     }
 //    public MainWindow() {
 //        setTitle("Patient Monitor");

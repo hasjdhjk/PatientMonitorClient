@@ -1,6 +1,7 @@
 package UI.Components.Tiles;
 
 import Models.Patient;
+import Services.PatientDischargeService;
 import UI.MainWindow;
 import UI.Components.ECGPanel;
 import UI.Components.StickyButton;
@@ -49,7 +50,34 @@ public class PatientTile extends BaseTile {
         vitals.add(label("BP: " + patient.getBloodPressure()));
 
         add(vitals, BorderLayout.EAST);
+        // bottom: discharge button
+        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        bottom.setOpaque(false);
 
+        RoundedButton dischargeBtn = new RoundedButton("Discharge");
+
+        dischargeBtn.addActionListener(e -> {
+
+            String reason = JOptionPane.showInputDialog(
+                    this,
+                    "Enter discharge note / diagnosis:",
+                    "Discharge Patient",
+                    JOptionPane.PLAIN_MESSAGE
+            );
+
+            if (reason == null || reason.trim().isEmpty()) {
+                return;
+            }
+
+            // 1. Write reason to DB + remove tile
+            PatientDischargeService.discharge(patient, reason);
+
+            // 2. Refresh home page
+            homePage.refresh();
+        });
+
+        bottom.add(dischargeBtn);
+        add(bottom, BorderLayout.SOUTH);
         // cick to show detail
         addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
