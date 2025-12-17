@@ -14,7 +14,7 @@ import java.awt.event.*;
 public class PatientTile extends BaseTile {
 
     public PatientTile(Patient patient, MainWindow window, HomePage homePage) {
-        super(390, 320, 30, true);
+        super(370, 320, 30, true);
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
