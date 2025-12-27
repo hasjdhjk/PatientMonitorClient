@@ -76,7 +76,7 @@ public class MainWindow extends JFrame {
 
         // show login at start
         add(pageContainer, BorderLayout.CENTER);
-        cardLayout.show(pageContainer,PAGE_ACCOUNT);
+        cardLayout.show(pageContainer, PAGE_HOME);
 
         //dark mode theme on startup
         SettingManager settings = new SettingManager();
