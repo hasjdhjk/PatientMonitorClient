@@ -10,6 +10,7 @@ public class BaseTile extends JPanel {
     private int radius;
     private int shadowSize = 15;
     private Color tileColor = Color.WHITE;
+    private Color baseColor = Color.WHITE;
     private boolean hasHoverEffect;
 
     public BaseTile(int width, int height, int radius, boolean hasHoverEffect) {
@@ -22,19 +23,33 @@ public class BaseTile extends JPanel {
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    tileColor = new Color(240, 240, 240);
+                    if (isLight(baseColor)) {
+                        tileColor = new Color(240, 240, 240);   // keep your light mode behaviour
+                    } else {
+                        tileColor = lighten(baseColor, 8);       // subtle lift in dark mode
+                    }
                     repaint();
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    tileColor = Color.WHITE;
+                    tileColor = baseColor;
                     repaint();
                 }
             });
         }
     }
-
+    private boolean isLight(Color c) {
+        // simple brightness check
+        int brightness = (c.getRed() + c.getGreen() + c.getBlue()) / 3;
+        return brightness >= 200;
+    }
+    private Color lighten(Color c, int amount) {
+        int r = Math.min(255, c.getRed() + amount);
+        int g = Math.min(255, c.getGreen() + amount);
+        int b = Math.min(255, c.getBlue() + amount);
+        return new Color(r, g, b);
+    }
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
@@ -78,6 +93,7 @@ public class BaseTile extends JPanel {
 
     @Override
     public void setBackground(Color bg) {
+        this.baseColor = bg;
         this.tileColor = bg;
         repaint();
     }

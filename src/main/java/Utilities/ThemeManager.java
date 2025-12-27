@@ -1,4 +1,5 @@
 package Utilities;
+import UI.Components.Tiles.BaseTile;
 
 import UI.Components.Tiles.RoundedButton;
 import UI.Components.Tiles.RoundedPanel;
@@ -13,7 +14,8 @@ public final class ThemeManager {
     public static void apply(JFrame frame, boolean darkMode) {
         Color appBg = darkMode ? new Color(24, 26, 30) : Color.WHITE;
         Color fg = darkMode ? new Color(230, 230, 230) : Color.BLACK;
-        Color card = darkMode ? new Color(32, 35, 41) : new Color(245, 245, 245);
+        Color card  = darkMode ? new Color(36, 36, 42) : Color.WHITE;
+
 
         // Standard Swing defaults
         UIManager.put("Panel.background", appBg);
@@ -26,7 +28,7 @@ public final class ThemeManager {
         UIManager.put("TextField.foreground", fg);
         UIManager.put("TextField.background", darkMode ? new Color(45, 48, 56) : Color.WHITE);
 
-        SwingUtilities.updateComponentTreeUI(frame);
+        //SwingUtilities.updateComponentTreeUI(frame);
 
         // Custom components
         updateTree(frame.getContentPane(), darkMode, appBg, fg, card);
@@ -39,12 +41,17 @@ public final class ThemeManager {
         if (c instanceof JComponent jc) {
             jc.setForeground(fg);
         }
-        if (c instanceof JPanel p) {
+
+        if (c instanceof BaseTile bt) {
+            bt.setBackground(card);
+        } else if (c instanceof JPanel p) {
             p.setBackground(appBg);
         }
+
         if (c instanceof RoundedPanel rp) {
             rp.setFillColor(card);
         }
+
         if (c instanceof RoundedButton rb) {
             if (darkMode) {
                 rb.setColors(
@@ -62,10 +69,24 @@ public final class ThemeManager {
                 );
             }
         }
+        if (c instanceof JTextField tf) {
+            tf.setOpaque(false);
+            tf.setForeground(darkMode ? new Color(230, 230, 230) : Color.BLACK);
+            tf.setCaretColor(darkMode ? new Color(230, 230, 230) : Color.BLACK);
+
+            tf.setBackground(darkMode ? new Color(70, 70, 78) : new Color(245, 245, 245));
+
+
+
+        }
+
         if (c instanceof Container container) {
             for (Component child : container.getComponents()) {
                 updateTree(child, darkMode, appBg, fg, card);
             }
         }
+
+
     }
+
 }

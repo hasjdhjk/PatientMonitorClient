@@ -1,4 +1,5 @@
 package UI.Pages;
+import UI.Components.Tiles.RoundedButton;
 
 import Models.AddedPatientDB;
 import Models.Patient;
@@ -66,8 +67,9 @@ public class AddPatientPage extends JPanel {
         buttonPanel.setOpaque(false);
         buttonPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JButton cancelBtn = new JButton("Cancel");
-        JButton addBtn = new JButton("Add Patient");
+        RoundedButton cancelBtn = new RoundedButton("Cancel");
+        RoundedButton addBtn = new RoundedButton("Add Patient");
+
 
         buttonPanel.add(cancelBtn);
         buttonPanel.add(addBtn);
