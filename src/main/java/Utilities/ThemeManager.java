@@ -69,12 +69,24 @@ public final class ThemeManager {
                 );
             }
         }
+        if (c instanceof JTextField tf) {
+            tf.setOpaque(false);
+            tf.setForeground(darkMode ? new Color(230, 230, 230) : Color.BLACK);
+            tf.setCaretColor(darkMode ? new Color(230, 230, 230) : Color.BLACK);
+
+            tf.setBackground(darkMode ? new Color(70, 70, 78) : new Color(245, 245, 245));
+
+
+
+        }
 
         if (c instanceof Container container) {
             for (Component child : container.getComponents()) {
                 updateTree(child, darkMode, appBg, fg, card);
             }
         }
+
+
     }
 
 }
