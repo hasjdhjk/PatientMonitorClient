@@ -1,4 +1,6 @@
 package UI;
+import Utilities.SettingManager;
+import Utilities.ThemeManager;
 
 import Models.Patient;
 import UI.Components.SideBar;
@@ -58,7 +60,7 @@ public class MainWindow extends JFrame {
         registerPage = new RegisterPage(this);
         homePage = new HomePage(this);
         statusTrackerPage = new StatusTrackerPage(this);
-        //settingsPage = new SettingsPage(this);
+        settingsPage = new SettingsPage(this);
         accountPage = new AccountPage(this);
         //addPatientPage = new AddPatientPage(this);
         addPatientPage = new AddPatientPage(this);
@@ -67,7 +69,7 @@ public class MainWindow extends JFrame {
         pageContainer.add(registerPage, PAGE_REGISTER);
         pageContainer.add(homePage, PAGE_HOME);
         pageContainer.add(statusTrackerPage, PAGE_STATUS);
-        //pageContainer.add(settingsPage, PAGE_SETTINGS);
+        pageContainer.add(settingsPage, PAGE_SETTINGS);
         pageContainer.add(accountPage, PAGE_ACCOUNT);
         //pageContainer.add(addPatientPage, PAGE_ADD);
         pageContainer.add(addPatientPage, PAGE_ADD);
@@ -75,6 +77,11 @@ public class MainWindow extends JFrame {
         // show login at start
         add(pageContainer, BorderLayout.CENTER);
         cardLayout.show(pageContainer,PAGE_ACCOUNT);
+
+        //dark mode theme on startup
+        SettingManager settings = new SettingManager();
+        ThemeManager.apply(this, settings.isDarkMode());
+
         //PAGE_LOGIN
         setVisible(true);
     }
@@ -149,4 +156,12 @@ public class MainWindow extends JFrame {
     public void navigateTo(String pageName){
         cardLayout.show(cardPanel, pageName);
     }
+
+    public void logout() {
+        showPage(PAGE_LOGIN);
+    }
+    public AccountPage getAccountPage() {
+        return accountPage;
+    }
+
 }

@@ -123,4 +123,13 @@ public class RoundedButton extends JButton {
         int b = (int) (c1.getBlue() * (1 - ratio) + c2.getBlue() * ratio);
         return new Color(r, g, b);
     }
+
+    public void setColors(Color normal, Color hover, Color press, Color text) {
+        this.normalColor = normal;
+        this.hoverColor = hover;
+        this.pressColor = press;
+        this.textColor = text;
+        repaint();
+    }
+
 }

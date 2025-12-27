@@ -1,4 +1,6 @@
 package UI.Components;
+import Utilities.SettingManager;
+
 
 import UI.MainWindow;
 import Utilities.ImageLoader;
@@ -17,10 +19,17 @@ public class SideBar extends JPanel {
     private Color normalColor = new Color(255, 255, 255);   // button background
     private Color hoverColor = new Color(240, 240, 240);
 
+    private Color darkSidebarColor = new Color(40, 42, 46);
+
+
     public SideBar(MainWindow window) {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(220, 0));
         setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
+
+        //dark mode change background
+        SettingManager settings = new SettingManager();
+
 
         // top buttons
         JPanel topButtons = new JPanel();
@@ -175,7 +184,10 @@ public class SideBar extends JPanel {
         int h = getHeight();
 
         // Draw the solid white sidebar on the left leave some space for shadow
-        g2.setColor(normalColor);
+        //dark mode color
+        Color bg = new SettingManager().isDarkMode() ? darkSidebarColor : normalColor;
+        g2.setColor(bg);
+
         g2.fillRect(0, 0, 210, h);
 
         // shadow on the right
