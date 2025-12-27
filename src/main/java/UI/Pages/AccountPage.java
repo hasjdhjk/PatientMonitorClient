@@ -1,4 +1,5 @@
 package UI.Pages;
+import Utilities.SettingManager;
 
 import UI.Components.PatientRecordsPanel;
 import UI.Components.Tiles.RoundedButton;
@@ -15,6 +16,7 @@ public class AccountPage extends JPanel {
     private PatientRecordsPanel recordsPanel;
     private Color themePrimary = new Color(52, 152, 219);
     private Color themeBg = new Color(245, 247, 250);
+    private JPanel form;
 
     public AccountPage(MainWindow window) {
 
@@ -43,6 +45,7 @@ public class AccountPage extends JPanel {
 
     // ======================== Main Settings Page ========================
     private JPanel buildMainSettingsPage() {
+        boolean dark = new SettingManager().isDarkMode();
 
         JPanel mainWrapper = new JPanel(new BorderLayout());
         mainWrapper.setBorder(BorderFactory.createEmptyBorder(40, 60, 40, 60));
@@ -56,7 +59,7 @@ public class AccountPage extends JPanel {
         title.setFont(new Font("Arial", Font.BOLD, 32));
         panel.add(title, BorderLayout.NORTH);
 
-        JPanel form = new JPanel(new GridLayout(6, 2, 15, 25));
+        form = new JPanel(new GridLayout(6, 2, 15, 25));
         form.setOpaque(false);
 
         form.add(new JLabel("Name:"));       form.add(new JTextField("Raymond"));
@@ -65,6 +68,8 @@ public class AccountPage extends JPanel {
         form.add(new JLabel("Specialty:"));  form.add(new JTextField("Cardiac Surgeon"));
         form.add(new JLabel("Email:"));      form.add(new JTextField("doctor@mail.com"));
         form.add(new JLabel("Password:"));   form.add(new JPasswordField(""));
+
+        fixInputColors(form, dark);
 
         panel.add(form, BorderLayout.CENTER);
 
@@ -101,4 +106,29 @@ public class AccountPage extends JPanel {
     private void saveDoctorSettings() {
         JOptionPane.showMessageDialog(this, "Settings saved.");
     }
+
+    private void fixInputColors(JPanel form, boolean dark) {
+        Color inputBg = dark ? new Color(45, 48, 56) : Color.WHITE;
+        Color inputFg = dark ? new Color(235, 235, 235) : Color.BLACK;
+
+        for (Component c : form.getComponents()) {
+            if (c instanceof JTextField tf) {
+                tf.setBackground(inputBg);
+                tf.setForeground(inputFg);
+                tf.setCaretColor(inputFg);
+            } else if (c instanceof JPasswordField pf) {
+                pf.setBackground(inputBg);
+                pf.setForeground(inputFg);
+                pf.setCaretColor(inputFg);
+            }
+        }
+    }
+    public void applyThemeToInputs() {
+        boolean dark = new SettingManager().isDarkMode();
+        if (form != null) {
+            fixInputColors(form, dark);
+        }
+    }
+
+
 }
