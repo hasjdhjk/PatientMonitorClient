@@ -1,6 +1,6 @@
 package Utilities;
 import UI.Components.Tiles.BaseTile;
-
+import UI.Components.TopBar;
 import UI.Components.Tiles.RoundedButton;
 import UI.Components.Tiles.RoundedPanel;
 
@@ -10,6 +10,11 @@ import java.awt.*;
 public final class ThemeManager {
 
     private ThemeManager() {}
+    private static final Color TOPBAR_BG_LIGHT = new Color(63, 90, 227);
+    private static final Color TOPBAR_BG_DARK  = new Color(32, 48, 140);
+
+    private static final Color TOPBAR_TEXT_LIGHT = Color.WHITE;
+    private static final Color TOPBAR_TEXT_DARK  = Color.WHITE;
 
     public static void apply(JFrame frame, boolean darkMode) {
         Color appBg = darkMode ? new Color(24, 26, 30) : Color.WHITE;
@@ -86,6 +91,23 @@ public final class ThemeManager {
             }
         }
 
+        if (c instanceof TopBar tb) {
+            tb.setOpaque(true);
+
+            Color bg = darkMode ? TOPBAR_BG_DARK : TOPBAR_BG_LIGHT;
+            tb.setBackground(bg);
+
+            Color text = darkMode ? TOPBAR_TEXT_DARK : TOPBAR_TEXT_LIGHT;
+
+            for (Component child : tb.getComponents()) {
+                if (child instanceof JLabel lbl) {
+                    lbl.setForeground(text);
+                }
+                if (child instanceof JButton btn) {
+                    btn.setForeground(text);
+                }
+            }
+        }
 
     }
 
