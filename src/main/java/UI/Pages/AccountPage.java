@@ -87,7 +87,7 @@ public class AccountPage extends JPanel {
         gbc.insets = new Insets(14, 20, 14, 20);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1;
-        gbc.anchor = GridBagConstraints.NORTHWEST; // 🔴 IMPORTANT
+        gbc.anchor = GridBagConstraints.NORTHWEST;
 
         // ---------- Fields ----------
         PlaceholderTextField nameField = new PlaceholderTextField("Raymond");
@@ -169,7 +169,7 @@ public class AccountPage extends JPanel {
         gbc.gridy = row * 2;
         parent.add(label, gbc);
 
-        BaseTile tile = new BaseTile(460, 65, 38, false); // 🔴 taller input
+        BaseTile tile = new BaseTile(460, 65, 38, false);
         tile.setLayout(new BorderLayout());
         tile.setBackground(Color.WHITE);
 
