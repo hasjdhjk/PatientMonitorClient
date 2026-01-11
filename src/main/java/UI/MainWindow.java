@@ -140,6 +140,11 @@ public class MainWindow extends JFrame {
         showPage(PAGE_STATUS);
     }
 
+    public void showAddPatientPage() {
+        sidebar.setSelected("Add Patient");
+        showPage(PAGE_ADD);
+    }
+
     public void showPage(String pageName) {
         boolean isAuthPage = pageName.equals(PAGE_LOGIN) || pageName.equals(PAGE_REGISTER);
 

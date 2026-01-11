@@ -22,9 +22,11 @@ public class AddTile extends BaseTile {
         add(Box.createVerticalGlue());
 
         addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseClicked(MouseEvent e) {
-                window.showPage(MainWindow.PAGE_ADD);
+                window.showAddPatientPage();
             }
         });
+
     }
 }
