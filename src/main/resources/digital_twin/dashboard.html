@@ -6,37 +6,41 @@
 
     <style>
         :root{
-            --bg0:#020617;
-            --bg1:#0b1020;
-            --panel:rgba(17,24,39,.92);
-            --stroke:#1e293b;
-            --muted:rgba(229,231,235,.75);
-            --shadow:0 0 30px rgba(59,130,246,.12);
+            --bg0: #d7e6f4;
+            --bg1:#ffffff;
+            --panel:#ffffff;
+            --stroke:#cbd5e1;
+            --muted:#000000;
+            --shadow:0 10px 30px rgba(0,0,0,.08);
             --r:18px;
-            --rr: 16;
-            --hr: 80;
+            --rr:16;
+            --hr:80;
         }
 
+        /* ===== BASE ===== */
         body{
             margin:0;
-            background:radial-gradient(circle at top,var(--bg1),var(--bg0));
-            color:#e5e7eb;
+            background:#f8fafc;
+            color:#000000;
             font-family:Arial,sans-serif;
         }
+
         h1{
             text-align:center;
             margin:16px 0;
             font-weight:600;
             letter-spacing:.2px;
+            color:#000000;
         }
+
         .sub{
             text-align:center;
             margin:-8px 0 14px;
-            color:var(--muted);
+            color:#000000;
             font-size:12px;
         }
 
-        /* ===== APP LAYOUT (RESTORED PROPORTIONS) ===== */
+        /* ===== APP LAYOUT ===== */
         .app{
             max-width:1400px;
             margin:0 auto;
@@ -49,15 +53,18 @@
 
         /* ===== PANELS ===== */
         .panel{
-            background:var(--panel);
+            background:#ffffff;
             border-radius:var(--r);
             padding:18px;
             box-shadow:inset 0 0 0 1px var(--stroke), var(--shadow);
-            min-height: 640px;
+            min-height:640px;
+            color:#000000;
         }
+
         .panel h3{
             text-align:center;
             margin:0 0 14px;
+            color:#000000;
         }
 
         /* ===== FORMS ===== */
@@ -66,167 +73,92 @@
             box-sizing:border-box;
             padding:10px;
             border-radius:12px;
-            background:var(--bg0);
-            color:#fff;
+            background:#ffffff;
+            color:#000000;
             border:1px solid var(--stroke);
             margin-bottom:10px;
             outline:none;
         }
+
         textarea{ resize:none; min-height:84px; }
+
         button{
             cursor:pointer;
-            background:linear-gradient(180deg,#0f172a,#020617);
+            background: #628ff3;
+            color:#ffffff;
         }
-        button:hover{ filter:brightness(1.08); }
+
+        button:hover{ filter:brightness(1.05); }
 
         /* ===== LEFT CARDS ===== */
         .metric{
-            background:linear-gradient(180deg,#0f172a,#020617);
+            background:#e0ecff;
             padding:12px;
             margin-bottom:12px;
             border-radius:14px;
             box-shadow:inset 0 0 0 1px var(--stroke);
             font-size:14px;
+            color:#000000;
         }
+
         .metric .title{
             font-weight:700;
             margin-bottom:8px;
         }
 
-        /* Health record chips (no bullets) */
-        .chips{
-            display:flex;
-            flex-wrap:wrap;
-            gap:8px;
-        }
+        /* ===== CHIPS ===== */
+        .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+
         .chip{
             display:inline-flex;
             align-items:center;
             gap:8px;
             padding:6px 10px;
             border-radius:999px;
-            background:#020617;
+            background:#bfdbfe;
             border:1px solid var(--stroke);
             font-size:12px;
-            white-space:nowrap;
+            color:#000000;
         }
-        .dot{width:8px;height:8px;border-radius:999px;display:inline-block;}
+
+        .dot{width:8px;height:8px;border-radius:999px;}
         .dot.card{background:#ef4444;}
         .dot.resp{background:#60a5fa;}
         .dot.met{background:#a855f7;}
-        .dot.other{background:#94a3b8;}
+        .dot.other{background:#64748b;}
 
-        /* ===== ANNOTATIONS UI (ENHANCED) ===== */
-        .annoGrid{
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:10px;
-        }
-        .pillRow{
-            display:flex;
-            gap:8px;
-            flex-wrap:wrap;
-            margin:6px 0 8px;
-        }
-        .pill{
-            padding:6px 10px;
-            border-radius:999px;
-            border:1px solid var(--stroke);
-            background:#020617;
-            font-size:12px;
-            cursor:pointer;
-            user-select:none;
-        }
-        .pill.active{ box-shadow:0 0 0 2px rgba(56,189,248,.25) inset; }
-        .pill.info{ border-color:rgba(56,189,248,.45); }
-        .pill.warn{ border-color:rgba(250,204,21,.45); }
-        .pill.crit{ border-color:rgba(239,68,68,.45); }
-
-        .quickRow{
-            display:flex;
-            gap:8px;
-            flex-wrap:wrap;
-            margin-bottom:10px;
-        }
-        .quickBtn{
-            width:auto;
-            padding:6px 10px;
-            border-radius:999px;
-            border:1px solid var(--stroke);
-            background:#020617;
-            font-size:12px;
-            cursor:pointer;
-        }
-
-        #notes{
-            max-height:260px;
-            overflow:auto;
-            padding-right:4px;
-        }
+        /* ===== NOTES ===== */
         .noteCard{
-            background:#020617;
+            background:#e0ecff;
             border:1px solid var(--stroke);
             border-radius:14px;
             padding:10px;
             margin-bottom:8px;
         }
-        .noteTop{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:10px;
-            margin-bottom:6px;
-        }
-        .sevBadge{
-            display:inline-flex;
-            align-items:center;
-            gap:8px;
-            padding:4px 10px;
-            border-radius:999px;
-            font-size:11px;
-            border:1px solid var(--stroke);
-        }
-        .sevBadge.info{ border-color:rgba(56,189,248,.65); color:#7dd3fc; }
-        .sevBadge.warn{ border-color:rgba(250,204,21,.65); color:#fde68a; }
-        .sevBadge.crit{ border-color:rgba(239,68,68,.65); color:#fecaca; }
-        .noteTime{
-            font-size:11px;
-            opacity:.65;
-            white-space:nowrap;
-        }
-        .noteText{
-            font-size:13px;
-            line-height:1.35;
-        }
-        .delBtn{
-            width:auto;
-            padding:4px 8px;
-            border-radius:10px;
-            border:1px solid var(--stroke);
-            background:#0b1020;
-            font-size:11px;
-            cursor:pointer;
-        }
 
-        /* ===== CENTER (LOCKED BODY: DOES NOT RESIZE WHEN NOTES GROW) ===== */
+        .noteText{ font-size:13px; line-height:1.35; }
+
+        /* ===== CENTER ===== */
         .center{
             display:flex;
             justify-content:center;
             align-items:flex-start;
         }
+
         .twinWrap{
             width:420px;
             display:flex;
             flex-direction:column;
             align-items:center;
-            gap:14px;
         }
+
         .twin{
             position:relative;
             width:380px;
-            height:620px;       /* LOCKED */
-            flex-shrink:0;      /* LOCKED */
+            height:620px;
+            flex-shrink:0;
         }
+
         .twin img,.twin svg{
             position:absolute;
             inset:0;
@@ -237,19 +169,19 @@
         /* ===== ORGANS ===== */
         #lungs{
             fill:rgba(96,165,250,0.35);
-            filter:drop-shadow(0 0 14px rgba(96,165,250,0.5));
-        }
-        #heart path{
-            fill:rgba(239,68,68,0.45);
-            filter:drop-shadow(0 0 18px rgba(239,68,68,0.6));
         }
 
-        /* ===== ORIGINAL ANIMATIONS ===== */
+        #heart path{
+            fill:rgba(239,68,68,0.45);
+        }
+
+        /* ===== ANIMATIONS ===== */
         .beat{
             animation:beat calc(85s / var(--hr)) infinite;
             transform-origin:50% 40%;
             transform-box:fill-box;
         }
+
         @keyframes beat{
             0%{transform:scale(1)}
             20%{transform:scale(1.06)}
@@ -261,34 +193,36 @@
             transform-origin:center;
             transform-box:fill-box;
         }
+
         @keyframes breathe{
             50%{transform:scale(1.12,1.08) translateY(-6px)}
         }
 
-        /* ===== BODY LABELS (CONDITION ONLY – NO DOCTOR NOTES HERE) ===== */
+        /* ===== BODY LABELS ===== */
         .condition-line{stroke-width:2;stroke-dasharray:4 4}
-        .label-bg{fill:rgba(2,6,23,0.8);}
-        .condition-label{font-size:13px;font-weight:600;letter-spacing:.2px}
-        .cardiac{stroke:#ef4444;fill:#ef4444}
-        .respiratory{stroke:#60a5fa;fill:#60a5fa}
-        .metabolic{stroke:#a855f7;fill:#a855f7}
+        .label-bg{fill:#ffffff;}
+        .condition-label{font-size:13px;font-weight:600;fill:#000000}
+        .cardiac{stroke:#ef4444}
+        .respiratory{stroke:#60a5fa}
+        .metabolic{stroke:#a855f7}
         .hidden{opacity:0}
 
         /* ===== RIGHT PANEL ===== */
         .graph{
-            background:#020617;
+            background:#e0ecff;
             border-radius:14px;
             padding:12px;
             margin-bottom:14px;
             box-shadow:inset 0 0 0 1px var(--stroke);
         }
+
         .graph h4{
             margin:0 0 8px;
             font-weight:700;
             font-size:13px;
-            color:var(--muted);
-            letter-spacing:.2px;
+            color:#000000;
         }
+
         svg.wave{width:100%;height:90px}
 
         .deviceGrid{
@@ -296,20 +230,25 @@
             grid-template-columns:1fr 1fr;
             gap:12px;
         }
+
         .device{
-            background:#020617;
+            background:#bfdbfe;
             border-radius:16px;
             padding:12px;
             box-shadow:inset 0 0 0 1px var(--stroke);
             text-align:center;
+            color:#000000;
         }
-        .device .label{font-size:12px;opacity:.8}
+
+        .device .label{font-size:12px;}
         .device .value{font-size:32px;font-weight:700}
+
+        /* Keep vital colours */
         .hr{color:#ef4444}
+        .rr{color:#a78bfa}
         .spo2{color:#22c55e}
         .bp{color:#60a5fa}
         .temp{color:#facc15}
-        .rr{color:#a78bfa}
     </style>
 </head>
 
