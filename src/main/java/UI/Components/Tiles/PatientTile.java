@@ -36,6 +36,7 @@ public class PatientTile extends BaseTile {
         // middle left ecg
         ECGPanel ecg = new ECGPanel();
         add(ecg, BorderLayout.CENTER);
+        ecg.setHeartRate(patient.getHeartRate());
 
         // middle right vitals
         JPanel vitals = new JPanel();

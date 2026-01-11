@@ -1,50 +1,39 @@
 package UI.Components;
 
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class ECGPanel extends JPanel {
 
+    private JFXPanel fxPanel = new JFXPanel();
+    private WebEngine engine;
+
     public ECGPanel() {
-        setOpaque(false);
-        setPreferredSize(new Dimension(250, 120));
+        setLayout(new BorderLayout());
+        setPreferredSize(new Dimension(260, 120));
+        add(fxPanel, BorderLayout.CENTER);
+
+        Platform.runLater(() -> {
+            WebView webView = new WebView();
+            engine = webView.getEngine();
+            engine.load(getClass().getResource("/digital_twin/ecg.html").toExternalForm());
+            fxPanel.setScene(new Scene(webView));
+        });
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-
-        int w = getWidth();
-        int h = getHeight();
-
-        // background rounded rectangle
-        g2.setColor(new Color(234, 234, 234));
-        g2.fillRoundRect(0, 0, w, h, 30, 30);
-
-//        g2.setColor(new Color(200, 200, 200));
-//        g2.setStroke(new BasicStroke(2f));
-//        g2.drawRoundRect(0, 0, w, h, 30, 30);
-
-        // draw simple ECG wave mock
-        g2.setColor(new Color(255, 0, 0));
-        g2.setStroke(new BasicStroke(2.4f));
-
-        int mid = h / 2;
-
-        int[] xs = new int[w];
-        int[] ys = new int[w];
-
-        for (int i = 0; i < w; i++) {
-            double t = i / 25.0;
-            ys[i] = (int) (mid + 15 * Math.sin(t) + 5 * Math.sin(t * 3));
-            xs[i] = i;
-        }
-
-        g2.drawPolyline(xs, ys, w);
-        g2.dispose();
+    public void setHeartRate(int hr) {
+        Platform.runLater(() -> {
+            if (engine != null) {
+                engine.executeScript("setHeartRate(" + hr + ")");
+            }
+        });
     }
 }
