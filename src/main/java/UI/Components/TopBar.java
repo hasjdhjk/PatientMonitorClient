@@ -53,11 +53,11 @@ public class TopBar extends JPanel {
         left.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
         JLabel logo = new JLabel(
-                ImageLoader.loadImageScaled("icon_logo2", "Icons", 100)
+                ImageLoader.loadImageScaled("icon_logo2", "Icons", 80)
         );
 
         title = new JLabel("Patient Monitor");
-        title.setFont(new Font("Arial", Font.BOLD, 36));
+        title.setFont(new Font("Arial", Font.BOLD, 35));
         title.setForeground(Color.WHITE);
 
         left.add(logo);
@@ -92,9 +92,9 @@ public class TopBar extends JPanel {
 
         // ---- Avatar ----
         avatarLabel = new JLabel("SJ", SwingConstants.CENTER);
-        avatarLabel.setPreferredSize(new Dimension(42, 42));
-        avatarLabel.setMaximumSize(new Dimension(42, 42));
-        avatarLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        avatarLabel.setPreferredSize(new Dimension(80, 80));
+        avatarLabel.setMaximumSize(new Dimension(80, 80)) ;
+        avatarLabel.setFont(new Font("Arial", Font.BOLD, 18));
         avatarLabel.setForeground(Color.WHITE);
         avatarLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         avatarLabel.setOpaque(false);
