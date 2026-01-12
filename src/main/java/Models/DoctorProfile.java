@@ -1,11 +1,8 @@
 package Models;
 
-/**
- * Real clinician profile data shown on Account page.
- * Not UI preferences (dark mode/language).
- */
 public class DoctorProfile {
-    private String name;
+    private String firstName;
+    private String lastName;
     private String idNumber;
     private int age;
     private String specialty;
@@ -13,8 +10,9 @@ public class DoctorProfile {
 
     public DoctorProfile() {}
 
-    public DoctorProfile(String name, String idNumber, int age, String specialty, String email) {
-        this.name = name;
+    public DoctorProfile(String firstName, String lastName, String idNumber, int age, String specialty, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.idNumber = idNumber;
         this.age = age;
         this.specialty = specialty;
@@ -24,6 +22,7 @@ public class DoctorProfile {
     public static DoctorProfile defaults() {
         return new DoctorProfile(
                 "Raymond",
+                "Chen",
                 "DOC123456",
                 20,
                 "Cardiac Surgeon",
@@ -31,8 +30,15 @@ public class DoctorProfile {
         );
     }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+
+    public String getFullName() {
+        return (firstName + " " + lastName).trim();
+    }
 
     public String getIdNumber() { return idNumber; }
     public void setIdNumber(String idNumber) { this.idNumber = idNumber; }

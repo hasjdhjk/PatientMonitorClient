@@ -1,5 +1,6 @@
 package UI;
 
+import Services.DoctorProfileService;
 import Utilities.SettingManager;
 import Utilities.ThemeManager;
 
@@ -85,6 +86,10 @@ public class MainWindow extends JFrame {
         SettingManager settings = new SettingManager();
         ThemeManager.apply(this, settings.isDarkMode());
 
+        DoctorProfileService ps = new DoctorProfileService();
+        var p = ps.load();
+        topBar.updateDoctorInfo(p.getFullName(), p.getSpecialty());
+
         setVisible(true);
     }
 
@@ -152,4 +157,6 @@ public class MainWindow extends JFrame {
     public AccountPage getAccountPage() {
         return accountPage;
     }
+    public TopBar getTopBar() {return topBar;}
+
 }

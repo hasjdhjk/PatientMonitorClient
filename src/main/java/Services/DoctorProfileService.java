@@ -12,7 +12,8 @@ public class DoctorProfileService {
     private static final String DIR_NAME = ".patientmonitor";
     private static final String FILE_NAME = "doctor_profile.properties";
 
-    private static final String K_NAME = "name";
+    private static final String K_FIRST = "firstName";
+    private static final String K_LAST  = "lastName";
     private static final String K_ID = "idNumber";
     private static final String K_AGE = "age";
     private static final String K_SPECIALTY = "specialty";
@@ -43,10 +44,13 @@ public class DoctorProfileService {
         }
 
         DoctorProfile d = new DoctorProfile();
-        d.setName(p.getProperty(K_NAME, DoctorProfile.defaults().getName()));
-        d.setIdNumber(p.getProperty(K_ID, DoctorProfile.defaults().getIdNumber()));
-        d.setSpecialty(p.getProperty(K_SPECIALTY, DoctorProfile.defaults().getSpecialty()));
-        d.setEmail(p.getProperty(K_EMAIL, DoctorProfile.defaults().getEmail()));
+        DoctorProfile def = DoctorProfile.defaults();
+
+        d.setFirstName(p.getProperty(K_FIRST, def.getFirstName()));
+        d.setLastName(p.getProperty(K_LAST, def.getLastName()));
+        d.setIdNumber(p.getProperty(K_ID, def.getIdNumber()));
+        d.setSpecialty(p.getProperty(K_SPECIALTY, def.getSpecialty()));
+        d.setEmail(p.getProperty(K_EMAIL, def.getEmail()));
 
         int age = DoctorProfile.defaults().getAge();
         try {
@@ -63,7 +67,8 @@ public class DoctorProfileService {
         } catch (IOException ignored) {}
 
         Properties p = new Properties();
-        p.setProperty(K_NAME, safe(d.getName()));
+        p.setProperty(K_FIRST, safe(d.getFirstName()));
+        p.setProperty(K_LAST, safe(d.getLastName()));
         p.setProperty(K_ID, safe(d.getIdNumber()));
         p.setProperty(K_AGE, String.valueOf(d.getAge()));
         p.setProperty(K_SPECIALTY, safe(d.getSpecialty()));

@@ -25,7 +25,7 @@ public class AccountPage extends JPanel {
     private Container formRoot;
 
     // Form fields
-    private PlaceholderTextField nameField, idField, ageField, specialtyField, emailField;
+    private PlaceholderTextField firstNameField, lastNameField, idField, ageField, specialtyField, emailField;
     private PlaceholderPasswordField passwordField;
 
     // Real profile data source
@@ -105,7 +105,8 @@ public class AccountPage extends JPanel {
         // ---------- Fields (load real profile) ----------
         this.profile = profileService.load();
 
-        this.nameField = new PlaceholderTextField(profile.getName());
+        this.firstNameField = new PlaceholderTextField(profile.getFirstName());
+        this.lastNameField  = new PlaceholderTextField(profile.getLastName());
         this.idField = new PlaceholderTextField(profile.getIdNumber());
         this.ageField = new PlaceholderTextField(String.valueOf(profile.getAge()));
         this.specialtyField = new PlaceholderTextField(profile.getSpecialty());
@@ -114,7 +115,9 @@ public class AccountPage extends JPanel {
 
         int row = 0;
 
-        addField(form, "Name", this.nameField, gbc, 0, row);
+        addField(form, "First Name", firstNameField, gbc, 0, row);
+        addField(form, "Last Name", lastNameField, gbc, 1, row++);
+
         addField(form, "ID Number", this.idField, gbc, 1, row++);
 
         addField(form, "Age", this.ageField, gbc, 0, row);
@@ -203,7 +206,8 @@ public class AccountPage extends JPanel {
     private void saveDoctorProfile() {
         if (profile == null) profile = DoctorProfile.defaults();
 
-        String name = safe(nameField);
+        String firstName = safe(firstNameField);
+        String lastName = safe(lastNameField);
         String id = safe(idField);
         String specialty = safe(specialtyField);
         String email = safe(emailField);
@@ -216,14 +220,20 @@ public class AccountPage extends JPanel {
             return;
         }
 
-        profile.setName(name);
+        profile.setFirstName(firstName);
+        profile.setLastName(lastName);
+        profile.setSpecialty(specialty);
+
         profile.setIdNumber(id);
         profile.setAge(age);
-        profile.setSpecialty(specialty);
         profile.setEmail(email);
 
         profileService.save(profile);
 
+        window.getTopBar().updateDoctorInfo(
+                profile.getFullName(),
+                profile.getSpecialty()
+        );
         JOptionPane.showMessageDialog(this, "Profile saved.");
     }
 
@@ -236,7 +246,8 @@ public class AccountPage extends JPanel {
         DoctorProfile p = profileService.load();
         this.profile = p;
 
-        if (nameField != null) nameField.setText(p.getName());
+        if (firstNameField != null) firstNameField.setText(p.getFirstName());
+        if (lastNameField != null) lastNameField.setText(p.getLastName());
         if (idField != null) idField.setText(p.getIdNumber());
         if (ageField != null) ageField.setText(String.valueOf(p.getAge()));
         if (specialtyField != null) specialtyField.setText(p.getSpecialty());
