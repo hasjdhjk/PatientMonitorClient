@@ -51,6 +51,7 @@ public class PatientTile extends BaseTile {
         vitals.add(label("BP: " + patient.getBloodPressure()));
 
         add(vitals, BorderLayout.EAST);
+
         // bottom: discharge button
         JPanel bottom = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         bottom.setOpaque(false);
@@ -70,20 +71,19 @@ public class PatientTile extends BaseTile {
                 return;
             }
 
-            // 1. Write reason to DB + remove tile
             PatientDischargeService.discharge(patient, reason);
-
-            // 2. Refresh home page
             homePage.refresh();
         });
 
         bottom.add(dischargeBtn);
         add(bottom, BorderLayout.SOUTH);
-        // cick to show detail
+
+        // click to show detail
         addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseClicked(MouseEvent e) {
                 if (!SwingUtilities.isRightMouseButton(e)) {
-                    window.showStatusTracker(patient);
+                    window.showStatusTracker(patient); // StatusTrackerPage 内部会负责同步 DigitalTwinPanel
                 }
             }
         });

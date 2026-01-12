@@ -46,7 +46,12 @@ public class StatusTrackerPage extends JPanel {
         }
     }
 
+    /** 🔑 唯一真正需要做的同步点 */
     private void pushPatientToTwin() {
+        // ① 先让 dashboard 切换到对应 patientId（用于它的 fetch ../api/patient?id=...）
+        digitalTwinPanel.setSelectedPatientId(currentPatient.getId());
+
+        // ② 你原来这段 vitals 仍然可以保留（可选：即时刷新 UI）
         String[] parts = currentPatient.getBloodPressure().split("/");
         int sys = Integer.parseInt(parts[0].trim());
         int dia = Integer.parseInt(parts[1].trim());
@@ -64,7 +69,7 @@ public class StatusTrackerPage extends JPanel {
     public void setPatient(Patient patient) {
         this.currentPatient = patient;
         this.currentIndex = allPatients.indexOf(patient);
-        pushPatientToTwin();
+        pushPatientToTwin(); // ⭐ 关键
     }
 
     public void nextPatient() {
