@@ -172,7 +172,7 @@ public class RegisterPage extends JPanel {
             
             ApiClient.SimpleResponse res = ApiClient.register(
                     emailField.getText().trim(),
-                    passwordField.getText().trim(),
+                    new String(passwordField.getPassword()).trim(),
                     givenField.getText().trim(),
                     familyField.getText().trim()
             );
