@@ -1,4 +1,4 @@
-package UI.Components.Tiles;
+package UI.Components;
 
 import javax.swing.*;
 import java.awt.*;

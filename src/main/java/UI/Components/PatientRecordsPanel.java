@@ -1,18 +1,13 @@
 package UI.Components;
 
-import Models.AddedPatientDB;
-import Models.Patient;
 import Models.PatientRecord;
 import Models.PatientRecordIO;
 import Models.PatientRecordRenderer;
 import Services.PatientDischargeService;
 import UI.Components.PlaceHolders.PlaceholderTextField;
-import UI.Components.Tiles.RoundedButton;
-import UI.Components.Tiles.RoundedPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 

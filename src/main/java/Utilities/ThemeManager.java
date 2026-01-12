@@ -1,8 +1,8 @@
 package Utilities;
 import UI.Components.Tiles.BaseTile;
 import UI.Components.TopBar;
-import UI.Components.Tiles.RoundedButton;
-import UI.Components.Tiles.RoundedPanel;
+import UI.Components.RoundedButton;
+import UI.Components.RoundedPanel;
 
 import javax.swing.*;
 import java.awt.*;
