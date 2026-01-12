@@ -19,8 +19,7 @@ public class TopBar extends JPanel {
         add(buildLeftSection(), BorderLayout.WEST);
         add(buildRightSection(), BorderLayout.EAST);
     }
-
-    // This is the KEY FIX
+    
     @Override
     public void addNotify() {
         super.addNotify();
