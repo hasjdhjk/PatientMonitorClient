@@ -135,6 +135,11 @@ public class MainWindow extends JFrame {
             loginPage.clearFields();
         }
 
+        if (pageName.equals(PAGE_ACCOUNT)) {
+            // Ensure the Account page reflects the latest stored clinician profile
+            accountPage.reloadProfile();
+        }
+
         cardLayout.show(pageContainer, pageName);
         revalidate();
         repaint();
