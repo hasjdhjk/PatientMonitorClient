@@ -182,11 +182,11 @@ public class AccountPage extends JPanel {
         nameCol.add(headerEmail);
         nameCol.add(Box.createVerticalGlue());
 
-        lp.gridx = 1;
+        lp.gridx = 0;
         lp.gridy = 0;
-        lp.weightx = 1;
+        lp.weightx = 0;
         lp.fill = GridBagConstraints.HORIZONTAL;
-        lp.insets = new Insets(0, 0, 0, 0); // gap between avatar and text
+        lp.insets = new Insets(0, 90, 0, 0); // gap between avatar and text
         leftProfile.add(nameCol, lp);
 
         // ---- Buttons: lower, under avatar only (doesn't affect name/email alignment) ----
