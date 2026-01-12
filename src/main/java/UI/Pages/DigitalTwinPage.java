@@ -10,7 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-public class StatusTrackerPage extends JPanel {
+public class DigitalTwinPage extends JPanel {
 
     private final MainWindow window;
     private final List<Patient> allPatients;
@@ -21,7 +21,7 @@ public class StatusTrackerPage extends JPanel {
     private final DigitalTwinPanel digitalTwinPanel;
     private final BaseTile twinTile;
 
-    public StatusTrackerPage(MainWindow window) {
+    public DigitalTwinPage(MainWindow window) {
         this.window = window;
         this.allPatients = AddedPatientDB.getAll();
 

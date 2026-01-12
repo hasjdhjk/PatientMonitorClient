@@ -6,6 +6,7 @@ import Models.VitalRecord;
 import Models.VitalRecordIO;
 import Services.*;
 import UI.Components.WaveformPanel;
+import UI.MainWindow;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -13,7 +14,7 @@ import java.awt.*;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-public class LiveMonitoring extends JPanel {
+public class LiveMonitoringPage extends JPanel {
 
     /* ===== CLINICAL LIGHT THEME ===== */
     private static final Color BG_MAIN = new Color(245, 247, 250);
@@ -46,6 +47,8 @@ public class LiveMonitoring extends JPanel {
 
     private DefaultTableModel historyModel;
 
+    private final MainWindow window;
+
     /* ===== ALARM LIMITS ===== */
     private static final int HR_LOW = 50;
     private static final int HR_HIGH = 120;
@@ -53,7 +56,8 @@ public class LiveMonitoring extends JPanel {
     private static final int RESP_LOW = 10;
     private static final int RESP_HIGH = 25;
 
-    public LiveMonitoring(Patient patient) {
+    public LiveMonitoringPage(Patient patient, MainWindow window) {
+        this.window = window;
 
         vitals = new LiveVitals(patient.getId());
         vitalsSim = new PatientSimulatorService(vitals);
@@ -98,6 +102,10 @@ public class LiveMonitoring extends JPanel {
         JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 8));
         right.setBackground(BG_CARD);
 
+        JButton status = new JButton("Digital Twin");
+        status.setFocusPainted(false);
+        status.addActionListener(e -> window.showStatusTracker(patient));
+
         JButton export = new JButton("Export CSV");
         export.setFocusPainted(false);
         export.addActionListener(e -> VitalsExportService.exportCSV());
@@ -106,6 +114,7 @@ public class LiveMonitoring extends JPanel {
         print.setFocusPainted(false);
         print.addActionListener(e -> VitalsPrintService.print());
 
+        right.add(status);
         right.add(export);
         right.add(print);
 

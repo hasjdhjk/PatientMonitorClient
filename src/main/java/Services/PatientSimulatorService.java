@@ -18,5 +18,6 @@ public class PatientSimulatorService {
         vitals.setSpO2(98 + rand.nextGaussian());
         vitals.setRespRate(16 + rand.nextGaussian() * 0.5);
         vitals.setTemperature(36.8 + rand.nextGaussian() * 0.1);
+        vitals.setBloodPressure("120/80");
     }
 }

@@ -83,7 +83,7 @@ public class PatientTile extends BaseTile {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (!SwingUtilities.isRightMouseButton(e)) {
-                    window.showStatusTracker(patient); // StatusTrackerPage 内部会负责同步 DigitalTwinPanel
+                    window.showLiveMonitoring(patient); // StatusTrackerPage 内部会负责同步 DigitalTwinPanel
                 }
             }
         });
