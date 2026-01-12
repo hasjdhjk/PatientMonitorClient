@@ -19,7 +19,7 @@ public class TopBar extends JPanel {
         add(buildLeftSection(), BorderLayout.WEST);
         add(buildRightSection(), BorderLayout.EAST);
     }
-    
+
     @Override
     public void addNotify() {
         super.addNotify();
@@ -49,7 +49,7 @@ public class TopBar extends JPanel {
         );
 
         title = new JLabel("Patient Monitor");
-        title.setFont(new Font("Arial", Font.BOLD, 40));
+        title.setFont(new Font("Arial", Font.BOLD, 36));
         title.setForeground(Color.WHITE);
 
         left.add(logo);
