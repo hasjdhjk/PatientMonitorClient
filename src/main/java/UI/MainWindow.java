@@ -43,7 +43,7 @@ public class MainWindow extends JFrame {
         setLayout(new BorderLayout());
 
         // ================= Top bar & sidebar =================
-        topBar = new TopBar();
+        topBar = new TopBar(this);
         sidebar = new SideBar(this);
         add(topBar, BorderLayout.NORTH);
         add(sidebar, BorderLayout.WEST);
