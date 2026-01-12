@@ -654,7 +654,7 @@ public class AccountPage extends JPanel {
             label.setFont(new Font("Arial", Font.BOLD, 13));
             add(dot);
             add(label);
-            setBorder(BorderFactory.createEmptyBorder(2, 10, 2, 10));
+            setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
         }
 
         @Override
