@@ -78,7 +78,7 @@ public class AccountPage extends JPanel {
         form.setMaximumSize(new Dimension(1200, 700));
         form.setAlignmentX(Component.CENTER_ALIGNMENT);
         form.setLayout(new GridBagLayout());
-        form.setBorder(BorderFactory.createEmptyBorder(0, 40, 40, 40)); // less top padding
+        form.setBorder(BorderFactory.createEmptyBorder(0, 40, 70, 40)); // less top padding
         form.setBackground(Color.WHITE);
 
         this.formRoot = form;
