@@ -16,6 +16,7 @@ public class PatientServerClient {
 
     public static List<Patient> fetchPatients(String doctorUsername) throws Exception {
         String url = "http://localhost:8080/PatientServer/api/patients?doctor=" + doctorUsername;
+        //String url = "https://bioeng-fguys-app.impaas.uk/api/patients?doctor=" + doctorUsername;
 
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(url))

@@ -23,6 +23,7 @@ public class PatientDischargeService {
     public static Runnable onDischarge = null;
 
     // ===== Server config =====
+    //private static final String SERVER_BASE = "https://bioeng-fguys-app.impaas.uk";
     private static final String SERVER_BASE = "http://localhost:8080/PatientServer";
     private static final HttpClient HTTP = HttpClient.newHttpClient();
 

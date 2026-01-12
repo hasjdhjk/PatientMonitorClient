@@ -1,4 +1,5 @@
 package UI;
+
 import Utilities.SettingManager;
 import Utilities.ThemeManager;
 
@@ -9,8 +10,6 @@ import UI.Pages.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 public class MainWindow extends JFrame {
 
@@ -27,6 +26,9 @@ public class MainWindow extends JFrame {
     public static final String PAGE_ACCOUNT = "account";
     public static final String PAGE_SETTINGS = "settings";
 
+    // 🔴 ADDED
+    public static final String PAGE_LIVE = "live";
+
     private HomePage homePage;
     private LoginPage loginPage;
     private RegisterPage registerPage;
@@ -34,8 +36,9 @@ public class MainWindow extends JFrame {
     private SettingsPage settingsPage;
     private AccountPage accountPage;
     private AddPatientPage addPatientPage;
-    private JPanel cardPanel;
 
+    // 🔴 ADDED
+    private LiveMonitoring liveMonitoringPage;
 
     public MainWindow() {
         setTitle("Patient Monitor");
@@ -43,7 +46,7 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // initialize sidebar and top bar
+        // ================= Top bar & sidebar =================
         topBar = new TopBar();
         sidebar = new SideBar(this);
         add(topBar, BorderLayout.NORTH);
@@ -51,75 +54,48 @@ public class MainWindow extends JFrame {
         topBar.setVisible(true);
         sidebar.setVisible(true);
 
-        // card layout
+        // ================= Card layout =================
         cardLayout = new CardLayout();
         pageContainer = new JPanel(cardLayout);
 
-        // initialize pages
+        // ================= Pages =================
         loginPage = new LoginPage(this);
         registerPage = new RegisterPage(this);
         homePage = new HomePage(this);
         statusTrackerPage = new StatusTrackerPage(this);
         settingsPage = new SettingsPage(this);
         accountPage = new AccountPage(this);
-        //addPatientPage = new AddPatientPage(this);
         addPatientPage = new AddPatientPage(this);
 
+        // 🔴 ADDED — temporary patient (until selection logic)
+        Patient dummyPatient = new Patient(
+                1, "John", "Anderson", 80, 36.8, "120/80"
+        );
+        liveMonitoringPage = new LiveMonitoring(dummyPatient);
+
+        // ================= Add to card container =================
         pageContainer.add(loginPage, PAGE_LOGIN);
         pageContainer.add(registerPage, PAGE_REGISTER);
         pageContainer.add(homePage, PAGE_HOME);
         pageContainer.add(statusTrackerPage, PAGE_STATUS);
         pageContainer.add(settingsPage, PAGE_SETTINGS);
         pageContainer.add(accountPage, PAGE_ACCOUNT);
-        //pageContainer.add(addPatientPage, PAGE_ADD);
         pageContainer.add(addPatientPage, PAGE_ADD);
 
-        // show login at start
+        // 🔴 ADDED
+        pageContainer.add(liveMonitoringPage, PAGE_LIVE);
+
         add(pageContainer, BorderLayout.CENTER);
         cardLayout.show(pageContainer, PAGE_HOME);
 
-        //dark mode theme on startup
+        // ================= Theme =================
         SettingManager settings = new SettingManager();
         ThemeManager.apply(this, settings.isDarkMode());
 
-        //PAGE_LOGIN
         setVisible(true);
     }
-//    public MainWindow() {
-//        setTitle("Patient Monitor");
-//        setSize(1920, 1080);
-//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        setLayout(new BorderLayout());
-//
-//        // initialize sidebar and top bar
-//        topBar = new TopBar();
-//        sidebar = new SideBar(this);
-//        add(topBar, BorderLayout.NORTH);
-//        add(sidebar, BorderLayout.WEST);
-//        topBar.setVisible(false);
-//        sidebar.setVisible(false);
-//
-//        // card layout
-//        cardLayout = new CardLayout();
-//        pageContainer = new JPanel(cardLayout);
-//
-//        // initialize pages
-//        loginPage = new LoginPage(this);
-//        registerPage = new RegisterPage(this);
-//        homePage = new HomePage(this);
-//        statusTrackerPage = new StatusTrackerPage(this);
-//
-//        pageContainer.add(loginPage, PAGE_LOGIN);
-//        pageContainer.add(registerPage, PAGE_REGISTER);
-//        pageContainer.add(homePage, PAGE_HOME);
-//        pageContainer.add(statusTrackerPage, PAGE_STATUS);
-//
-//        // show login at start
-//        add(pageContainer, BorderLayout.CENTER);
-//        cardLayout.show(pageContainer, PAGE_LOGIN);
-//
-//        setVisible(true);
-//    }
+
+    // ================= Navigation =================
 
     public void showLoginPage() {
         showPage(PAGE_LOGIN);
@@ -145,28 +121,38 @@ public class MainWindow extends JFrame {
         showPage(PAGE_ADD);
     }
 
+    // 🔴 ADDED — THIS IS THE KEY METHOD
+    public void showLiveMonitoring(Patient patient) {
+        sidebar.setSelected("Live Monitoring");
+
+        pageContainer.remove(liveMonitoringPage);
+        liveMonitoringPage = new LiveMonitoring(patient);
+        pageContainer.add(liveMonitoringPage, PAGE_LIVE);
+
+        showPage(PAGE_LIVE);
+    }
+
     public void showPage(String pageName) {
-        boolean isAuthPage = pageName.equals(PAGE_LOGIN) || pageName.equals(PAGE_REGISTER);
+        boolean isAuthPage =
+                pageName.equals(PAGE_LOGIN) || pageName.equals(PAGE_REGISTER);
 
         sidebar.setVisible(!isAuthPage);
         topBar.setVisible(!isAuthPage);
-        if (pageName.equals(PAGE_LOGIN)) loginPage.clearFields();
+
+        if (pageName.equals(PAGE_LOGIN)) {
+            loginPage.clearFields();
+        }
 
         cardLayout.show(pageContainer, pageName);
-
         revalidate();
         repaint();
-    }
-
-    public void navigateTo(String pageName){
-        cardLayout.show(cardPanel, pageName);
     }
 
     public void logout() {
         showPage(PAGE_LOGIN);
     }
+
     public AccountPage getAccountPage() {
         return accountPage;
     }
-
 }
