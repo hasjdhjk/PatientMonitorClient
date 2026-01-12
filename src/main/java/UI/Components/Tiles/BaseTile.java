@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
 public class BaseTile extends JPanel {
 
     private int radius;
-    private int shadowSize = 15;
+    private int shadowSize = 12;
     private Color tileColor = Color.WHITE;
     private Color baseColor = Color.WHITE;
     private boolean hasHoverEffect;
