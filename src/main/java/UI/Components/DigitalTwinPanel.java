@@ -24,7 +24,7 @@ public class DigitalTwinPanel extends JPanel {
 
     // Your Jetty context path is /PatientServer
     private static final String DASHBOARD_URL =
-            "http://localhost:8080/PatientServer/digital_twin/dashboard.html";
+            "https://bioeng-fguys-app.impaas.uk/digital_twin/dashboard.html";
 
     public DigitalTwinPanel() {
         setLayout(new BorderLayout());
