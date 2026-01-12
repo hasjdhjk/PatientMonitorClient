@@ -23,8 +23,8 @@ public class DigitalTwinPanel extends JPanel {
     private volatile Vitals pendingVitals = null;
 
     // Your Jetty context path is /PatientServer
-    private static final String DASHBOARD_URL =
-            "https://bioeng-fguys-app.impaas.uk/digital_twin/dashboard.html";
+    //private static final String DASHBOARD_URL =  "https://bioeng-fguys-app.impaas.uk/digital_twin/dashboard.html";
+    private static final String DASHBOARD_URL =  "http://localhost:8080/PatientServer/digital_twin/dashboard.html";
 
     public DigitalTwinPanel() {
         setLayout(new BorderLayout());
