@@ -5,7 +5,7 @@ import Models.Patient;
 import Models.VitalRecord;
 import Models.VitalRecordIO;
 import Services.*;
-import UI.Components.WaveformPanel;
+import UI.Components.Tiles.WaveformPanel;
 import UI.MainWindow;
 
 import javax.swing.*;

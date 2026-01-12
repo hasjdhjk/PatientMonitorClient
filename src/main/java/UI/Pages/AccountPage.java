@@ -4,7 +4,7 @@ import UI.Components.PatientRecordsPanel;
 import UI.Components.PlaceHolders.PlaceholderPasswordField;
 import UI.Components.PlaceHolders.PlaceholderTextField;
 import UI.Components.Tiles.BaseTile;
-import UI.Components.Tiles.RoundedButton;
+import UI.Components.RoundedButton;
 import UI.MainWindow;
 import Utilities.SettingManager;
 

@@ -2,6 +2,7 @@ package UI.Components.Tiles;
 
 import Models.Patient;
 import Services.PatientDischargeService;
+import UI.Components.RoundedButton;
 import UI.MainWindow;
 import UI.Components.ECGPanel;
 import UI.Components.StickyButton;
