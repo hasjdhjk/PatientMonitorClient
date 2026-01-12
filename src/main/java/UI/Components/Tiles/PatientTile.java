@@ -13,9 +13,15 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class PatientTile extends BaseTile {
+    private Timer flashTimer;
+    private boolean flashOn = false;
+    private Patient.VitalsSeverity lastSev = Patient.VitalsSeverity.NORMAL;
 
     public PatientTile(Patient patient, MainWindow window, HomePage homePage) {
         super(370, 320, 30, true);
+
+        lockBackground(true);
+        updateAlertState(patient);
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -88,11 +94,48 @@ public class PatientTile extends BaseTile {
                 }
             }
         });
+        // listen for vital changes and update colour dynamically
+        patient.addPropertyChangeListener(evt -> {
+            if ("vitals".equals(evt.getPropertyName())) {
+                updateAlertState(patient);
+            }
+        });
     }
 
     private JLabel label(String text) {
         JLabel l = new JLabel(text);
         l.setFont(new Font("Arial", Font.PLAIN, 18));
         return l;
+    }
+    private void updateAlertState(Patient patient) {
+        Patient.VitalsSeverity sev = patient.getVitalsSeverity();
+
+        // Update audio + logging centrally
+        Services.AlertManager.getInstance().updateAlert(patient, sev, patient.getAlertCauses(sev));
+        lastSev = sev;
+
+        // stop any previous flashing
+        if (flashTimer != null) {
+            flashTimer.stop();
+            flashTimer = null;
+        }
+        flashOn = false;
+
+        if (sev == Patient.VitalsSeverity.NORMAL) {
+            forceBackground(Color.WHITE);
+            return;
+        }
+
+        Color flashColor = (sev == Patient.VitalsSeverity.DANGER)
+                ? new Color(180, 50, 50)
+                : new Color(255, 140, 0);
+
+        int periodMs = (sev == Patient.VitalsSeverity.DANGER) ? 300 : 600;
+
+        flashTimer = new Timer(periodMs, e -> {
+            flashOn = !flashOn;
+            forceBackground(flashOn ? flashColor : Color.WHITE);
+        });
+        flashTimer.start();
     }
 }
