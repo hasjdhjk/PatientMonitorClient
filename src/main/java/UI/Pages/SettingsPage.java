@@ -1,8 +1,8 @@
 package UI.Pages;
 
 import UI.MainWindow;
-import UI.Components.Tiles.RoundedButton;
-import UI.Components.Tiles.RoundedPanel;
+import UI.Components.RoundedButton;
+import UI.Components.RoundedPanel;
 import Utilities.LanguageManager;
 import Utilities.SettingManager;
 import Utilities.ThemeManager;

@@ -1,5 +1,7 @@
 package UI.Components;
 
+import Models.LiveVitals;
+import Services.PatientSimulatorService;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Worker;
@@ -11,6 +13,9 @@ import javafx.util.Duration;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class DigitalTwinPanel extends JPanel {
 
@@ -21,6 +26,11 @@ public class DigitalTwinPanel extends JPanel {
     // Keep the latest requested values so HomePage/StatusTracker can call in any order.
     private volatile Integer pendingPatientId = null;
     private volatile Vitals pendingVitals = null;
+
+    // --- Simulator driving dashboard ---
+    private final LiveVitals simulatedVitals = new LiveVitals(0);
+    private final PatientSimulatorService simulator = new PatientSimulatorService(simulatedVitals);
+    private ScheduledExecutorService simExec;
 
     // Your Jetty context path is /PatientServer
     //private static final String DASHBOARD_URL =  "https://bioeng-fguys-app.impaas.uk/digital_twin/dashboard.html";
@@ -41,6 +51,9 @@ public class DigitalTwinPanel extends JPanel {
 
                     // After load, try to flush any pending updates.
                     flushPending();
+
+                    // Start simulation pushing vitals into dashboard JS
+                    startSimulation();
                 }
             });
 
@@ -57,7 +70,6 @@ public class DigitalTwinPanel extends JPanel {
     public void setSelectedPatientId(int patientId) {
         // Store latest request (so even if called before page is ready, it will apply later)
         pendingPatientId = patientId;
-
         Platform.runLater(this::trySendSelectedPatientId);
     }
 
@@ -69,8 +81,50 @@ public class DigitalTwinPanel extends JPanel {
         int safeSpo2 = spo2 > 0 ? spo2 : 98;
 
         pendingVitals = new Vitals(hr, safeRr, safeSpo2, sys, dia, temp);
-
         Platform.runLater(this::trySendVitals);
+    }
+
+    // ===================== Simulator =====================
+
+    private void startSimulation() {
+        stopSimulation();
+
+        simExec = Executors.newSingleThreadScheduledExecutor(r -> {
+            Thread t = new Thread(r, "DashboardSimulator");
+            t.setDaemon(true);
+            return t;
+        });
+
+        simExec.scheduleAtFixedRate(() -> {
+            // Update simulated values
+            simulator.update(1.0);
+
+            int hr = (int) Math.round(simulatedVitals.getHeartRate());
+            int rr = (int) Math.round(simulatedVitals.getRespRate());
+            int spo2 = (int) Math.round(simulatedVitals.getSpO2());
+            double temp = simulatedVitals.getTemperature();
+
+            // BP is fixed (as requested)
+            int sys = 120;
+            int dia = 80;
+
+            // Push into dashboard (this already waits for JS function existence)
+            setVitals(hr, rr, spo2, sys, dia, temp);
+
+        }, 0, 1, TimeUnit.SECONDS);
+    }
+
+    private void stopSimulation() {
+        if (simExec != null) {
+            simExec.shutdownNow();
+            simExec = null;
+        }
+    }
+
+    @Override
+    public void removeNotify() {
+        stopSimulation();
+        super.removeNotify();
     }
 
     // ===================== Internals =====================

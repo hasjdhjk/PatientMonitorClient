@@ -1,6 +1,6 @@
 package UI.Pages;
 
-import UI.Components.Tiles.RoundedButton;
+import UI.Components.RoundedButton;
 
 import UI.MainWindow;
 import UI.Components.PlaceHolders.PlaceholderTextField;

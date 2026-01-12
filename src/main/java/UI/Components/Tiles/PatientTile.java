@@ -2,6 +2,7 @@ package UI.Components.Tiles;
 
 import Models.Patient;
 import Services.PatientDischargeService;
+import UI.Components.RoundedButton;
 import UI.MainWindow;
 import UI.Components.ECGPanel;
 import UI.Components.StickyButton;
@@ -83,7 +84,7 @@ public class PatientTile extends BaseTile {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (!SwingUtilities.isRightMouseButton(e)) {
-                    window.showStatusTracker(patient); // StatusTrackerPage 内部会负责同步 DigitalTwinPanel
+                    window.showLiveMonitoring(patient); // StatusTrackerPage 内部会负责同步 DigitalTwinPanel
                 }
             }
         });

@@ -1,5 +1,6 @@
 package UI;
 
+import Services.DoctorProfileService;
 import Utilities.SettingManager;
 import Utilities.ThemeManager;
 
@@ -25,20 +26,16 @@ public class MainWindow extends JFrame {
     public static final String PAGE_STATUS = "status";
     public static final String PAGE_ACCOUNT = "account";
     public static final String PAGE_SETTINGS = "settings";
-
-    // 🔴 ADDED
     public static final String PAGE_LIVE = "live";
 
     private HomePage homePage;
     private LoginPage loginPage;
     private RegisterPage registerPage;
-    private StatusTrackerPage statusTrackerPage;
+    private DigitalTwinPage digitalTwinPage;
     private SettingsPage settingsPage;
     private AccountPage accountPage;
     private AddPatientPage addPatientPage;
-
-    // 🔴 ADDED
-    private LiveMonitoring liveMonitoringPage;
+    private LiveMonitoringPage liveMonitoringPage;
 
     public MainWindow() {
         setTitle("Patient Monitor");
@@ -47,7 +44,7 @@ public class MainWindow extends JFrame {
         setLayout(new BorderLayout());
 
         // ================= Top bar & sidebar =================
-        topBar = new TopBar();
+        topBar = new TopBar(this);
         sidebar = new SideBar(this);
         add(topBar, BorderLayout.NORTH);
         add(sidebar, BorderLayout.WEST);
@@ -62,27 +59,24 @@ public class MainWindow extends JFrame {
         loginPage = new LoginPage(this);
         registerPage = new RegisterPage(this);
         homePage = new HomePage(this);
-        statusTrackerPage = new StatusTrackerPage(this);
+        digitalTwinPage = new DigitalTwinPage(this);
         settingsPage = new SettingsPage(this);
         accountPage = new AccountPage(this);
         addPatientPage = new AddPatientPage(this);
 
-        // 🔴 ADDED — temporary patient (until selection logic)
         Patient dummyPatient = new Patient(
                 1, "John", "Anderson", 80, 36.8, "120/80"
         );
-        liveMonitoringPage = new LiveMonitoring(dummyPatient);
+        liveMonitoringPage = new LiveMonitoringPage(dummyPatient, this);
 
         // ================= Add to card container =================
         pageContainer.add(loginPage, PAGE_LOGIN);
         pageContainer.add(registerPage, PAGE_REGISTER);
         pageContainer.add(homePage, PAGE_HOME);
-        pageContainer.add(statusTrackerPage, PAGE_STATUS);
+        pageContainer.add(digitalTwinPage, PAGE_STATUS);
         pageContainer.add(settingsPage, PAGE_SETTINGS);
         pageContainer.add(accountPage, PAGE_ACCOUNT);
         pageContainer.add(addPatientPage, PAGE_ADD);
-
-        // 🔴 ADDED
         pageContainer.add(liveMonitoringPage, PAGE_LIVE);
 
         add(pageContainer, BorderLayout.CENTER);
@@ -91,6 +85,10 @@ public class MainWindow extends JFrame {
         // ================= Theme =================
         SettingManager settings = new SettingManager();
         ThemeManager.apply(this, settings.isDarkMode());
+
+        DoctorProfileService ps = new DoctorProfileService();
+        var p = ps.load();
+        topBar.updateDoctorInfo(p.getFullName(), p.getSpecialty());
 
         setVisible(true);
     }
@@ -112,7 +110,7 @@ public class MainWindow extends JFrame {
 
     public void showStatusTracker(Patient patient) {
         sidebar.setSelected("Status Tracker");
-        statusTrackerPage.setPatient(patient);
+        digitalTwinPage.setPatient(patient);
         showPage(PAGE_STATUS);
     }
 
@@ -121,12 +119,11 @@ public class MainWindow extends JFrame {
         showPage(PAGE_ADD);
     }
 
-    // 🔴 ADDED — THIS IS THE KEY METHOD
     public void showLiveMonitoring(Patient patient) {
         sidebar.setSelected("Live Monitoring");
 
         pageContainer.remove(liveMonitoringPage);
-        liveMonitoringPage = new LiveMonitoring(patient);
+        liveMonitoringPage = new LiveMonitoringPage(patient, this);
         pageContainer.add(liveMonitoringPage, PAGE_LIVE);
 
         showPage(PAGE_LIVE);
@@ -143,6 +140,11 @@ public class MainWindow extends JFrame {
             loginPage.clearFields();
         }
 
+        if (pageName.equals(PAGE_ACCOUNT)) {
+            // Ensure the Account page reflects the latest stored clinician profile
+            accountPage.reloadProfile();
+        }
+
         cardLayout.show(pageContainer, pageName);
         revalidate();
         repaint();
@@ -155,4 +157,6 @@ public class MainWindow extends JFrame {
     public AccountPage getAccountPage() {
         return accountPage;
     }
+    public TopBar getTopBar() {return topBar;}
+
 }

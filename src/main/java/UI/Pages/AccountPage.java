@@ -1,10 +1,12 @@
 package UI.Pages;
 
+import Models.DoctorProfile;
+import Services.DoctorProfileService;
 import UI.Components.PatientRecordsPanel;
 import UI.Components.PlaceHolders.PlaceholderPasswordField;
 import UI.Components.PlaceHolders.PlaceholderTextField;
+import UI.Components.RoundedButton;
 import UI.Components.Tiles.BaseTile;
-import UI.Components.Tiles.RoundedButton;
 import UI.MainWindow;
 import Utilities.SettingManager;
 
@@ -13,6 +15,8 @@ import java.awt.*;
 
 public class AccountPage extends JPanel {
 
+    private final MainWindow window;
+
     private CardLayout cardLayout;
     private JPanel cardPanel;
     private PatientRecordsPanel recordsPanel;
@@ -20,7 +24,17 @@ public class AccountPage extends JPanel {
     private final Color themeBg = new Color(245, 247, 250);
     private Container formRoot;
 
+    // Form fields
+    private PlaceholderTextField firstNameField, lastNameField, idField, ageField, specialtyField, emailField;
+    private PlaceholderPasswordField passwordField;
+
+    // Real profile data source
+    private final DoctorProfileService profileService = new DoctorProfileService();
+    private DoctorProfile profile;
+
     public AccountPage(MainWindow window) {
+        this.window = window;
+
         setLayout(new BorderLayout());
         setBackground(themeBg);
 
@@ -72,13 +86,12 @@ public class AccountPage extends JPanel {
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
         content.setBackground(themeBg);
 
-
         // ---------- Main card ----------
         BaseTile form = new BaseTile(1200, 700, 45, false);
         form.setMaximumSize(new Dimension(1200, 700));
         form.setAlignmentX(Component.CENTER_ALIGNMENT);
         form.setLayout(new GridBagLayout());
-        form.setBorder(BorderFactory.createEmptyBorder(0, 40, 70, 40)); // less top padding
+        form.setBorder(BorderFactory.createEmptyBorder(0, 40, 70, 40));
         form.setBackground(Color.WHITE);
 
         this.formRoot = form;
@@ -89,24 +102,29 @@ public class AccountPage extends JPanel {
         gbc.weightx = 1;
         gbc.anchor = GridBagConstraints.NORTHWEST;
 
-        // ---------- Fields ----------
-        PlaceholderTextField nameField = new PlaceholderTextField("Raymond");
-        PlaceholderTextField idField = new PlaceholderTextField("DOC123456");
-        PlaceholderTextField ageField = new PlaceholderTextField("20");
-        PlaceholderTextField specialtyField = new PlaceholderTextField("Cardiac Surgeon");
-        PlaceholderTextField emailField = new PlaceholderTextField("doctor@mail.com");
-        PlaceholderPasswordField passwordField = new PlaceholderPasswordField("Enter password");
+        // ---------- Fields (load real profile) ----------
+        this.profile = profileService.load();
+
+        this.firstNameField = new PlaceholderTextField(profile.getFirstName());
+        this.lastNameField  = new PlaceholderTextField(profile.getLastName());
+        this.idField = new PlaceholderTextField(profile.getIdNumber());
+        this.ageField = new PlaceholderTextField(String.valueOf(profile.getAge()));
+        this.specialtyField = new PlaceholderTextField(profile.getSpecialty());
+        this.emailField = new PlaceholderTextField(profile.getEmail());
+        this.passwordField = new PlaceholderPasswordField("Enter password"); // 不持久化
 
         int row = 0;
 
-        addField(form, "Name", nameField, gbc, 0, row);
-        addField(form, "ID Number", idField, gbc, 1, row++);
+        addField(form, "First Name", firstNameField, gbc, 0, row);
+        addField(form, "Last Name", lastNameField, gbc, 1, row++);
 
-        addField(form, "Age", ageField, gbc, 0, row);
-        addField(form, "Specialty", specialtyField, gbc, 1, row++);
+        addField(form, "ID Number", this.idField, gbc, 1, row++);
 
-        addField(form, "Email", emailField, gbc, 0, row);
-        addField(form, "Password", passwordField, gbc, 1, row++);
+        addField(form, "Age", this.ageField, gbc, 0, row);
+        addField(form, "Specialty", this.specialtyField, gbc, 1, row++);
+
+        addField(form, "Email", this.emailField, gbc, 0, row);
+        addField(form, "Password", this.passwordField, gbc, 1, row++);
 
         // ---------- Buttons ----------
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 16, 0));
@@ -143,7 +161,8 @@ public class AccountPage extends JPanel {
         root.add(scroll, BorderLayout.CENTER);
 
         // ---------- Actions ----------
-        saveBtn.addActionListener(e -> saveDoctorSettings());
+        saveBtn.addActionListener(e -> saveDoctorProfile());
+
         recordsBtn.addActionListener(e -> {
             recordsPanel.reloadFromDisk();
             cardLayout.show(cardPanel, "records");
@@ -183,9 +202,56 @@ public class AccountPage extends JPanel {
         tile.add(field, BorderLayout.CENTER);
     }
 
-    // ===================== SAVE =====================
-    private void saveDoctorSettings() {
-        JOptionPane.showMessageDialog(this, "Settings saved.");
+    // ===================== SAVE REAL PROFILE =====================
+    private void saveDoctorProfile() {
+        if (profile == null) profile = DoctorProfile.defaults();
+
+        String firstName = safe(firstNameField);
+        String lastName = safe(lastNameField);
+        String id = safe(idField);
+        String specialty = safe(specialtyField);
+        String email = safe(emailField);
+
+        int age;
+        try {
+            age = Integer.parseInt(safe(ageField));
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Age must be a number.", "Invalid input", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        profile.setFirstName(firstName);
+        profile.setLastName(lastName);
+        profile.setSpecialty(specialty);
+
+        profile.setIdNumber(id);
+        profile.setAge(age);
+        profile.setEmail(email);
+
+        profileService.save(profile);
+
+        window.getTopBar().updateDoctorInfo(
+                profile.getFullName(),
+                profile.getSpecialty()
+        );
+        JOptionPane.showMessageDialog(this, "Profile saved.");
+    }
+
+    private String safe(JTextField tf) {
+        return tf == null ? "" : tf.getText().trim();
+    }
+
+    // ===================== RELOAD WHEN PAGE SHOWN =====================
+    public void reloadProfile() {
+        DoctorProfile p = profileService.load();
+        this.profile = p;
+
+        if (firstNameField != null) firstNameField.setText(p.getFirstName());
+        if (lastNameField != null) lastNameField.setText(p.getLastName());
+        if (idField != null) idField.setText(p.getIdNumber());
+        if (ageField != null) ageField.setText(String.valueOf(p.getAge()));
+        if (specialtyField != null) specialtyField.setText(p.getSpecialty());
+        if (emailField != null) emailField.setText(p.getEmail());
     }
 
     // ===================== THEME =====================
