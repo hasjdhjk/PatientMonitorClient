@@ -66,11 +66,11 @@ public class AlertManager {
 
         if (highest == LiveVitals.VitalsSeverity.DANGER) {
             // Fast repeating beep (e.g., every 300ms)
-            soundTimer = new javax.swing.Timer(300, e -> Toolkit.getDefaultToolkit().beep());
+            soundTimer = new javax.swing.Timer(300, e -> playBeep());
             soundTimer.start();
         } else if (highest == LiveVitals.VitalsSeverity.WARNING) {
             // Slower repeating beep (e.g., every 700ms)
-            soundTimer = new javax.swing.Timer(700, e -> Toolkit.getDefaultToolkit().beep());
+            soundTimer = new javax.swing.Timer(700, e -> playBeep());
             soundTimer.start();
         }
         // NORMAL => no timer
@@ -92,4 +92,16 @@ public class AlertManager {
             soundTimer = null;
         }
     }
+    private void playBeep() {
+        try {
+            var is = getClass().getResourceAsStream("/sounds/alert.wav");
+            if (is == null) return;
+
+            var audio = javax.sound.sampled.AudioSystem.getAudioInputStream(is);
+            var clip = javax.sound.sampled.AudioSystem.getClip();
+            clip.open(audio);
+            clip.start(); // one-shot beep
+        } catch (Exception ignored) {}
+    }
+
 }
