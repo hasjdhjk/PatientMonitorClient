@@ -14,4 +14,7 @@ public final class Session {
     public static String getDoctorEmail() {
         return doctorEmail;
     }
+    public static void clear() {
+        doctorEmail = "demo";
+    }
 }
