@@ -75,7 +75,7 @@ public class DigitalTwinPanel extends JPanel {
             engine = webView.getEngine();
 
             engine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
-                if (newState == Worker.State.SUCCEEDED) {
+                if (newState == Worker.State.SUCCEEDED) {   
                     pageLoaded = true;
                     System.out.println("Digital Twin HTML loaded: " + engine.getLocation());
 
