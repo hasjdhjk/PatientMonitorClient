@@ -1,7 +1,6 @@
 package UI.Pages;
 
 import UI.Components.RoundedButton;
-
 import UI.MainWindow;
 import UI.Components.PlaceHolders.PlaceholderTextField;
 import UI.Components.Tiles.BaseTile;
@@ -24,15 +23,15 @@ public class AddPatientPage extends JPanel {
     private PlaceholderTextField givenNameField;
     private PlaceholderTextField familyNameField;
     private PlaceholderTextField idField;             // UI 里保留，但不再作为必填/不发给 server
-    private PlaceholderTextField heartRateField;
-    private PlaceholderTextField temperatureField;
+
+    private PlaceholderTextField genderField;
+    private PlaceholderTextField ageField;
     private PlaceholderTextField bloodPressureField;
 
     // ====== Server config ======
     private static final String SERVER_BASE = "http://localhost:8080/PatientServer";
     private static final HttpClient HTTP = HttpClient.newHttpClient();
 
-    // TODO: 将来接好登录后，从当前登录用户拿到 doctor username
     private static final String DOCTOR_USERNAME = "demo";
 
     public AddPatientPage(MainWindow mainWindow) {
@@ -64,8 +63,9 @@ public class AddPatientPage extends JPanel {
         givenNameField = field(form, "Given Name", "Enter first name");
         familyNameField = field(form, "Family Name", "Enter last name");
         idField = field(form, "Patient ID (optional)", "Leave empty (DB auto ID)");
-        heartRateField = field(form, "Heart Rate (bpm)", "e.g. 72");
-        temperatureField = field(form, "Temperature (°C)", "e.g. 36.5");
+
+        genderField = field(form, "Gender", "e.g. Female / Male / Other");
+        ageField = field(form, "Age", "e.g. 32");
         bloodPressureField = field(form, "Blood Pressure", "e.g. 120/80");
 
         form.add(Box.createVerticalStrut(25));
@@ -123,36 +123,31 @@ public class AddPatientPage extends JPanel {
     private void addPatientToServerAsync(JButton addBtn) {
         String given = safeText(givenNameField.getText());
         String family = safeText(familyNameField.getText());
-        String hrText = safeText(heartRateField.getText());
-        String tempText = safeText(temperatureField.getText());
+        String gender = safeText(genderField.getText());
+        String ageText = safeText(ageField.getText());
         String bp = safeText(bloodPressureField.getText());
 
         if (given.isEmpty() || family.isEmpty()) {
             error("Name cannot be empty");
             return;
         }
+        if (gender.isEmpty()) {
+            error("Gender cannot be empty");
+            return;
+        }
 
-        int hr;
-        double temp;
-
+        int age;
         try {
-            hr = Integer.parseInt(hrText);
-            temp = Double.parseDouble(tempText);
+            age = Integer.parseInt(ageText);
         } catch (NumberFormatException e) {
-            error("Please enter valid numeric values for HR / Temp");
+            error("Please enter a valid numeric age");
+            return;
+        }
+        if (age < 0 || age > 130) {
+            error("Age must be between 0 and 130");
             return;
         }
 
-        if (hr < 30 || hr > 200) {
-            error("Heart rate must be between 30 and 200 bpm");
-            return;
-        }
-        if (temp < 30 || temp > 45) {
-            error("Temperature must be between 30 and 45 °C");
-            return;
-        }
-
-        // very basic BP validation
         if (!bp.contains("/")) {
             error("Blood pressure format should be like 120/80");
             return;
@@ -160,24 +155,21 @@ public class AddPatientPage extends JPanel {
 
         addBtn.setEnabled(false);
 
-        final int finalHr = hr;
-        final double finalTemp = temp;
+        final int finalAge = age;
         final String finalBp = bp;
 
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
 
-                // ✅ 构造“服务器期望字段名”的 JSON（不要用 Patient 类去 Gson）
                 JsonObject body = new JsonObject();
                 body.addProperty("doctor", DOCTOR_USERNAME);
                 body.addProperty("givenname", given);
                 body.addProperty("familyname", family);
-                body.addProperty("heartrate", finalHr);
-                body.addProperty("temperature", finalTemp);
+                body.addProperty("gender", gender);
+                body.addProperty("age", finalAge);
                 body.addProperty("bp", finalBp);
 
-                // debug: 看看你到底发了什么（很关键）
                 System.out.println("POST /api/patient body = " + body.toString());
 
                 String url = SERVER_BASE + "/api/patient";
@@ -194,9 +186,7 @@ public class AddPatientPage extends JPanel {
                     throw new RuntimeException("HTTP " + resp.statusCode() + " body=" + resp.body());
                 }
 
-                // 兼容旧 gson：new JsonParser().parse(...)
-                JsonObject out = new JsonParser().parse(resp.body()).getAsJsonObject();
-
+                JsonObject out = JsonParser.parseString(resp.body()).getAsJsonObject();
                 if (out.has("ok") && !out.get("ok").getAsBoolean()) {
                     throw new RuntimeException(out.has("error") ? out.get("error").getAsString() : "Server error");
                 }
@@ -233,12 +223,11 @@ public class AddPatientPage extends JPanel {
         if (s == null) return "";
         s = s.trim();
 
-        // 如果你的 PlaceholderTextField 会把 placeholder 当 text 返回，这里顺手过滤掉
         if (s.equalsIgnoreCase("Enter first name")) return "";
         if (s.equalsIgnoreCase("Enter last name")) return "";
         if (s.equalsIgnoreCase("Leave empty (DB auto ID)")) return "";
-        if (s.equalsIgnoreCase("e.g. 72")) return "";
-        if (s.equalsIgnoreCase("e.g. 36.5")) return "";
+        if (s.equalsIgnoreCase("e.g. Female / Male / Other")) return "";
+        if (s.equalsIgnoreCase("e.g. 32")) return "";
         if (s.equalsIgnoreCase("e.g. 120/80")) return "";
 
         return s;
@@ -252,8 +241,8 @@ public class AddPatientPage extends JPanel {
         givenNameField.setText("");
         familyNameField.setText("");
         idField.setText("");
-        heartRateField.setText("");
-        temperatureField.setText("");
+        genderField.setText("");
+        ageField.setText("");
         bloodPressureField.setText("");
     }
 }

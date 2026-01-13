@@ -60,10 +60,9 @@ public class HomePage extends JPanel {
         scroll.setBorder(null);
         add(scroll, BorderLayout.CENTER);
 
-        // ✅ discharge 完成后：重新从 DB 拉取（卡片会减少）
+        // discharge connect to database
         PatientDischargeService.onDischarge = this::reloadFromServerAsync;
 
-        // 初次加载
         reloadFromServerAsync();
 
         refresh();
@@ -152,7 +151,6 @@ public class HomePage extends JPanel {
     }
 
     public void onPageShown() {
-        // ✅ 回到首页就同步 DB（防止旧缓存）
         reloadFromServerAsync();
     }
 }

@@ -1,6 +1,7 @@
 package UI.Pages;
 
 import Models.AddedPatientDB;
+import Models.LiveVitals;
 import Models.Patient;
 import UI.Components.DigitalTwinPanel;
 import UI.Components.Tiles.BaseTile;
@@ -18,6 +19,12 @@ public class DigitalTwinPage extends JPanel {
     private int currentIndex = 0;
     private Patient currentPatient;
 
+    // Shared globally
+    private LiveVitals liveVitals;
+
+    // Only used to refresh UI (simulation runs globally)
+    private Timer liveTimer;
+
     private final DigitalTwinPanel digitalTwinPanel;
     private final BaseTile twinTile;
 
@@ -27,6 +34,10 @@ public class DigitalTwinPage extends JPanel {
 
         if (!allPatients.isEmpty()) {
             currentPatient = allPatients.get(0);
+        }
+
+        if (currentPatient != null) {
+            initLiveVitalsForCurrentPatient();
         }
 
         setLayout(new BorderLayout());
@@ -43,46 +54,75 @@ public class DigitalTwinPage extends JPanel {
 
         if (currentPatient != null) {
             pushPatientToTwin();
+            startLiveLoop();
         }
     }
 
     /** 🔑 唯一真正需要做的同步点 */
     private void pushPatientToTwin() {
+        if (currentPatient == null) return;
+
         // ① 先让 dashboard 切换到对应 patientId（用于它的 fetch ../api/patient?id=...）
         digitalTwinPanel.setSelectedPatientId(currentPatient.getId());
 
-        // ② 你原来这段 vitals 仍然可以保留（可选：即时刷新 UI）
-        String[] parts = currentPatient.getBloodPressure().split("/");
-        int sys = Integer.parseInt(parts[0].trim());
-        int dia = Integer.parseInt(parts[1].trim());
+        // ② 用共享 LiveVitals 刷新 UI
+        if (liveVitals == null) {
+            initLiveVitalsForCurrentPatient();
+        }
 
-        digitalTwinPanel.setVitals(
-                currentPatient.getHeartRate(),
-                20,   // RR placeholder
-                20,   // SpO2 placeholder
-                sys,
-                dia,
-                currentPatient.getTemperature()
-        );
+        String bp = liveVitals.getBloodPressure();
+        int sys = 120;
+        int dia = 80;
+        try {
+            String[] parts = bp.split("/");
+            sys = Integer.parseInt(parts[0].trim());
+            dia = Integer.parseInt(parts[1].trim());
+        } catch (Exception ignored) {}
+
+        int hr = (int) Math.round(liveVitals.getHeartRate());
+        int rr = (int) Math.round(liveVitals.getRespRate());
+        int sp = (int) Math.round(liveVitals.getSpO2());
+        double temp = liveVitals.getTemperature();
+
+        digitalTwinPanel.setVitals(hr, rr, sp, sys, dia, temp);
+    }
+
+    private void initLiveVitalsForCurrentPatient() {
+        String baselineBp = currentPatient.getBloodPressure();
+        liveVitals = LiveVitals.getShared(currentPatient.getId(), baselineBp);
+    }
+
+    private void startLiveLoop() {
+        if (liveTimer != null) liveTimer.stop();
+
+        // 每秒刷新一次 UI（模拟在后台线程全局跑）
+        liveTimer = new Timer(1000, e -> pushPatientToTwin());
+        liveTimer.start();
     }
 
     public void setPatient(Patient patient) {
         this.currentPatient = patient;
         this.currentIndex = allPatients.indexOf(patient);
-        pushPatientToTwin(); // ⭐ 关键
+        initLiveVitalsForCurrentPatient();
+        pushPatientToTwin();
+        startLiveLoop();
     }
 
     public void nextPatient() {
         if (allPatients.isEmpty()) return;
         currentIndex = (currentIndex + 1) % allPatients.size();
         currentPatient = allPatients.get(currentIndex);
+        initLiveVitalsForCurrentPatient();
         pushPatientToTwin();
+        startLiveLoop();
     }
 
     public void previousPatient() {
         if (allPatients.isEmpty()) return;
         currentIndex = (currentIndex - 1 + allPatients.size()) % allPatients.size();
         currentPatient = allPatients.get(currentIndex);
+        initLiveVitalsForCurrentPatient();
         pushPatientToTwin();
+        startLiveLoop();
     }
 }

@@ -44,7 +44,7 @@ public class SideBar extends JPanel {
 
             // TEMP patient (until real selection is wired)
             Patient dummyPatient =
-                    new Patient(1, "John", "Anderson", 80, 36.8, "120/80");
+                    new Patient(1, "John", "Anderson", "male", 36, "120/80");
 
             window.showLiveMonitoring(dummyPatient);
             setSelectedButton(liveBtn);

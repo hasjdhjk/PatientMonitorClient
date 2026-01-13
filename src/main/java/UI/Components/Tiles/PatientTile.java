@@ -37,7 +37,7 @@ public class PatientTile extends BaseTile {
         // middle left ecg
         ECGPanel ecg = new ECGPanel();
         add(ecg, BorderLayout.CENTER);
-        ecg.setHeartRate(patient.getHeartRate());
+        //ecg.setHeartRate(patient.getHeartRate());
 
         // middle right vitals
         JPanel vitals = new JPanel();
@@ -45,9 +45,9 @@ public class PatientTile extends BaseTile {
         vitals.setOpaque(false);
         vitals.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 10));
 
-        vitals.add(label("HR: " + patient.getHeartRate()));
+        vitals.add(label("Gender: " + patient.getGender()));
         vitals.add(Box.createVerticalStrut(10));
-        vitals.add(label("Temp: " + patient.getTemperature()));
+        vitals.add(label("Age: " + patient.getAge()));
         vitals.add(Box.createVerticalStrut(10));
         vitals.add(label("BP: " + patient.getBloodPressure()));
 

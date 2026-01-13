@@ -1,9 +1,6 @@
 package Services;
 
-import Models.Patient;
-import Models.PatientRecord;
-import Models.PatientRecordIO;
-import Models.AddedPatientDB;
+import Models.*;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -93,7 +90,7 @@ public class PatientDischargeService {
 
                     // 3) Remove from local cache only after DB success
                     AddedPatientDB.removePatient(patient);
-
+                    LiveVitals.removeShared(patientId);
                     // 4) notify UI to reload from DB
                     if (onDischarge != null) onDischarge.run();
 

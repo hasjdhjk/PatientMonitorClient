@@ -65,7 +65,7 @@ public class MainWindow extends JFrame {
         addPatientPage = new AddPatientPage(this);
 
         Patient dummyPatient = new Patient(
-                1, "John", "Anderson", 80, 36.8, "120/80"
+                1, "John", "Anderson", "Male", 36, "120/80"
         );
         liveMonitoringPage = new LiveMonitoringPage(dummyPatient, this);
 

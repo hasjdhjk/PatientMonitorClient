@@ -31,7 +31,6 @@ public class LiveMonitoringPage extends JPanel {
 
     /* ===== DATA ===== */
     private final LiveVitals vitals;
-    private final PatientSimulatorService vitalsSim;
     private final ECGSimulatorService ecgSim;
     private final RespSimulatorService respSim;
     private final MinuteAveragingService averagingService;
@@ -59,8 +58,7 @@ public class LiveMonitoringPage extends JPanel {
     public LiveMonitoringPage(Patient patient, MainWindow window) {
         this.window = window;
 
-        vitals = new LiveVitals(patient.getId());
-        vitalsSim = new PatientSimulatorService(vitals);
+        vitals = LiveVitals.getShared(patient.getId(), patient.getBloodPressure());
         ecgSim = new ECGSimulatorService();
         respSim = new RespSimulatorService();
         averagingService = new MinuteAveragingService(vitals);
@@ -340,7 +338,6 @@ public class LiveMonitoringPage extends JPanel {
 
         new Timer(1000, e -> {
 
-            vitalsSim.update(1);
             averagingService.sample();
 
             int hr = (int) vitals.getHeartRate();
