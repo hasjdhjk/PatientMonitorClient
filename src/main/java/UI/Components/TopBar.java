@@ -66,12 +66,27 @@ public class TopBar extends JPanel {
         return left;
     }
 
-    // ================= RIGHT: DOCTOR INFO =================
+    // ================= RIGHT: NOTIFICATION + DOCTOR INFO =================
     private JPanel buildRightSection() {
         JPanel right = new JPanel();
         right.setOpaque(false);
         right.setLayout(new BoxLayout(right, BoxLayout.X_AXIS));
         right.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 30));
+
+        // ---- Notification button ----
+        JLabel notificationBtn = new JLabel(
+                ImageLoader.loadImageScaled("icon_notification", "Icons", 24)
+        );
+        notificationBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        notificationBtn.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 18));
+
+        notificationBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                // hook later if needed
+                System.out.println("Notification clicked");
+            }
+        });
 
         // ---- Text block ----
         JPanel textBlock = new JPanel();
@@ -93,7 +108,7 @@ public class TopBar extends JPanel {
         // ---- Avatar ----
         avatarLabel = new JLabel("SJ", SwingConstants.CENTER);
         avatarLabel.setPreferredSize(new Dimension(80, 80));
-        avatarLabel.setMaximumSize(new Dimension(80, 80)) ;
+        avatarLabel.setMaximumSize(new Dimension(80, 80));
         avatarLabel.setFont(new Font("Arial", Font.BOLD, 18));
         avatarLabel.setForeground(Color.WHITE);
         avatarLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -119,6 +134,7 @@ public class TopBar extends JPanel {
         avatarCircle.setOpaque(false);
         avatarCircle.add(avatarLabel);
 
+        right.add(notificationBtn);
         right.add(textBlock);
         right.add(Box.createHorizontalStrut(16));
         right.add(avatarCircle);
@@ -127,7 +143,6 @@ public class TopBar extends JPanel {
     }
 
     // ================= PUBLIC UPDATE API =================
-    // Call this after doctor edits account details
     public void updateDoctorInfo(String fullName, String specialty) {
         nameLabel.setText(fullName);
         roleLabel.setText(specialty);
