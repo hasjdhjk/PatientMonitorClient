@@ -4,7 +4,6 @@ import Models.AlertRecord;
 import Models.LiveVitals;
 import Models.Patient;
 
-import java.awt.*;
 import java.time.Instant;
 import java.util.*;
 import java.util.List;
@@ -94,7 +93,7 @@ public class AlertManager {
     }
     private void playBeep() {
         try {
-            var is = getClass().getResourceAsStream("/sounds/alert.wav");
+            var is = getClass().getResourceAsStream("/sounds/wetfart.wav");
             if (is == null) return;
 
             var audio = javax.sound.sampled.AudioSystem.getAudioInputStream(is);
