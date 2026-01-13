@@ -48,7 +48,7 @@ public class PatientDischargeService {
         PatientRecordIO.saveRecords(records);
 
         // 2) Call server to delete from DB (async, avoid freezing UI)
-        final String doctor = "demo"; // TODO: replace with logged-in doctor username later
+        final String doctor = NetWork.Session.getDoctorEmail();
         final int patientId = patient.getId();
 
         SwingWorker<Void, Void> worker = new SwingWorker<>() {

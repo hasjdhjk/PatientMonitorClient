@@ -93,7 +93,7 @@ public class AlertManager {
     }
     private void playBeep() {
         try {
-            var is = getClass().getResourceAsStream("/sounds/wetfart.wav");
+            var is = getClass().getResourceAsStream("/sounds/alert.wav");
             if (is == null) return;
 
             var audio = javax.sound.sampled.AudioSystem.getAudioInputStream(is);

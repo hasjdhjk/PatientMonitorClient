@@ -98,7 +98,7 @@ public class HomePage extends JPanel {
     }
 
     public void reloadFromServerAsync() {
-        final String doctorUsername = "demo";
+        final String doctorUsername = NetWork.Session.getDoctorEmail();
 
         SwingWorker<List<Patient>, Void> worker = new SwingWorker<>() {
             @Override

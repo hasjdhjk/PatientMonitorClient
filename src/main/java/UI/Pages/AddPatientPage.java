@@ -32,8 +32,6 @@ public class AddPatientPage extends JPanel {
     // ====== Server config ======
     private static final HttpClient HTTP = HttpClient.newHttpClient();
 
-    private static final String DOCTOR_USERNAME = "demo";
-
     public AddPatientPage(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
         initUI();
@@ -163,7 +161,7 @@ public class AddPatientPage extends JPanel {
             protected Void doInBackground() throws Exception {
 
                 JsonObject body = new JsonObject();
-                body.addProperty("doctor", DOCTOR_USERNAME);
+                body.addProperty("doctor", NetWork.Session.getDoctorEmail());
                 body.addProperty("givenname", given);
                 body.addProperty("familyname", family);
                 body.addProperty("gender", gender);

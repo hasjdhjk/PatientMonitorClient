@@ -17,6 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import NetWork.ServerConfig;
+import NetWork.Session;
 
 public class DigitalTwinPanel extends JPanel {
 
@@ -27,12 +28,43 @@ public class DigitalTwinPanel extends JPanel {
     // Keep the latest requested values so HomePage/StatusTracker can call in any order.
     private volatile Integer pendingPatientId = null;
     private volatile Vitals pendingVitals = null;
+    // Avoid spamming logs when dashboard JS functions are not ready.
+    private final java.util.Set<String> warnedJsFns = java.util.Collections.synchronizedSet(new java.util.HashSet<>());
 
     // --- Simulator driving dashboard ---
     private final LiveVitals simulatedVitals = new LiveVitals(0);
     private final PatientSimulatorService simulator = new PatientSimulatorService(simulatedVitals);
     private ScheduledExecutorService simExec;
     private static final String DASHBOARD_URL = ServerConfig.dashboardUrl();
+
+    private static String jsString(String s) {
+        if (s == null) return "''";
+        // Escape backslashes and single quotes for JS single-quoted strings
+        return "'" + s.replace("\\", "\\\\").replace("'", "\\'") + "'";
+    }
+
+    private void trySendContextToDashboard() {
+        if (!pageLoaded || engine == null) return;
+
+        String doctor = Session.getDoctorEmail();
+        // Provide an absolute API base so dashboard JS can fetch reliably.
+        // Example: https://bioeng-bbb-app.impaas.uk
+        String apiBase = ServerConfig.baseUrl();
+
+        String js = "window.__doctor = " + jsString(doctor) + ";" +
+                    "window.__apiBase = " + jsString(apiBase) + ";";
+        try {
+            engine.executeScript(js);
+        } catch (Exception ignored) {}
+    }
+
+    /**
+     * Call this after login/logout (or when the active doctor changes) to update
+     * the dashboard JS context (window.__doctor / window.__apiBase).
+     */
+    public void refreshDashboardContext() {
+        Platform.runLater(this::trySendContextToDashboard);
+    }
 
     public DigitalTwinPanel() {
         setLayout(new BorderLayout());
@@ -47,8 +79,14 @@ public class DigitalTwinPanel extends JPanel {
                     pageLoaded = true;
                     System.out.println("Digital Twin HTML loaded: " + engine.getLocation());
 
+                    // Provide logged-in doctor to the dashboard page
+                    trySendContextToDashboard();
+
                     // After load, try to flush any pending updates.
                     flushPending();
+
+                    // Re-apply context after pending calls (covers late JS bootstraps)
+                    trySendContextToDashboard();
 
                     // Start simulation pushing vitals into dashboard JS
                     startSimulation();
@@ -137,6 +175,8 @@ public class DigitalTwinPanel extends JPanel {
         if (!pageLoaded || engine == null) return;
         if (pendingPatientId == null) return;
 
+        trySendContextToDashboard();
+
         // Wait until the JS function exists to avoid "undefined is not a function".
         runWhenJsFunctionAvailable(
                 "setSelectedPatientIdFromJava",
@@ -146,13 +186,15 @@ public class DigitalTwinPanel extends JPanel {
                     String js = String.format("window.setSelectedPatientIdFromJava(%d);", id);
                     engine.executeScript(js);
                 },
-                30
+                60
         );
     }
 
     private void trySendVitals() {
         if (!pageLoaded || engine == null) return;
         if (pendingVitals == null) return;
+
+        trySendContextToDashboard();
 
         runWhenJsFunctionAvailable(
                 "switchToVitalsFromJava",
@@ -165,7 +207,7 @@ public class DigitalTwinPanel extends JPanel {
                     );
                     engine.executeScript(js);
                 },
-                30
+                60
         );
     }
 
@@ -197,11 +239,13 @@ public class DigitalTwinPanel extends JPanel {
         }
 
         if (retries <= 0) {
-            System.out.println("DigitalTwinPanel: JS function not ready: " + fnName);
+            if (warnedJsFns.add(fnName)) {
+                System.out.println("DigitalTwinPanel: JS function not ready: " + fnName);
+            }
             return;
         }
 
-        PauseTransition pause = new PauseTransition(Duration.millis(100));
+        PauseTransition pause = new PauseTransition(Duration.millis(150));
         pause.setOnFinished(ev -> runWhenJsFunctionAvailable(fnName, action, retries - 1));
         pause.play();
     }

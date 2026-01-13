@@ -1,6 +1,7 @@
 package UI.Pages;
 
 import NetWork.ApiClient;
+import NetWork.Session;
 import UI.Components.ImagePanel;
 import UI.Components.PlaceHolders.PlaceholderPasswordField;
 import UI.Components.PlaceHolders.PlaceholderTextField;
@@ -97,6 +98,13 @@ public class LoginPage extends ImagePanel {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
+            // Persist the logged-in doctor identity for subsequent API calls
+            Session.setDoctorEmail(email);
+            clearFields();
+
+            // notify other pages (e.g. Digital Twin) that doctor context changed
+            mainWindow.onDoctorLoggedIn();
 
             mainWindow.showHomePage();
         });
