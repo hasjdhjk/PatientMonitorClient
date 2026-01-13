@@ -9,14 +9,13 @@ public class Patient {
     private int age;
     private String bloodPressure;
 
-    private boolean sticky = false; // sticky on top
+    private boolean sticky = false;
 
-    public Patient() {}  // GSON requires a no-arg constructor
+    public Patient() {}
 
     public Patient(int id, String givenName, String familyName,
                    String gender, int age,
                    String bloodPressure) {
-
         this.id = id;
         this.givenName = givenName;
         this.familyName = familyName;
@@ -25,7 +24,6 @@ public class Patient {
         this.bloodPressure = bloodPressure;
     }
 
-    // Getters
     public int getId() { return id; }
     public String getName() { return givenName + " " + familyName; }
     public String getGivenName() { return givenName; }
@@ -35,7 +33,6 @@ public class Patient {
     public String getBloodPressure() { return bloodPressure; }
     public boolean isSticky() { return sticky; }
 
-    // Setters
     public void setId(int id) { this.id = id; }
     public void setGivenName(String givenName) { this.givenName = givenName; }
     public void setFamilyName(String familyName) { this.familyName = familyName; }
@@ -46,9 +43,6 @@ public class Patient {
 
     @Override
     public String toString() {
-        return givenName + " " + familyName +
-                " (Gender: " + gender +
-                ", Age: " + age +
-                ", BP: " + bloodPressure + ")";
+        return getName() + " (Gender: " + gender + ", Age: " + age + ", BP: " + bloodPressure + ")";
     }
 }

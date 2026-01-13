@@ -12,6 +12,7 @@ public class BaseTile extends JPanel {
     private Color tileColor = Color.WHITE;
     private Color baseColor = Color.WHITE;
     private boolean hasHoverEffect;
+    private boolean backgroundLocked = false;
 
     public BaseTile(int width, int height, int radius, boolean hasHoverEffect) {
         this.radius = radius;
@@ -91,8 +92,20 @@ public class BaseTile extends JPanel {
         super.paintComponent(g);
     }
 
+
     @Override
     public void setBackground(Color bg) {
+        if (backgroundLocked) return;
+        this.baseColor = bg;
+        this.tileColor = bg;
+        repaint();
+    }
+
+    public void lockBackground(boolean locked) {
+        this.backgroundLocked = locked;
+    }
+
+    public void forceBackground(Color bg) {
         this.baseColor = bg;
         this.tileColor = bg;
         repaint();

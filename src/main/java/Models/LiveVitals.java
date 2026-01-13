@@ -6,6 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LiveVitals {
 
@@ -100,5 +102,101 @@ public class LiveVitals {
     public String getBloodPressure() { return bloodPressure; }
     public void setBloodPressure(String bloodPressure) {
         this.bloodPressure = bloodPressure;
+    }
+
+    /** Convenience: any vital abnormal (warning-level thresholds). */
+    public boolean hasAbnormalVitals() {
+        return isHeartRateAbnormal() || isTemperatureAbnormal() || isBloodPressureAbnormal();
+    }
+
+    /** WARNING-level causes (your current “abnormal” ranges). */
+    public List<String> getWarningCauses() {
+        List<String> causes = new ArrayList<>();
+
+        if (isHeartRateAbnormal()) {
+            causes.add("Heart rate abnormal (HR=" + String.format("%.0f", heartRate) + ", normal 60–100)");
+        }
+        if (isTemperatureAbnormal()) {
+            causes.add("Temperature abnormal (Temp=" + String.format("%.1f", temperature) + ", normal 36.1–37.2)");
+        }
+        if (isBloodPressureAbnormal()) {
+            causes.add("Blood pressure abnormal (BP=" + bloodPressure + ", normal 90–140 / 60–90)");
+        }
+
+        return causes;
+    }
+
+    /** DANGER-level causes (more extreme thresholds). */
+    public List<String> getDangerCauses() {
+        List<String> causes = new ArrayList<>();
+
+        if (heartRate < 40 || heartRate > 130) {
+            causes.add("Heart rate DANGER (HR=" + String.format("%.0f", heartRate) + ", danger <40 or >130)");
+        }
+        if (temperature < 35.0 || temperature > 39.0) {
+            causes.add("Temperature DANGER (Temp=" + String.format("%.1f", temperature) + ", danger <35.0 or >39.0)");
+        }
+
+        if (bloodPressure != null && !bloodPressure.isEmpty()) {
+            try {
+                String[] parts = bloodPressure.split("/");
+                int sys = Integer.parseInt(parts[0].trim());
+                int dia = Integer.parseInt(parts[1].trim());
+                if (sys < 80 || sys > 180 || dia < 50 || dia > 120) {
+                    causes.add("Blood pressure DANGER (BP=" + bloodPressure + ", danger sys <80/>180 or dia <50/>120)");
+                }
+            } catch (Exception ignored) {
+            }
+        }
+
+        return causes;
+    }
+
+    /** Unified helper for UI: return causes according to severity. */
+    public List<String> getAlertCauses(VitalsSeverity sev) {
+        if (sev == VitalsSeverity.DANGER) return getDangerCauses();
+        if (sev == VitalsSeverity.WARNING) return getWarningCauses();
+        return new ArrayList<>();
+    }
+
+    public enum VitalsSeverity { NORMAL, WARNING, DANGER }
+
+    public boolean isHeartRateAbnormal() {
+        return heartRate < 60 || heartRate > 100;
+    }
+
+    public boolean isTemperatureAbnormal() {
+        return temperature < 36.1 || temperature > 37.2;
+    }
+
+    public boolean isBloodPressureAbnormal() {
+        if (bloodPressure == null || bloodPressure.isEmpty()) return false;
+        try {
+            String[] parts = bloodPressure.split("/");
+            int sys = Integer.parseInt(parts[0].trim());
+            int dia = Integer.parseInt(parts[1].trim());
+            return sys < 90 || sys > 140 || dia < 60 || dia > 90;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public VitalsSeverity getVitalsSeverity() {
+        boolean dangerHR = heartRate < 40 || heartRate > 130;
+        boolean dangerTemp = temperature < 35.0 || temperature > 39.0;
+
+        boolean dangerBP = false;
+        if (bloodPressure != null && !bloodPressure.isEmpty()) {
+            try {
+                String[] parts = bloodPressure.split("/");
+                int sys = Integer.parseInt(parts[0].trim());
+                int dia = Integer.parseInt(parts[1].trim());
+                dangerBP = (sys < 80 || sys > 180 || dia < 50 || dia > 120);
+            } catch (Exception ignored) {}
+        }
+
+        if (dangerHR || dangerTemp || dangerBP) return VitalsSeverity.DANGER;
+
+        return hasAbnormalVitals() ? VitalsSeverity.WARNING : VitalsSeverity.NORMAL;
     }
 }
