@@ -1,7 +1,7 @@
 package UI.Pages;
 
-import Models.AddedPatientDB;
-import Models.Patient;
+import Models.Patients.AddedPatientDB;
+import Models.Patients.Patient;
 import Services.PatientDischargeService;
 
 import UI.Components.SearchBar;

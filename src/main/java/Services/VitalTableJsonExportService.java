@@ -1,7 +1,7 @@
 package Services;
 
-import Models.VitalRecord;
-import Models.VitalRecordIO;
+import Models.Vitals.VitalRecord;
+import Models.Vitals.VitalRecordIO;
 
 import javax.swing.*;
 import java.io.FileWriter;

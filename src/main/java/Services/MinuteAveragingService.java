@@ -1,8 +1,8 @@
 package Services;
 
-import Models.LiveVitals;
-import Models.VitalRecord;
-import Models.VitalRecordIO;
+import Models.Vitals.LiveVitals;
+import Models.Vitals.VitalRecord;
+import Models.Vitals.VitalRecordIO;
 
 import java.util.ArrayList;
 import java.util.List;

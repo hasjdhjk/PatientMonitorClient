@@ -1,6 +1,6 @@
 package Services;
 
-import Models.Patient;
+import Models.Patients.Patient;
 import NetWork.ServerConfig;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

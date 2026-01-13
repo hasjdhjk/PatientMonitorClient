@@ -1,4 +1,4 @@
-package Models;
+package Models.Vitals;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -1,8 +1,8 @@
 package Services;
 
-import Models.VitalRecord;
-import Models.VitalRecordIO;
-import Models.VitalSummary24h;
+import Models.Vitals.VitalRecord;
+import Models.Vitals.VitalRecordIO;
+import Models.Vitals.VitalSummary24h;
 
 import java.time.LocalDateTime;
 import java.util.List;

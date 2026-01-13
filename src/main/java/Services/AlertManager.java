@@ -1,8 +1,8 @@
 package Services;
 
-import Models.AlertRecord;
-import Models.LiveVitals;
-import Models.Patient;
+import Models.Vitals.AlertRecord;
+import Models.Vitals.LiveVitals;
+import Models.Patients.Patient;
 
 import java.time.Instant;
 import java.util.*;

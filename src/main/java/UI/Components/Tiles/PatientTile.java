@@ -1,7 +1,7 @@
 package UI.Components.Tiles;
 
-import Models.LiveVitals;
-import Models.Patient;
+import Models.Vitals.LiveVitals;
+import Models.Patients.Patient;
 import Services.PatientDischargeService;
 import Services.AlertManager;
 import UI.Components.RoundedButton;

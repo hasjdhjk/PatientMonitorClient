@@ -1,6 +1,6 @@
 package UI.Components;
 
-import Models.LiveVitals;
+import Models.Vitals.LiveVitals;
 import Services.PatientSimulatorService;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;

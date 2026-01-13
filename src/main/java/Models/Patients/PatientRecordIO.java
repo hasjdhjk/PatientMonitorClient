@@ -1,4 +1,4 @@
-package Models;
+package Models.Patients;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

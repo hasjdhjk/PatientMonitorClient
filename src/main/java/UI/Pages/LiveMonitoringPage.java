@@ -1,9 +1,9 @@
 package UI.Pages;
 
-import Models.LiveVitals;
-import Models.Patient;
-import Models.VitalRecord;
-import Models.VitalRecordIO;
+import Models.Vitals.LiveVitals;
+import Models.Patients.Patient;
+import Models.Vitals.VitalRecord;
+import Models.Vitals.VitalRecordIO;
 import Services.ECGSimulatorService;
 import Services.MinuteAveragingService;
 import Services.RespSimulatorService;

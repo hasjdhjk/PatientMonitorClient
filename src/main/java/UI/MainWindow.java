@@ -4,7 +4,7 @@ import Services.DoctorProfileService;
 import Utilities.SettingManager;
 import Utilities.ThemeManager;
 
-import Models.Patient;
+import Models.Patients.Patient;
 import UI.Components.SideBar;
 import UI.Components.TopBar;
 import UI.Pages.*;
