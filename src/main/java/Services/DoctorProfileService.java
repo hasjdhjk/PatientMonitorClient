@@ -30,7 +30,6 @@ public class DoctorProfileService {
     public DoctorProfile load() {
         if (!Files.exists(filePath)) {
             DoctorProfile def = DoctorProfile.defaults();
-            // 第一次运行：写一份默认文件，之后就是真实数据源
             save(def);
             return def;
         }
@@ -39,7 +38,6 @@ public class DoctorProfileService {
         try (InputStream in = new FileInputStream(filePath.toFile())) {
             p.load(in);
         } catch (IOException e) {
-            // 读取失败就回退默认（但不崩）
             return DoctorProfile.defaults();
         }
 
@@ -77,7 +75,6 @@ public class DoctorProfileService {
         try (OutputStream out = new FileOutputStream(filePath.toFile())) {
             p.store(out, "PatientMonitorClient Doctor Profile");
         } catch (IOException e) {
-            // 如果写失败：这里可以加弹窗/日志，但先不崩
         }
     }
 

@@ -36,9 +36,7 @@ public class SideBar extends JPanel {
         topButtons.add(homeButton);
         topButtons.add(Box.createVerticalStrut(10));
 
-        // =========================
-        // 🔴 LIVE MONITORING BUTTON
-        // =========================
+        // LIVE MONITORING BUTTON
         JButton liveBtn = createButton("Live Monitoring", "status", Color.BLACK);
         liveBtn.addActionListener(e -> {
 
@@ -53,7 +51,7 @@ public class SideBar extends JPanel {
         topButtons.add(liveBtn);
         topButtons.add(Box.createVerticalStrut(10));
 
-        // Other buttons (unchanged)
+        // Other buttons
         topButtons.add(
                 makeSidebarButton("Add Patient", "add", Color.BLACK, MainWindow.PAGE_ADD, window)
         );
@@ -85,9 +83,7 @@ public class SideBar extends JPanel {
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
-    // ------------------------------
-    // Button helpers (UNCHANGED)
-    // ------------------------------
+    // Button helpers
     private JButton makeSidebarButton(
             String text, String iconName, Color textColor, String pageName, MainWindow window) {
 

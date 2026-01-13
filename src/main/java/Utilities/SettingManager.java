@@ -8,7 +8,7 @@ public class SettingManager {
 
     private static final String KEY_DARK_MODE  = "darkMode";
     private static final String KEY_LANGUAGE   = "language";
-    private static final String KEY_AVATAR     = "avatarPath"; // ✅ 新增
+    private static final String KEY_AVATAR     = "avatarPath";
 
     private final Preferences prefs = Preferences.userRoot().node(NODE);
 
@@ -64,7 +64,7 @@ public class SettingManager {
     public void resetToDefaults() {
         setDarkMode(false);
         setLanguage("en");
-        prefs.remove(KEY_AVATAR); // ✅ reset 时移除头像
+        prefs.remove(KEY_AVATAR);
     }
 }
 

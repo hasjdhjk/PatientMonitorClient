@@ -22,7 +22,7 @@ public class AddPatientPage extends JPanel {
 
     private PlaceholderTextField givenNameField;
     private PlaceholderTextField familyNameField;
-    private PlaceholderTextField idField;             // UI 里保留，但不再作为必填/不发给 server
+    private PlaceholderTextField idField;
 
     private PlaceholderTextField genderField;
     private PlaceholderTextField ageField;

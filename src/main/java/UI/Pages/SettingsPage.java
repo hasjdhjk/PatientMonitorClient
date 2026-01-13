@@ -58,7 +58,7 @@ public class SettingsPage extends JPanel {
 
     /** Default (won't break compilation). Replace values later if you have real doctor info. */
     public SettingsPage(MainWindow window) {
-        this(window, "Doctor", "doctor@example.com"); // ✅ 默认邮箱占位
+        this(window, "Doctor", "doctor@example.com");
     }
 
     public SettingsPage(MainWindow window, String doctorName, String doctorEmail) {
@@ -212,7 +212,6 @@ public class SettingsPage extends JPanel {
     }
 
     private JComponent buildProfileHeader() {
-        // 让头像 + 文本 “作为一整行” 居中
         JPanel header = new JPanel(new FlowLayout(FlowLayout.CENTER, 16, 0));
         header.setOpaque(false);
         header.setMaximumSize(new Dimension(COLUMN_W, Integer.MAX_VALUE));
@@ -230,7 +229,7 @@ public class SettingsPage extends JPanel {
         nameLabel.setFont(new Font("Dialog", Font.BOLD, 34));
         nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel emailLabel = new JLabel(doctorEmail);   // 你已经改成 doctorEmail 了
+        JLabel emailLabel = new JLabel(doctorEmail);
         emailLabel.setFont(new Font("Dialog", Font.PLAIN, 18));
         emailLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 

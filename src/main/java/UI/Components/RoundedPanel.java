@@ -24,7 +24,7 @@ public class RoundedPanel extends JPanel {
 
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setColor(fillColor);  // 浅灰背景
+        g2.setColor(fillColor);
         g2.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
 
     }

@@ -93,7 +93,7 @@ public class AccountPage extends JPanel {
         cardLayout.show(cardPanel, "account");
     }
 
-    // ===================== MAIN ACCOUNT PAGE (screenshot version) =====================
+    // ===================== MAIN ACCOUNT PAGE  =====================
     private JPanel buildAccountMain() {
         boolean dark = new SettingManager().isDarkMode();
 
@@ -106,7 +106,7 @@ public class AccountPage extends JPanel {
         header.setBackground(themeBg);
         header.setBorder(BorderFactory.createEmptyBorder(30, 60, 18, 60));
 
-        JLabel title = new JLabel("Account Settings");
+        JLabel title = new JLabel("Doctor Account");
         title.setFont(new Font("Arial", Font.BOLD, 34));
         title.setForeground(new Color(17, 24, 39));
 
