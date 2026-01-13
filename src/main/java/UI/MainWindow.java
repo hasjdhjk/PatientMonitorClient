@@ -4,8 +4,6 @@ import Services.DoctorProfileService;
 import Utilities.SettingManager;
 import Utilities.ThemeManager;
 
-import NetWork.Session;
-
 import Models.Patient;
 import UI.Components.SideBar;
 import UI.Components.TopBar;
@@ -82,7 +80,7 @@ public class MainWindow extends JFrame {
         pageContainer.add(liveMonitoringPage, PAGE_LIVE);
 
         add(pageContainer, BorderLayout.CENTER);
-        cardLayout.show(pageContainer, PAGE_LOGIN);
+        cardLayout.show(pageContainer, PAGE_HOME);
 
         // ================= Theme =================
         SettingManager settings = new SettingManager();
@@ -153,25 +151,20 @@ public class MainWindow extends JFrame {
     }
 
     public void logout() {
-        // reset to safe fallback
-        Session.setDoctorEmail("demo");
         showPage(PAGE_LOGIN);
-    }
-
-    /**
-     * Called after a successful login to propagate the active doctor context
-     * to all pages that depend on doctor (patients list, digital twin dashboard, etc.).
-     */
-    public void onDoctorLoggedIn() {
-        // refresh patient list for the logged-in doctor
-        if (homePage != null) homePage.onPageShown();
-        // refresh digital twin/dashboard doctor context
-        if (digitalTwinPage != null) digitalTwinPage.onDoctorLoggedIn();
     }
 
     public AccountPage getAccountPage() {
         return accountPage;
     }
     public TopBar getTopBar() {return topBar;}
+    public void onDoctorLoggedIn() {
+        cardLayout.show(pageContainer, PAGE_HOME);
 
+        if (topBar != null) {
+        }
+        if (sidebar != null) {
+            sidebar.setVisible(true);
+        }
+    }
 }
