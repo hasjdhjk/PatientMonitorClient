@@ -1,11 +1,11 @@
 package UI.Components;
 
-import Models.AlertRecord;
-import Models.LiveVitals;
+import Models.Vitals.AlertRecord;
+import Models.Vitals.LiveVitals;
 import Services.AlertManager;
 import UI.MainWindow;
-import Models.AddedPatientDB;
-import Models.Patient;
+import Models.Patients.AddedPatientDB;
+import Models.Patients.Patient;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

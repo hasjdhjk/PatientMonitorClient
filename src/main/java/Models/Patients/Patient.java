@@ -1,4 +1,4 @@
-package Models;
+package Models.Patients;
 
 public class Patient {
 

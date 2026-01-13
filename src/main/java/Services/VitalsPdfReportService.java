@@ -1,8 +1,8 @@
 package Services;
 
-import Models.Patient;
-import Models.VitalRecord;
-import Models.VitalRecordIO;
+import Models.Patients.Patient;
+import Models.Vitals.VitalRecord;
+import Models.Vitals.VitalRecordIO;
 
 import java.awt.*;
 import java.awt.print.*;

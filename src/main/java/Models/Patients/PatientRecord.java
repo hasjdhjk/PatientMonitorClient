@@ -1,4 +1,4 @@
-package Models;
+package Models.Patients;
 
 import java.io.Serializable;
 

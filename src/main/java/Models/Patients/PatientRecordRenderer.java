@@ -1,4 +1,4 @@
-package Models;
+package Models.Patients;
 
 import javax.swing.*;
 import java.awt.*;

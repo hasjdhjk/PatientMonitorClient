@@ -1,8 +1,8 @@
 package UI.Pages;
 
-import Models.AddedPatientDB;
-import Models.LiveVitals;
-import Models.Patient;
+import Models.Patients.AddedPatientDB;
+import Models.Vitals.LiveVitals;
+import Models.Patients.Patient;
 import UI.Components.DigitalTwinPanel;
 import UI.Components.Tiles.BaseTile;
 import UI.MainWindow;

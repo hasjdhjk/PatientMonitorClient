@@ -1,8 +1,8 @@
 package UI.Components;
 
-import Models.PatientRecord;
-import Models.PatientRecordIO;
-import Models.PatientRecordRenderer;
+import Models.Patients.PatientRecord;
+import Models.Patients.PatientRecordIO;
+import Models.Patients.PatientRecordRenderer;
 import Services.PatientDischargeService;
 import UI.Components.PlaceHolders.PlaceholderTextField;
 

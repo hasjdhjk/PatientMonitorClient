@@ -3,7 +3,7 @@ package UI.Components;
 import Utilities.SettingManager;
 import UI.MainWindow;
 import Utilities.ImageLoader;
-import Models.Patient;
+import Models.Patients.Patient;
 
 import javax.swing.*;
 import java.awt.*;
