@@ -4,7 +4,11 @@ import Models.LiveVitals;
 import Models.Patient;
 import Models.VitalRecord;
 import Models.VitalRecordIO;
-import Services.*;
+import Services.ECGSimulatorService;
+import Services.MinuteAveragingService;
+import Services.RespSimulatorService;
+import Services.VitalsPdfReportService;
+import Services.VitalTableJsonExportService;
 import UI.Components.Tiles.WaveformPanel;
 import UI.MainWindow;
 
@@ -16,10 +20,9 @@ import java.time.format.DateTimeFormatter;
 
 public class LiveMonitoringPage extends JPanel {
 
-    /* ===== CLINICAL LIGHT THEME ===== */
+    /* ===== THEME ===== */
     private static final Color BG_MAIN = new Color(245, 247, 250);
     private static final Color BG_CARD = Color.WHITE;
-    private static final Color BG_WAVE = new Color(250, 251, 252);
     private static final Color BORDER = new Color(220, 225, 230);
 
     private static final Color TEXT_PRIMARY = new Color(30, 41, 59);
@@ -28,12 +31,15 @@ public class LiveMonitoringPage extends JPanel {
     private static final Color BLUE = new Color(37, 99, 235);
     private static final Color GREEN = new Color(22, 163, 74);
     private static final Color RED = new Color(220, 38, 38);
+    private static final Color AMBER = new Color(234, 179, 8);
 
     /* ===== DATA ===== */
     private final LiveVitals vitals;
     private final ECGSimulatorService ecgSim;
     private final RespSimulatorService respSim;
     private final MinuteAveragingService averagingService;
+    private final MainWindow window;
+    private final Patient patient;
 
     private int timeWindowSeconds = 10;
 
@@ -46,17 +52,9 @@ public class LiveMonitoringPage extends JPanel {
 
     private DefaultTableModel historyModel;
 
-    private final MainWindow window;
-
-    /* ===== ALARM LIMITS ===== */
-    private static final int HR_LOW = 50;
-    private static final int HR_HIGH = 120;
-    private static final int SPO2_LOW = 92;
-    private static final int RESP_LOW = 10;
-    private static final int RESP_HIGH = 25;
-
     public LiveMonitoringPage(Patient patient, MainWindow window) {
         this.window = window;
+        this.patient = patient;
 
         vitals = LiveVitals.getShared(patient.getId(), patient.getBloodPressure());
         ecgSim = new ECGSimulatorService();
@@ -66,14 +64,14 @@ public class LiveMonitoringPage extends JPanel {
         setLayout(new BorderLayout());
         setBackground(BG_MAIN);
 
-        JPanel topStack = new JPanel();
-        topStack.setLayout(new BoxLayout(topStack, BoxLayout.Y_AXIS));
-        topStack.setBackground(BG_MAIN);
+        JPanel top = new JPanel();
+        top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
+        top.setBackground(BG_MAIN);
 
-        topStack.add(buildHeader(patient));
-        topStack.add(buildTopBar());
+        top.add(buildHeader());
+        top.add(buildTopBar());
 
-        add(topStack, BorderLayout.NORTH);
+        add(top, BorderLayout.NORTH);
         add(buildMainContent(), BorderLayout.CENTER);
 
         startLiveLoop();
@@ -82,39 +80,54 @@ public class LiveMonitoringPage extends JPanel {
 
     /* ================= HEADER ================= */
 
-    private JPanel buildHeader(Patient patient) {
+    private JPanel buildHeader() {
 
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(BG_CARD);
         header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, BORDER));
-        header.setPreferredSize(new Dimension(0, 48));
+        header.setPreferredSize(new Dimension(0, 56));
 
         JLabel info = new JLabel(
                 "Patient: " + patient.getName() +
-                        "    ID: " + patient.getId() +
-                        "    Room: ICU-204"
+                        "    ID: " + patient.getId()
         );
-        info.setFont(new Font("Arial", Font.BOLD, 14));
+        info.setFont(new Font("Arial", Font.BOLD, 15));
         info.setForeground(TEXT_PRIMARY);
 
-        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 8));
+        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         right.setBackground(BG_CARD);
 
-        JButton status = new JButton("Digital Twin");
-        status.setFocusPainted(false);
-        status.addActionListener(e -> window.showStatusTracker(patient));
+        JButton digitalTwin = new JButton("Digital Twin");
+        digitalTwin.addActionListener(e -> window.showStatusTracker(patient));
 
-        JButton export = new JButton("Export CSV");
-        export.setFocusPainted(false);
-        export.addActionListener(e -> VitalsExportService.exportCSV());
+        Integer[] hours = {1, 2, 4, 6, 12, 24, 48, 72};
+        JComboBox<Integer> hourSelect = new JComboBox<>(hours);
+        hourSelect.setSelectedItem(24);
 
-        JButton print = new JButton("Print Report");
-        print.setFocusPainted(false);
-        print.addActionListener(e -> VitalsPrintService.print());
+        JButton exportPdf = new JButton("Export Report (PDF)");
+        exportPdf.setBackground(BLUE);
+        exportPdf.setForeground(Color.WHITE);
+        exportPdf.setOpaque(true);
+        exportPdf.setBorderPainted(false);
 
-        right.add(status);
-        right.add(export);
-        right.add(print);
+        exportPdf.addActionListener(e ->
+                VitalsPdfReportService.exportPdfForLastHours(
+                        patient,
+                        (Integer) hourSelect.getSelectedItem()
+                )
+        );
+
+        JButton exportJson = new JButton("Export Table (JSON)");
+        exportJson.addActionListener(e ->
+                VitalTableJsonExportService.exportJson(patient.getId())
+        );
+
+        right.add(digitalTwin);
+        right.add(exportJson);
+        right.add(new JLabel("Last"));
+        right.add(hourSelect);
+        right.add(new JLabel("hours"));
+        right.add(exportPdf);
 
         header.add(info, BorderLayout.WEST);
         header.add(right, BorderLayout.EAST);
@@ -130,35 +143,26 @@ public class LiveMonitoringPage extends JPanel {
         bar.setBackground(BG_CARD);
         bar.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(0, 0, 1, 0, BORDER),
-                BorderFactory.createEmptyBorder(10, 15, 10, 15)
+                BorderFactory.createEmptyBorder(12, 16, 12, 16)
         ));
 
-        JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 4));
         left.setBackground(BG_CARD);
 
-        left.add(label("Time Window (seconds):"));
+        left.add(label("Time Window (s):"));
 
         timeWindowField = new JTextField(String.valueOf(timeWindowSeconds), 5);
-        timeWindowField.setPreferredSize(new Dimension(60, 30));
         left.add(timeWindowField);
 
         JButton apply = new JButton("Apply");
-        apply.setPreferredSize(new Dimension(80, 30));
-        apply.setBackground(BLUE);
-        apply.setForeground(Color.WHITE);
-        apply.setOpaque(true);
-        apply.setBorderPainted(false);
-        apply.setFocusPainted(false);
-        apply.setFont(new Font("Arial", Font.BOLD, 12));
         apply.addActionListener(e -> applyTimeWindow());
-        left.add(apply);
 
-        left.add(preset("5s", 5));
+        left.add(apply);
         left.add(preset("10s", 10));
         left.add(preset("30s", 30));
         left.add(preset("60s", 60));
 
-        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
+        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         right.setBackground(BG_CARD);
 
         liveClock = label("");
@@ -167,8 +171,7 @@ public class LiveMonitoringPage extends JPanel {
         live.setOpaque(true);
         live.setBackground(new Color(220, 252, 231));
         live.setForeground(GREEN);
-        live.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
-        live.setFont(new Font("Arial", Font.BOLD, 12));
+        live.setBorder(BorderFactory.createEmptyBorder(4, 10, 4, 10));
 
         right.add(liveClock);
         right.add(live);
@@ -179,35 +182,6 @@ public class LiveMonitoringPage extends JPanel {
         return bar;
     }
 
-    private JLabel label(String t) {
-        JLabel l = new JLabel(t);
-        l.setForeground(TEXT_MUTED);
-        return l;
-    }
-
-    private JButton preset(String t, int s) {
-        JButton b = new JButton(t);
-        b.setPreferredSize(new Dimension(60, 30));
-        b.addActionListener(e -> {
-            timeWindowSeconds = s;
-            timeWindowField.setText(String.valueOf(s));
-            clearWaveforms();
-            updateAxes();
-        });
-        return b;
-    }
-
-    private void applyTimeWindow() {
-        try {
-            timeWindowSeconds = Integer.parseInt(timeWindowField.getText());
-        } catch (Exception e) {
-            timeWindowSeconds = 10;
-            timeWindowField.setText("10");
-        }
-        clearWaveforms();
-        updateAxes();
-    }
-
     /* ================= CONTENT ================= */
 
     private JPanel buildMainContent() {
@@ -215,118 +189,68 @@ public class LiveMonitoringPage extends JPanel {
         JPanel content = new JPanel();
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
         content.setBackground(BG_MAIN);
-        content.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        content.setBorder(BorderFactory.createEmptyBorder(18, 18, 18, 18));
 
         content.add(buildVitalsRow());
-        content.add(Box.createVerticalStrut(20));
+        content.add(Box.createVerticalStrut(22));
 
         ecgPanel = new WaveformPanel("ECG (mV)", RED);
         respPanel = new WaveformPanel("Resp (ΔZ)", GREEN);
 
-        ecgPanel.setBackground(BG_WAVE);
-        respPanel.setBackground(BG_WAVE);
-
-        ecgPanel.setPreferredSize(new Dimension(1000, 320));
-        respPanel.setPreferredSize(new Dimension(1000, 320));
-
         updateAxes();
 
-        content.add(wrap(ecgPanel, "ECG Waveform", "Lead II — mV"));
-        content.add(Box.createVerticalStrut(25));
-        content.add(wrap(respPanel, "Respiratory Waveform", "Impedance Pneumography — ΔZ"));
-        content.add(Box.createVerticalStrut(25));
+        content.add(wrap(ecgPanel, "ECG Waveform"));
+        content.add(Box.createVerticalStrut(22));
+        content.add(wrap(respPanel, "Respiratory Waveform"));
+        content.add(Box.createVerticalStrut(22));
         content.add(buildHistoryTable());
 
         return content;
     }
 
+    /* ================= VITAL CARDS ================= */
+
     private JPanel buildVitalsRow() {
 
-        JPanel row = new JPanel(new GridLayout(1, 4, 15, 0));
+        JPanel row = new JPanel(new GridLayout(1, 4, 18, 0));
         row.setBackground(BG_MAIN);
 
         hrValue = valueLabel();
         spo2Value = valueLabel();
         respValue = valueLabel();
         bpValue = valueLabel();
-        bpValue.setText("120 / 80");
+        bpValue.setText(patient.getBloodPressure());
 
         row.add(card("Heart Rate", hrValue, "bpm"));
         row.add(card("SpO₂", spo2Value, "%"));
-        row.add(card("Resp Rate", respValue, "breaths/min"));
+        row.add(card("Resp Rate", respValue, "breaths / min"));
         row.add(card("Blood Pressure", bpValue, "mmHg"));
 
         return row;
-    }
-
-    private JLabel valueLabel() {
-        JLabel l = new JLabel("--");
-        l.setFont(new Font("Arial", Font.BOLD, 28));
-        l.setForeground(TEXT_PRIMARY);
-        return l;
-    }
-
-    private JPanel card(String t, JLabel v, String u) {
-
-        JPanel c = new JPanel();
-        c.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));
-        c.setBackground(BG_CARD);
-        c.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(BORDER),
-                BorderFactory.createEmptyBorder(18, 18, 18, 18)
-        ));
-
-        JLabel tl = new JLabel(t);
-        tl.setForeground(TEXT_MUTED);
-
-        JLabel ul = new JLabel(u);
-        ul.setForeground(TEXT_MUTED);
-
-        c.add(tl);
-        c.add(Box.createVerticalStrut(6));
-        c.add(v);
-        c.add(ul);
-
-        return c;
-    }
-
-    private JPanel wrap(WaveformPanel p, String t, String s) {
-
-        JPanel w = new JPanel(new BorderLayout());
-        w.setBackground(BG_CARD);
-        w.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(BORDER),
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)
-        ));
-
-        JLabel h = new JLabel(t + " — " + s);
-        h.setFont(new Font("Arial", Font.BOLD, 14));
-        h.setForeground(TEXT_PRIMARY);
-
-        w.add(h, BorderLayout.NORTH);
-        w.add(p, BorderLayout.CENTER);
-
-        return w;
     }
 
     /* ================= TABLE ================= */
 
     private JPanel buildHistoryTable() {
 
-        String[] cols = {"Time", "HR (bpm)", "Resp (breaths/min)", "Temp (°C)", "SpO₂ (%)"};
+        String[] cols = {"Time", "HR (bpm)", "Resp (/min)", "Temp (°C)", "SpO₂ (%)"};
         historyModel = new DefaultTableModel(cols, 0);
 
         JTable table = new JTable(historyModel);
         table.setRowHeight(26);
-        table.setGridColor(BORDER);
-        table.setForeground(TEXT_PRIMARY);
 
         JScrollPane scroll = new JScrollPane(table);
-        scroll.setPreferredSize(new Dimension(1000, 170));
+        scroll.setPreferredSize(new Dimension(1000, 190));
 
         JPanel p = new JPanel(new BorderLayout());
-        p.setBackground(BG_MAIN);
-        p.add(new JLabel("Vital History (minute averages)"), BorderLayout.NORTH);
+        p.setBackground(BG_CARD);
+        p.setBorder(BorderFactory.createLineBorder(BORDER));
+
+        JLabel title = new JLabel("Vital History (Minute Averages)");
+        title.setFont(new Font("Arial", Font.BOLD, 14));
+        title.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
+
+        p.add(title, BorderLayout.NORTH);
         p.add(scroll, BorderLayout.CENTER);
 
         return p;
@@ -342,15 +266,15 @@ public class LiveMonitoringPage extends JPanel {
 
             int hr = (int) vitals.getHeartRate();
             int rr = (int) vitals.getRespRate();
-            int sp = (int) vitals.getSpO2();
+            int spo2 = (int) vitals.getSpO2();
 
             hrValue.setText(String.valueOf(hr));
             respValue.setText(String.valueOf(rr));
-            spo2Value.setText(String.valueOf(sp));
+            spo2Value.setText(String.valueOf(spo2));
 
-            hrValue.setForeground(hr < HR_LOW || hr > HR_HIGH ? RED : TEXT_PRIMARY);
-            respValue.setForeground(rr < RESP_LOW || rr > RESP_HIGH ? RED : TEXT_PRIMARY);
-            spo2Value.setForeground(sp < SPO2_LOW ? RED : TEXT_PRIMARY);
+            hrValue.setForeground(hr > 120 ? RED : hr < 50 ? AMBER : TEXT_PRIMARY);
+            spo2Value.setForeground(spo2 < 92 ? RED : TEXT_PRIMARY);
+            respValue.setForeground(rr > 25 || rr < 10 ? AMBER : TEXT_PRIMARY);
 
             ecgPanel.addSamples(ecgSim.nextSamples(25, hr), timeWindowSeconds * 100);
             respPanel.addSamples(respSim.nextSamples(10, rr), timeWindowSeconds * 30);
@@ -362,8 +286,10 @@ public class LiveMonitoringPage extends JPanel {
     private void refreshHistory() {
         historyModel.setRowCount(0);
         for (VitalRecord r : VitalRecordIO.loadAll()) {
+            if (r.getPatientId() != patient.getId()) continue;
             historyModel.addRow(new Object[]{
-                    r.getTimestamp().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
+                    r.getTimestamp().toLocalTime()
+                            .format(DateTimeFormatter.ofPattern("HH:mm:ss")),
                     String.format("%.1f", r.getAvgHeartRate()),
                     String.format("%.1f", r.getAvgRespRate()),
                     String.format("%.2f", r.getAvgTemperature()),
@@ -372,9 +298,81 @@ public class LiveMonitoringPage extends JPanel {
         }
     }
 
-    private void clearWaveforms() {
-        ecgPanel.clear();
-        respPanel.clear();
+    /* ================= HELPERS ================= */
+
+    private JPanel wrap(JPanel p, String title) {
+        JPanel c = new JPanel(new BorderLayout());
+        c.setBackground(BG_CARD);
+        c.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(BORDER),
+                BorderFactory.createEmptyBorder(12, 12, 12, 12)
+        ));
+        JLabel h = new JLabel(title);
+        h.setFont(new Font("Arial", Font.BOLD, 15));
+        h.setForeground(TEXT_PRIMARY);
+        c.add(h, BorderLayout.NORTH);
+        c.add(p, BorderLayout.CENTER);
+        return c;
+    }
+
+    private JLabel valueLabel() {
+        JLabel l = new JLabel("--");
+        l.setFont(new Font("Arial", Font.BOLD, 36));
+        l.setForeground(TEXT_PRIMARY);
+        return l;
+    }
+
+    private JPanel card(String title, JLabel value, String unit) {
+
+        JPanel card = new JPanel(new BorderLayout());
+        card.setBackground(BG_CARD);
+        card.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(BORDER),
+                BorderFactory.createEmptyBorder(18, 20, 18, 20)
+        ));
+
+        JLabel titleLabel = new JLabel(title);
+        titleLabel.setFont(new Font("Arial", Font.PLAIN, 13));
+        titleLabel.setForeground(TEXT_MUTED);
+
+        JLabel unitLabel = new JLabel(unit);
+        unitLabel.setFont(new Font("Arial", Font.PLAIN, 13));
+        unitLabel.setForeground(TEXT_MUTED);
+
+        JPanel center = new JPanel();
+        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
+        center.setOpaque(false);
+        center.add(value);
+        center.add(Box.createVerticalStrut(4));
+        center.add(unitLabel);
+
+        card.add(titleLabel, BorderLayout.NORTH);
+        card.add(center, BorderLayout.CENTER);
+
+        return card;
+    }
+
+    private JLabel label(String t) {
+        JLabel l = new JLabel(t);
+        l.setForeground(TEXT_MUTED);
+        return l;
+    }
+
+    private JButton preset(String t, int s) {
+        JButton b = new JButton(t);
+        b.addActionListener(e -> {
+            timeWindowSeconds = s;
+            timeWindowField.setText(String.valueOf(s));
+            updateAxes();
+        });
+        return b;
+    }
+
+    private void applyTimeWindow() {
+        try {
+            timeWindowSeconds = Integer.parseInt(timeWindowField.getText());
+        } catch (Exception ignored) {}
+        updateAxes();
     }
 
     private void updateAxes() {
@@ -384,8 +382,10 @@ public class LiveMonitoringPage extends JPanel {
 
     private void startClock() {
         new Timer(1000, e ->
-                liveClock.setText(LocalTime.now()
-                        .format(DateTimeFormatter.ofPattern("HH:mm:ss")))
+                liveClock.setText(
+                        LocalTime.now()
+                                .format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+                )
         ).start();
     }
 }
