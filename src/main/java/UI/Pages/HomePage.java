@@ -25,6 +25,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import UI.Components.AlertHistorySidebar;
 import NetWork.ServerConfig;
 
 public class HomePage extends JPanel {
@@ -45,13 +46,19 @@ public class HomePage extends JPanel {
         Color appBg = darkMode ? new Color(18, 18, 20) : new Color(245, 245, 245);
         setBackground(appBg);
 
+        // =========================
+        // TOP (Search bar row)
+        // =========================
         JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 15));
         top.setBackground(appBg);
 
         SearchBar searchBar = new SearchBar();
-        top.add(searchBar, BorderLayout.CENTER);
-        add(top, BorderLayout.NORTH);
+        // NOTE: FlowLayout ignores BorderLayout constraints, so just add(searchBar) is correct
+        top.add(searchBar);
 
+        // =========================
+        // CENTER (Grid + Scroll)
+        // =========================
         grid = new JPanel(new WrapLayout(FlowLayout.LEFT, 15, 15));
         grid.setBackground(appBg);
         grid.setBorder(BorderFactory.createEmptyBorder(0, 10, 20, 10));
@@ -59,8 +66,26 @@ public class HomePage extends JPanel {
         JScrollPane scroll = new JScrollPane(grid);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setBorder(null);
-        add(scroll, BorderLayout.CENTER);
+        scroll.getViewport().setBackground(appBg);
 
+        // ✅ IMPORTANT FIX:
+        // Wrap ONLY the main content (top + grid) so the sidebar isn't pushed down by NORTH
+        JPanel centerWrapper = new JPanel(new BorderLayout());
+        centerWrapper.setBackground(appBg);
+        centerWrapper.add(top, BorderLayout.NORTH);
+        centerWrapper.add(scroll, BorderLayout.CENTER);
+
+        add(centerWrapper, BorderLayout.CENTER);
+
+        // =========================
+        // RIGHT (Alert sidebar)
+        // =========================
+        AlertHistorySidebar sidebar = new AlertHistorySidebar(window);
+        add(sidebar, BorderLayout.EAST);
+
+        // =========================
+        // Existing logic (unchanged)
+        // =========================
         PatientDischargeService.onDischarge = this::reloadFromServerAsync;
 
         reloadFromServerAsync();
