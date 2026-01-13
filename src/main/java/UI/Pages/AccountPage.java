@@ -539,7 +539,7 @@ public class AccountPage extends JPanel {
         gbc.gridy = row * 2;
         parent.add(label, gbc);
 
-        BaseTile tile = new BaseTile(520, 62, 38, false);
+        BaseTile tile = new BaseTile(520, 80, 38, false);
         tile.setLayout(new BorderLayout());
         tile.setBackground(Color.WHITE);
 
@@ -565,17 +565,14 @@ public class AccountPage extends JPanel {
         // Use a simple bordered panel instead of BaseTile to avoid clipping the combo UI
         JPanel box = new JPanel(new BorderLayout());
         box.setBackground(Color.WHITE);
-        box.setOpaque(true);
-        box.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(229, 231, 235)),
-                BorderFactory.createEmptyBorder(8, 12, 8, 12)
-        ));
+        box.setOpaque(false);
+        box.setBorder(BorderFactory.createEmptyBorder(0, 12, 8, 12));
 
         combo.setFont(new Font("Arial", Font.PLAIN, 16));
         combo.setOpaque(true);
         combo.setBackground(Color.WHITE);
         combo.setBorder(BorderFactory.createEmptyBorder());
-        combo.setPreferredSize(new Dimension(520, 44));
+        combo.setPreferredSize(new Dimension(520, 60));
 
         box.add(combo, BorderLayout.CENTER);
 
@@ -659,6 +656,8 @@ public class AccountPage extends JPanel {
         public StatusBadge(String text) {
             setOpaque(false);
             setLayout(new FlowLayout(FlowLayout.LEFT, 8, 6));
+            setPreferredSize(new Dimension(120, 20));
+            setMinimumSize(new Dimension(120, 20));
             JLabel dot = new JLabel("●");
             dot.setForeground(new Color(34, 197, 94));
             JLabel label = new JLabel(text);
@@ -666,7 +665,7 @@ public class AccountPage extends JPanel {
             label.setFont(new Font("Arial", Font.BOLD, 13));
             add(dot);
             add(label);
-            setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+            setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
         }
 
         @Override
