@@ -16,6 +16,8 @@ import java.util.Collections;
 
 public class PatientTile extends BaseTile {
 
+    private final Patient patient;
+
     // UI labels (dynamic)
     private JLabel hrLabel;
     private JLabel tempLabel;
@@ -41,6 +43,7 @@ public class PatientTile extends BaseTile {
 
     public PatientTile(Patient patient, MainWindow window, HomePage homePage) {
         super(370, 320, 30, true);
+        this.patient = patient;
 
         setLayout(new BorderLayout());
         setBackground(BG_NORMAL);
@@ -116,6 +119,15 @@ public class PatientTile extends BaseTile {
 
         // start live updates from shared LiveVitals
         startLiveRefresh(patient);
+
+        // If HomePage refresh removes this tile, stop timers + clear alert to avoid "ghost" beeps
+        addHierarchyListener(ev -> {
+            if ((ev.getChangeFlags() & HierarchyEvent.DISPLAYABILITY_CHANGED) != 0) {
+                if (!isDisplayable()) {
+                    stopRefreshTimer();
+                }
+            }
+        });
     }
 
     private JPanel buildDynamicVitalsPanel() {
@@ -223,7 +235,14 @@ public class PatientTile extends BaseTile {
         flashOn = false;
         setBackground(BG_NORMAL);
 
-        // Note: per-patient alert clearing is done on discharge; ongoing alerts are driven by refresh loop.
+        // Clear this patient's alert state when we stop updating (prevents lingering WARNING/DANGER in AlertManager)
+        if (patient != null) {
+            AlertManager.getInstance().updateAlert(
+                    patient,
+                    LiveVitals.VitalsSeverity.NORMAL,
+                    Collections.emptyList()
+            );
+        }
     }
 
     private void startFlash(Color onColor, Color offColor) {
