@@ -57,7 +57,7 @@ public class SideBar extends JPanel {
         );
         topButtons.add(Box.createVerticalStrut(10));
         topButtons.add(
-                makeSidebarButton("Digital Twin", "status", Color.BLACK, MainWindow.PAGE_STATUS, window)
+                makeSidebarButton("Digital Twin", "digitalTwin", Color.BLACK, MainWindow.PAGE_STATUS, window)
         );
         topButtons.add(Box.createVerticalStrut(10));
         topButtons.add(
