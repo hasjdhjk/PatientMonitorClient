@@ -271,7 +271,8 @@ public class AccountPage extends JPanel {
         roleCombo = new JComboBox<>(new String[]{
                 "Clinician", "Consultant", "Surgeon", "Nurse", "Admin", "Viewer", "Earth Science"
         });
-        roleCombo.setSelectedItem("Clinician");
+        String initialRole = (meta != null && meta.role != null && !meta.role.isBlank()) ? meta.role : "Clinician";
+        roleCombo.setSelectedItem(initialRole);
         roleCombo.setOpaque(true);
         roleCombo.setBackground(Color.WHITE);
 
@@ -419,6 +420,11 @@ public class AccountPage extends JPanel {
         // Update TopBar
         window.getTopBar().updateDoctorInfo(profile.getFullName(), profile.getSpecialty());
 
+        // Save selected role to meta and persist
+        String selectedRole = Objects.toString(roleCombo.getSelectedItem(), "");
+        meta.role = selectedRole;
+        metaService.saveRole(selectedRole);
+
         // Update originals & button
         originalFullName = safe(fullNameField);
         originalOrg = safe(organizationField);
@@ -507,6 +513,12 @@ public class AccountPage extends JPanel {
         if (createdCard != null) {
             createdCard.setValueText(formatDate(meta.createdAt));
             createdCard.setSubText(daysAgo(meta.createdAt) + " days ago");
+        }
+
+        // re-apply saved role to combo
+        if (roleCombo != null) {
+            String initialRole = (meta != null && meta.role != null && !meta.role.isBlank()) ? meta.role : Objects.toString(roleCombo.getSelectedItem(), "Clinician");
+            roleCombo.setSelectedItem(initialRole);
         }
 
         // originals reset

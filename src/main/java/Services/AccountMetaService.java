@@ -14,6 +14,7 @@ public class AccountMetaService {
     private static final String K_CREATED_AT = "createdAt";
     private static final String K_LAST_LOGIN = "lastLogin";
     private static final String K_AVATAR_PATH = "avatarPath";
+    private static final String K_ROLE = "role";
 
     private final Path dirPath;
     private final Path filePath;
@@ -28,6 +29,7 @@ public class AccountMetaService {
         public LocalDateTime createdAt;
         public LocalDateTime lastLogin;
         public String avatarPath;
+        public String role;
     }
 
     public Meta loadOrInit() {
@@ -62,6 +64,12 @@ public class AccountMetaService {
         m.avatarPath = p.getProperty(K_AVATAR_PATH, "").trim();
         if (m.avatarPath.isBlank()) m.avatarPath = null;
 
+        m.role = p.getProperty(K_ROLE, "").trim();
+        if (m.role.isBlank()) m.role = null;
+
+        if (!p.containsKey(K_ROLE)) {
+            p.setProperty(K_ROLE, "");
+        }
         // persist updated lastLogin / maybe createdAt
         try (OutputStream out = new FileOutputStream(filePath.toFile())) {
             p.store(out, "PatientMonitorClient Account Meta");
@@ -86,6 +94,22 @@ public class AccountMetaService {
         } catch (IOException ignored) {}
     }
 
+    public void saveRole(String roleOrNull) {
+        try { Files.createDirectories(dirPath); } catch (IOException ignored) {}
+
+        Properties p = new Properties();
+        if (Files.exists(filePath)) {
+            try (InputStream in = new FileInputStream(filePath.toFile())) {
+                p.load(in);
+            } catch (IOException ignored) {}
+        }
+        p.setProperty(K_ROLE, roleOrNull == null ? "" : roleOrNull);
+
+        try (OutputStream out = new FileOutputStream(filePath.toFile())) {
+            p.store(out, "PatientMonitorClient Account Meta");
+        } catch (IOException ignored) {}
+    }
+    
     public Path getDirPath() {
         return dirPath;
     }
