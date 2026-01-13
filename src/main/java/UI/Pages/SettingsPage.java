@@ -45,25 +45,27 @@ public class SettingsPage extends JPanel {
 
     // Profile info (safe defaults; you can later pass real values via another constructor)
     private final String doctorName;
-    private final String doctorId;
+    private final String doctorEmail;
 
     // Avatar label (clickable)
     private JLabel avatarLabel;
 
     // Layout constants
     private static final int COLUMN_W = 540;
-    private static final int ROW_H = 54;
+    private static final int ROW_H = 68;
+    private static final int DROPDOWN_ROW_H = 72;
+
 
     /** Default (won't break compilation). Replace values later if you have real doctor info. */
     public SettingsPage(MainWindow window) {
-        this(window, "Doctor", "@doctor");
+        this(window, "Doctor", "doctor@example.com"); // ✅ 默认邮箱占位
     }
 
-    /** Optional: if you want real info */
-    public SettingsPage(MainWindow window, String doctorName, String doctorId) {
+    public SettingsPage(MainWindow window, String doctorName, String doctorEmail) {
         this.window = window;
         this.doctorName = (doctorName == null || doctorName.isBlank()) ? "Doctor" : doctorName;
-        this.doctorId = (doctorId == null) ? "" : doctorId;
+        this.doctorEmail = (doctorEmail == null || doctorEmail.isBlank()) ? "" : doctorEmail.trim();
+
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -100,14 +102,6 @@ public class SettingsPage extends JPanel {
         column.setAlignmentX(Component.CENTER_ALIGNMENT);
         column.setMaximumSize(new Dimension(COLUMN_W, Integer.MAX_VALUE));
 
-        // Title
-        JLabel title = new JLabel(LanguageManager.t("settings.title"));
-        title.setFont(new Font("Dialog", Font.BOLD, 34));
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        column.add(title);
-        column.add(Box.createVerticalStrut(16));
-
         // Profile header
         JComponent profile = buildProfileHeader();
         profile.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -118,8 +112,7 @@ public class SettingsPage extends JPanel {
         initControls(); // IMPORTANT: init before adding rows
 
         column.add(buildGroupCard(
-                buildToggleRow("Dark mode", darkModeToggle),
-                buildDropdownRow("Language", languageDropdown)
+                buildToggleRow("Dark mode", darkModeToggle)
         ));
         column.add(Box.createVerticalStrut(22));
 
@@ -133,7 +126,7 @@ public class SettingsPage extends JPanel {
         outer.add(card);
 
         // Theme apply on this built card
-        applyLocalTheme(card, title);
+//        applyLocalTheme(card, title);
 
         return outer;
     }
@@ -219,33 +212,38 @@ public class SettingsPage extends JPanel {
     }
 
     private JComponent buildProfileHeader() {
-        JPanel header = new JPanel(new BorderLayout(16, 0));
+        // 让头像 + 文本 “作为一整行” 居中
+        JPanel header = new JPanel(new FlowLayout(FlowLayout.CENTER, 16, 0));
         header.setOpaque(false);
         header.setMaximumSize(new Dimension(COLUMN_W, Integer.MAX_VALUE));
         header.setBorder(new EmptyBorder(6, 6, 6, 6));
 
-        // CLICKABLE avatar (upload)
+        // Avatar
         JComponent avatar = buildAvatarPicker(92);
 
+        // Right text (Doctor + email)
         JPanel text = new JPanel();
         text.setOpaque(false);
         text.setLayout(new BoxLayout(text, BoxLayout.Y_AXIS));
 
         JLabel nameLabel = new JLabel(doctorName);
         nameLabel.setFont(new Font("Dialog", Font.BOLD, 34));
+        nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel idLabel = new JLabel(doctorId);
-        idLabel.setFont(new Font("Dialog", Font.BOLD, 18));
+        JLabel emailLabel = new JLabel(doctorEmail);   // 你已经改成 doctorEmail 了
+        emailLabel.setFont(new Font("Dialog", Font.PLAIN, 18));
+        emailLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         text.add(nameLabel);
         text.add(Box.createVerticalStrut(6));
-        if (!doctorId.isBlank()) text.add(idLabel);
+        if (!doctorEmail.isBlank()) text.add(emailLabel);
 
-        header.add(avatar, BorderLayout.WEST);
-        header.add(text, BorderLayout.CENTER);
+        header.add(avatar);
+        header.add(text);
 
         return header;
     }
+
 
     // =========================
     // Avatar Upload
@@ -458,8 +456,7 @@ public class SettingsPage extends JPanel {
         row.setOpaque(false);
         row.setBorder(new EmptyBorder(14, 10, 14, 10));
 
-        row.setMaximumSize(new Dimension(COLUMN_W, ROW_H));
-        row.setPreferredSize(new Dimension(COLUMN_W, ROW_H));
+
         row.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel t = new JLabel(title);
