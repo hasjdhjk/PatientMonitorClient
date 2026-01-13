@@ -3,6 +3,7 @@ package UI.Components.Tiles;
 import Models.LiveVitals;
 import Models.Patient;
 import Services.PatientDischargeService;
+import Services.AlertManager;
 import UI.Components.RoundedButton;
 import UI.MainWindow;
 import UI.Components.StickyButton;
@@ -11,6 +12,7 @@ import UI.Pages.HomePage;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Collections;
 
 public class PatientTile extends BaseTile {
 
@@ -85,7 +87,14 @@ public class PatientTile extends BaseTile {
 
             if (reason == null || reason.trim().isEmpty()) return;
 
-            // stop timer before discharge (optional safety)
+            // stop any active alert sound for this patient first
+            AlertManager.getInstance().updateAlert(
+                    patient,
+                    LiveVitals.VitalsSeverity.NORMAL,
+                    Collections.emptyList()
+            );
+
+            // stop timers before discharge (optional safety)
             stopRefreshTimer();
 
             PatientDischargeService.discharge(patient, reason);
@@ -183,6 +192,13 @@ public class PatientTile extends BaseTile {
                             (sev == LiveVitals.VitalsSeverity.WARNING) ? BORDER_WARN :
                                     BORDER_NORMAL;
 
+            // update global alert manager (handles beep cadence + history, de-spammed internally)
+            AlertManager.getInstance().updateAlert(
+                    patient,
+                    sev,
+                    live.getAlertCauses(sev)
+            );
+
             if (sev == LiveVitals.VitalsSeverity.DANGER) {
                 startFlash(BORDER_DANGER, BORDER_NORMAL);
             } else if (sev == LiveVitals.VitalsSeverity.WARNING) {
@@ -206,6 +222,8 @@ public class PatientTile extends BaseTile {
         }
         flashOn = false;
         setBackground(BG_NORMAL);
+
+        // Note: per-patient alert clearing is done on discharge; ongoing alerts are driven by refresh loop.
     }
 
     private void startFlash(Color onColor, Color offColor) {
