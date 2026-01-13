@@ -1,6 +1,7 @@
 package Services;
 
 import Models.Patient;
+import NetWork.ServerConfig;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -15,8 +16,7 @@ public class PatientServerClient {
     private static final Gson gson = new Gson();
 
     public static List<Patient> fetchPatients(String doctorUsername) throws Exception {
-        String url = "http://localhost:8080/PatientServer/api/patients?doctor=" + doctorUsername;
-        //String url = "https://bioeng-fguys-app.impaas.uk/api/patients?doctor=" + doctorUsername;
+        String url = ServerConfig.url("/api/patients?doctor=" + doctorUsername);
 
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(url))

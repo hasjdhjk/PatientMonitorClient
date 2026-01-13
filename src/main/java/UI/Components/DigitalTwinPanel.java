@@ -16,6 +16,7 @@ import java.awt.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import NetWork.ServerConfig;
 
 public class DigitalTwinPanel extends JPanel {
 
@@ -31,10 +32,7 @@ public class DigitalTwinPanel extends JPanel {
     private final LiveVitals simulatedVitals = new LiveVitals(0);
     private final PatientSimulatorService simulator = new PatientSimulatorService(simulatedVitals);
     private ScheduledExecutorService simExec;
-
-    // Your Jetty context path is /PatientServer
-    //private static final String DASHBOARD_URL =  "https://bioeng-fguys-app.impaas.uk/digital_twin/dashboard.html";
-    private static final String DASHBOARD_URL =  "http://localhost:8080/PatientServer/digital_twin/dashboard.html";
+    private static final String DASHBOARD_URL = ServerConfig.dashboardUrl();
 
     public DigitalTwinPanel() {
         setLayout(new BorderLayout());

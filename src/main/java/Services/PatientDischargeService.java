@@ -14,14 +14,13 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
+import NetWork.ServerConfig;
 
 public class PatientDischargeService {
 
     public static Runnable onDischarge = null;
 
     // ===== Server config =====
-    //private static final String SERVER_BASE = "https://bioeng-fguys-app.impaas.uk";
-    private static final String SERVER_BASE = "http://localhost:8080/PatientServer";
     private static final HttpClient HTTP = HttpClient.newHttpClient();
 
     /**
@@ -56,10 +55,11 @@ public class PatientDischargeService {
             @Override
             protected Void doInBackground() throws Exception {
 
-                String url = SERVER_BASE
-                        + "/api/patient/discharge?doctor="
-                        + URLEncoder.encode(doctor, StandardCharsets.UTF_8)
-                        + "&id=" + patientId;
+                String url = ServerConfig.url(
+                        "/api/patient/discharge?doctor="
+                                + URLEncoder.encode(doctor, StandardCharsets.UTF_8)
+                                + "&id=" + patientId
+                );
 
                 HttpRequest req = HttpRequest.newBuilder()
                         .uri(URI.create(url))

@@ -15,6 +15,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import NetWork.ServerConfig;
 
 public class AddPatientPage extends JPanel {
 
@@ -29,7 +30,6 @@ public class AddPatientPage extends JPanel {
     private PlaceholderTextField bloodPressureField;
 
     // ====== Server config ======
-    private static final String SERVER_BASE = "http://localhost:8080/PatientServer";
     private static final HttpClient HTTP = HttpClient.newHttpClient();
 
     private static final String DOCTOR_USERNAME = "demo";
@@ -172,7 +172,7 @@ public class AddPatientPage extends JPanel {
 
                 System.out.println("POST /api/patient body = " + body.toString());
 
-                String url = SERVER_BASE + "/api/patient";
+                String url = ServerConfig.url("/api/patient");
 
                 HttpRequest req = HttpRequest.newBuilder()
                         .uri(URI.create(url))

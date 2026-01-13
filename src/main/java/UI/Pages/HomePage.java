@@ -25,13 +25,14 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import NetWork.ServerConfig;
+
 public class HomePage extends JPanel {
     private JPanel grid;
     private MainWindow window;
     private String currentFilter = "";
     private final SettingManager settings = new SettingManager();
 
-    private static final String SERVER_BASE = "http://localhost:8080/PatientServer";
     private static final HttpClient HTTP = HttpClient.newHttpClient();
     private static final Gson GSON = new Gson();
 
@@ -60,11 +61,9 @@ public class HomePage extends JPanel {
         scroll.setBorder(null);
         add(scroll, BorderLayout.CENTER);
 
-        // discharge connect to database
         PatientDischargeService.onDischarge = this::reloadFromServerAsync;
 
         reloadFromServerAsync();
-
         refresh();
 
         searchBar.addSearchListener(text -> {
@@ -73,10 +72,6 @@ public class HomePage extends JPanel {
         });
     }
 
-    /**
-     * Re-fetch patients from PatientServer and replace local cache.
-     * (Use the logged-in doctor username once auth is wired; for now "demo")
-     */
     public void reloadFromServerAsync() {
         final String doctorUsername = "demo";
 
@@ -84,7 +79,8 @@ public class HomePage extends JPanel {
             @Override
             protected List<Patient> doInBackground() throws Exception {
                 String doctor = URLEncoder.encode(doctorUsername, StandardCharsets.UTF_8);
-                String url = SERVER_BASE + "/api/patients?doctor=" + doctor;
+
+                String url = ServerConfig.url("/api/patients?doctor=" + doctor);
 
                 HttpRequest req = HttpRequest.newBuilder()
                         .uri(URI.create(url))
@@ -116,9 +112,6 @@ public class HomePage extends JPanel {
         worker.execute();
     }
 
-    /**
-     * Backwards-compatible alias (if other classes still call this name).
-     */
     public void syncPatientsFromServerAsync() {
         reloadFromServerAsync();
     }

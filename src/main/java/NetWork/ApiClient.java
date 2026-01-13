@@ -1,6 +1,7 @@
 package NetWork;
 
 import com.google.gson.Gson;
+import NetWork.ServerConfig;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -12,13 +13,11 @@ import java.net.URL;
 
 public class ApiClient {
 
-//    private static final String BASE_URL = "https://bioeng-fguys-app.impaas.uk"; // tsuru
-    private static final String BASE_URL = "http://localhost:8080/PatientServer"; // testing server
-
+// base URL is provided by ServerConfig
     private static final Gson gson = new Gson();
 
     private static String postJson(String endpoint, String jsonBody) throws IOException {
-        URL url = new URL(BASE_URL + endpoint);
+        URL url = new URL(ServerConfig.url(endpoint));
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
         conn.setRequestMethod("POST");
