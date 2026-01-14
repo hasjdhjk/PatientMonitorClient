@@ -8,22 +8,26 @@ import UI.Components.RoundedPanel;
 import javax.swing.*;
 import java.awt.*;
 
+// Applies light / dark theme to the whole UI
 public final class ThemeManager {
 
+    // Utility class (no instances)
     private ThemeManager() {}
 
+    // Top bar colors
     private static final Color TOPBAR_BG_LIGHT = new Color(63, 90, 227);
     private static final Color TOPBAR_BG_DARK  = new Color(32, 48, 140);
 
-    // You said TopBar text should ALWAYS be white
+    // Top bar text is always white
     private static final Color TOPBAR_TEXT = Color.WHITE;
 
+    // Apply theme and refresh UI
     public static void apply(JFrame frame, boolean darkMode) {
         Color appBg = darkMode ? new Color(24, 26, 30) : Color.WHITE;
         Color fg    = darkMode ? new Color(230, 230, 230) : Color.BLACK;
         Color card  = darkMode ? new Color(36, 36, 42) : Color.WHITE;
 
-        // Standard Swing defaults
+        // Default Swing component colors
         UIManager.put("Panel.background", appBg);
         UIManager.put("Label.foreground", fg);
         UIManager.put("Button.foreground", fg);
@@ -34,33 +38,34 @@ public final class ThemeManager {
         UIManager.put("TextField.foreground", fg);
         UIManager.put("TextField.background", darkMode ? new Color(45, 48, 56) : Color.WHITE);
 
-        // Custom components
+        // Apply colors to custom components
         updateTree(frame.getContentPane(), darkMode, appBg, fg, card);
 
         frame.revalidate();
         frame.repaint();
     }
 
+    // Recursively apply colors to all components
     private static void updateTree(Component c, boolean darkMode, Color appBg, Color fg, Color card) {
 
-        // Set generic foreground first
+        // Default text color
         if (c instanceof JComponent jc) {
             jc.setForeground(fg);
         }
 
-        // Backgrounds
+        // Background colors
         if (c instanceof BaseTile bt) {
             bt.setBackground(card);
         } else if (c instanceof JPanel p) {
             p.setBackground(appBg);
         }
 
-        // Rounded panel fill
+        // Rounded panels
         if (c instanceof RoundedPanel rp) {
             rp.setFillColor(card);
         }
 
-        // Rounded button colors
+        // Rounded buttons
         if (c instanceof RoundedButton rb) {
             if (darkMode) {
                 rb.setColors(
@@ -79,7 +84,7 @@ public final class ThemeManager {
             }
         }
 
-        // TextField
+        // Text fields
         if (c instanceof JTextField tf) {
             tf.setOpaque(false);
             tf.setForeground(darkMode ? new Color(230, 230, 230) : Color.BLACK);
@@ -87,14 +92,14 @@ public final class ThemeManager {
             tf.setBackground(darkMode ? new Color(70, 70, 78) : new Color(245, 245, 245));
         }
 
-        // Recurse children
+        // Visit child components
         if (c instanceof Container container) {
             for (Component child : container.getComponents()) {
                 updateTree(child, darkMode, appBg, fg, card);
             }
         }
 
-        // TopBar should ALWAYS keep white text, even after recursion
+        // Force top bar colors
         if (c instanceof TopBar tb) {
             tb.setOpaque(true);
 
@@ -106,7 +111,7 @@ public final class ThemeManager {
         }
     }
 
-    // Recursively set foreground for everything under a container (labels, buttons, etc.)
+    // Set text color for all nested components
     private static void setForegroundDeep(Container root, Color color) {
         for (Component comp : root.getComponents()) {
 
