@@ -95,8 +95,7 @@ Both the **client** and **server** are deployed on **Tsuru**.
 <br>
 
 ## Usage
-
-
+https://youtu.be/-NgMJSTAjjk
 
 <br>
 
