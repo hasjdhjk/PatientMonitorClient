@@ -144,6 +144,19 @@ public class MainWindow extends JFrame {
         sidebar.setVisible(!isAuthPage);
         topBar.setVisible(!isAuthPage);
 
+        // Keep sidebar highlight in sync even when navigation comes from TopBar or code
+        if (!isAuthPage && sidebar != null) {
+            switch (pageName) {
+                case PAGE_HOME -> sidebar.setSelected("Home");
+                case PAGE_ADD -> sidebar.setSelected("Add Patient");
+                case PAGE_DIGITALTWIN -> sidebar.setSelected("Digital Twin");
+                case PAGE_ACCOUNT -> sidebar.setSelected("Account");
+                case PAGE_SETTINGS -> sidebar.setSelected("Settings");
+                case PAGE_LIVE -> sidebar.setSelected("Live Monitoring");
+                default -> {}
+            }
+        }
+
         if (pageName.equals(PAGE_LOGIN)) {
             loginPage.clearFields();
         }
