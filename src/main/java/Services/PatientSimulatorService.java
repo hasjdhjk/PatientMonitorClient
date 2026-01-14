@@ -18,7 +18,7 @@ public class PatientSimulatorService {
 
     public void update(double dt) {
 
-        // -------- Baselines (centered on your "normal" mean values) --------
+        // Baselines (centered on your "normal" mean values)
         // Noise is tight so most patients remain NORMAL most of the time.
         double hrBase   = 76.60 + rand.nextGaussian() * 3.5;
         double tempBase = 36.91 + rand.nextGaussian() * 0.12;
@@ -29,7 +29,7 @@ public class PatientSimulatorService {
         vitals.setSpO2(98 + rand.nextGaussian() * 0.6);
         vitals.setRespRate(16 + rand.nextGaussian() * 0.5);
 
-        // -------- Danger episode logic --------
+        //danger episode
         // If no episode active, low chance to start one.
         if (dangerTicksRemaining <= 0) {
             // ~1% chance per second -> roughly one short red episode every ~100s per patient
@@ -41,7 +41,7 @@ public class PatientSimulatorService {
             dangerTicksRemaining--;
         }
 
-        // -------- Apply either baseline or danger spike --------
+        //Apply either baseline or danger spike
         if (dangerTicksRemaining > 0) {
             if (episodeType == 0) {
                 // HR danger spike
@@ -64,7 +64,7 @@ public class PatientSimulatorService {
             vitals.setTemperature(tempBase);
         }
 
-        // -------- Blood pressure set + clamp to physiological bounds --------
+        //Blood pressure set + clamp to physiological bounds
         sysBase = Math.max(80, Math.min(180, sysBase));
         diaBase = Math.max(50, Math.min(120, diaBase));
         vitals.setBloodPressure(sysBase + "/" + diaBase);

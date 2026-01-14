@@ -201,7 +201,7 @@ public class AlertHistorySidebar extends JPanel {
         card.setMinimumSize(new Dimension(0, CARD_HEIGHT));
         card.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // --- Top row ---
+        //top row
         JPanel topRow = new JPanel(new BorderLayout());
         topRow.setOpaque(false);
         topRow.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -218,7 +218,7 @@ public class AlertHistorySidebar extends JPanel {
         topRow.add(tag, BorderLayout.WEST);
         topRow.add(timeAgo, BorderLayout.EAST);
 
-        // --- Middle ---
+        //middle
         JPanel mid = new JPanel();
         mid.setOpaque(false);
         mid.setLayout(new BoxLayout(mid, BoxLayout.Y_AXIS));
@@ -250,7 +250,7 @@ public class AlertHistorySidebar extends JPanel {
             mid.add(extra);
         }
 
-        // --- Bottom row: buttons ---
+        //bottom row buttons
         JPanel bottom = new JPanel();
         bottom.setOpaque(false);
         bottom.setLayout(new BoxLayout(bottom, BoxLayout.X_AXIS));
@@ -278,7 +278,7 @@ public class AlertHistorySidebar extends JPanel {
             }
         });
 
-        // ✅ NEW: Acknowledge hides it from the sidebar immediately
+        //Acknowledge hides it from the sidebar immediately
         ackBtn.addActionListener(e -> {
             acknowledgedKeys.add(keyOf(r));
             refresh();

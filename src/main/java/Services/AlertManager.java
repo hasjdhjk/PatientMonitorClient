@@ -21,13 +21,13 @@ public class AlertManager {
     private javax.swing.Timer soundTimer;
     private LiveVitals.VitalsSeverity currentlyPlaying = LiveVitals.VitalsSeverity.NORMAL;
 
-    // ✅ NEW: gate to prevent beeps (and prevent updateAlert from re-arming sound) while logged out
+    //NEW: gate to prevent beeps (and prevent updateAlert from re-arming sound) while logged out
     private boolean alertsEnabled = false;
 
     private AlertManager() {}
 
     public synchronized void updateAlert(Patient patient, LiveVitals.VitalsSeverity newSev, List<String> causes) {
-        // ✅ If alerts disabled (logged out), ignore updates so background timers can't restart sound
+        //If alerts disabled (logged out), ignore updates so background timers can't restart sound
         if (!alertsEnabled) return;
 
         int id = patient.getId();
@@ -60,7 +60,7 @@ public class AlertManager {
         history.clear();
     }
 
-    // ✅ Call on logout
+    //Call on logout
     public synchronized void disableAlerts() {
         alertsEnabled = false;
         active.clear();
@@ -68,7 +68,7 @@ public class AlertManager {
         currentlyPlaying = LiveVitals.VitalsSeverity.NORMAL;
     }
 
-    // ✅ Call after successful login
+    // Call after successful login
     public synchronized void enableAlerts() {
         alertsEnabled = true;
     }

@@ -28,7 +28,7 @@ public class PatientDischargeService {
 
     /**
      * Discharge flow:
-     * 1) save local record (AccountPage reads this)
+     1) save local record (AccountPage reads this)
      * 2) call server to delete patient from DB
      * 3) remove from local cache
      * 4) trigger UI refresh callback
