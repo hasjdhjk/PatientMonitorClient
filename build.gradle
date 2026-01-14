@@ -33,6 +33,12 @@ dependencies {
 
     // Email sending (Jakarta Mail)
     implementation 'com.sun.mail:jakarta.mail:2.0.1'
+
+    // unit test
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    testImplementation 'org.mockito:mockito-core:5.7.0'
+    testImplementation 'org.hamcrest:hamcrest:2.2'
+
 }
 
 test {
