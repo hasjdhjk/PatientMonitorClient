@@ -9,6 +9,10 @@ import Utilities.LanguageManager;
 import Utilities.SettingManager;
 import Utilities.ThemeManager;
 
+import Models.DoctorProfile;
+import Services.AccountMetaService;
+import Services.DoctorProfileService;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -46,9 +50,14 @@ public class SettingsPage extends JPanel {
     private JComboBox<String> languageDropdown;
     private JPasswordField deletePasswordField;
 
-    // Profile info (safe defaults; you can later pass real values via another constructor)
-    private final String doctorName;
-    private final String doctorEmail;
+    // Keep SettingsPage identity/avatar in sync with AccountPage
+    private final DoctorProfileService profileService = new DoctorProfileService();
+    private final AccountMetaService metaService = new AccountMetaService();
+    private AccountMetaService.Meta meta;
+
+    // Resolved display values (from Session first, then local profile fallback)
+    private String displayName = "Doctor";
+    private String displayEmail = "";
 
     // Avatar label (clickable)
     private JLabel avatarLabel;
@@ -58,16 +67,12 @@ public class SettingsPage extends JPanel {
     private static final int ROW_H = 68;
     private static final int DROPDOWN_ROW_H = 72;
 
-    // Replace values later if you have real doctor info
     public SettingsPage(MainWindow window) {
-        this(window, "Doctor", "doctor@example.com");
-    }
-
-    public SettingsPage(MainWindow window, String doctorName, String doctorEmail) {
         this.window = window;
-        this.doctorName = (doctorName == null || doctorName.isBlank()) ? "Doctor" : doctorName;
-        this.doctorEmail = (doctorEmail == null || doctorEmail.isBlank()) ? "" : doctorEmail.trim();
 
+        // Load account meta (avatar path) and resolve display identity
+        this.meta = metaService.loadOrInit();
+        resolveDisplayIdentity();
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -229,22 +234,47 @@ public class SettingsPage extends JPanel {
         text.setOpaque(false);
         text.setLayout(new BoxLayout(text, BoxLayout.Y_AXIS));
 
-        JLabel nameLabel = new JLabel(doctorName);
+        JLabel nameLabel = new JLabel(displayName);
         nameLabel.setFont(new Font("Dialog", Font.BOLD, 34));
         nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel emailLabel = new JLabel(doctorEmail);
+        JLabel emailLabel = new JLabel(displayEmail);
         emailLabel.setFont(new Font("Dialog", Font.PLAIN, 18));
         emailLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         text.add(nameLabel);
         text.add(Box.createVerticalStrut(6));
-        if (!doctorEmail.isBlank()) text.add(emailLabel);
+        if (displayEmail != null && !displayEmail.isBlank()) text.add(emailLabel);
 
         header.add(avatar);
         header.add(text);
 
         return header;
+    }
+
+    private void resolveDisplayIdentity() {
+        DoctorProfile p = profileService.load();
+        if (p == null) p = DoctorProfile.defaults();
+
+        // Name
+        String name = Session.getDoctorFullName();
+        if (name == null || name.isBlank() || "demo".equalsIgnoreCase(name.trim())) {
+            name = p.getFullName();
+        }
+        if (name == null || name.isBlank()) name = "Doctor";
+        displayName = name;
+
+        // Email
+        String email = Session.getDoctorEmail();
+        if (email == null || email.isBlank() || "demo".equalsIgnoreCase(email.trim())) {
+            email = p.getEmail();
+        }
+        displayEmail = (email == null ? "" : email.trim());
+    }
+
+    private String currentAvatarPath() {
+        if (meta == null) meta = metaService.loadOrInit();
+        return (meta == null || meta.avatarPath == null) ? "" : meta.avatarPath;
     }
 
 
@@ -273,7 +303,8 @@ public class SettingsPage extends JPanel {
                     JPopupMenu menu = new JPopupMenu();
                     JMenuItem remove = new JMenuItem("Remove photo");
                     remove.addActionListener(ev -> {
-                        settings.setAvatarPath("");
+                        meta.avatarPath = null;
+                        metaService.saveAvatarPath(null);
                         updateAvatarIcon(size);
                         refreshPage();
                     });
@@ -307,8 +338,8 @@ public class SettingsPage extends JPanel {
             String ext = getFileExtension(src.getName());
             if (ext.isBlank()) ext = "png";
 
-            // Copy to: ~/.patient-monitor/avatars/
-            Path dir = Paths.get(System.getProperty("user.home"), ".patient-monitor", "avatars");
+            // Copy to the same account meta directory used by AccountPage
+            Path dir = metaService.getDirPath();
             Files.createDirectories(dir);
 
             String filename = "avatar_" + System.currentTimeMillis() + "." + ext;
@@ -316,7 +347,8 @@ public class SettingsPage extends JPanel {
 
             Files.copy(src.toPath(), dst, StandardCopyOption.REPLACE_EXISTING);
 
-            settings.setAvatarPath(dst.toString());
+            meta.avatarPath = dst.toString();
+            metaService.saveAvatarPath(meta.avatarPath);
 
             updateAvatarIcon(size);
             refreshPage();
@@ -329,7 +361,7 @@ public class SettingsPage extends JPanel {
     }
 
     private void updateAvatarIcon(int size) {
-        String path = settings.getAvatarPath();
+        String path = currentAvatarPath();
         File f = (path == null || path.isBlank()) ? null : new File(path);
 
         try {
@@ -345,7 +377,7 @@ public class SettingsPage extends JPanel {
         } catch (Exception ignored) {}
 
         // fallback: default initials
-        BufferedImage fallback = drawInitialsAvatar(size, doctorName);
+        BufferedImage fallback = drawInitialsAvatar(size, displayName);
         avatarLabel.setIcon(new ImageIcon(fallback));
         avatarLabel.setText(null);
     }
@@ -506,6 +538,9 @@ public class SettingsPage extends JPanel {
     }
 
     private void refreshPage() {
+        // Re-resolve identity/avatar every refresh so this page stays in sync with AccountPage
+        meta = metaService.loadOrInit();
+        resolveDisplayIdentity();
         removeAll();
         add(buildMainCard(), BorderLayout.CENTER);
         revalidate();

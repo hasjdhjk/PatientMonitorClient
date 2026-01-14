@@ -8,17 +8,17 @@ public class VitalRecordIO {
 
     private static final List<VitalRecord> records = new ArrayList<>();
 
-    // Append ONE minute-averaged record
+    // Appends a new minute averaged vital record.
     public static void append(VitalRecord r) {
         records.add(r);
     }
 
-    // Load all records (used by table)
+    // Returns a copy of all stored vital records.
     public static List<VitalRecord> loadAll() {
         return new ArrayList<>(records);
     }
 
-    // Load records for a patient within the last N hours (used by reports)
+    // Returns vital records for a patient recorded within the last specified number of hours
     public static List<VitalRecord> loadLastHours(int patientId, int hours) {
 
         LocalDateTime cutoff = LocalDateTime.now().minusHours(hours);
@@ -29,7 +29,7 @@ public class VitalRecordIO {
                 .toList();
     }
 
-    // Clear records (optional: call on patient discharge)
+    // Removes all stored vital records associated with a given patient.
     public static void clearForPatient(int patientId) {
         records.removeIf(r -> r.getPatientId() == patientId);
     }

@@ -275,7 +275,7 @@ public class AccountPage extends JPanel {
         // - ROLE -> dropdown (not in model; we store only UI state by default)
         fullNameField = new PlaceholderTextField(profile == null ? "" : profile.getFullName());
         emailField = new PlaceholderTextField(profile == null ? "" : profile.getEmail());
-        organizationField = new PlaceholderTextField(profile == null ? "" : profile.getSpecialty());
+        organizationField = new PlaceholderTextField(profile == null ? "" : profile.getOrgnization());
         passwordField = new PlaceholderPasswordField("Enter password"); // not persisted
 
         roleCombo = new JComboBox<>(new String[]{
@@ -283,7 +283,11 @@ public class AccountPage extends JPanel {
         });
         String initialRole = (meta != null && meta.role != null && !meta.role.isBlank()) ? meta.role : "Clinician";
         roleCombo.setSelectedItem(initialRole);
-        roleCombo.setOpaque(true);
+        
+        // Sync role to Session so TopBar can display it
+        Session.setDoctorRole(initialRole);
+        window.getTopBar().updateDoctorInfo(Session.getDoctorFullName(), Session.getDoctorRole());
+roleCombo.setOpaque(true);
         roleCombo.setBackground(Color.WHITE);
 
         int row = 0;
@@ -441,7 +445,7 @@ public class AccountPage extends JPanel {
         profile.setLastName(last);
 
         // Map ORGANIZATION -> specialty (since your model has no org field)
-        profile.setSpecialty(safe(organizationField));
+        profile.setOrgnization(safe(organizationField));
 
         // Email is read-only in UI; keep it
         profileService.save(profile);
@@ -454,14 +458,16 @@ public class AccountPage extends JPanel {
         Session.setDoctorName(profile.getFirstName(), profile.getLastName());
 
         // Update TopBar
-        window.getTopBar().updateDoctorInfo(Session.getDoctorFullName(), profile.getSpecialty());
+        window.getTopBar().updateDoctorInfo(Session.getDoctorFullName(), Session.getDoctorRole());
 
         // Save selected role to meta and persist
         String selectedRole = Objects.toString(roleCombo.getSelectedItem(), "");
         meta.role = selectedRole;
         metaService.saveRole(selectedRole);
 
-        // Update originals & button
+        
+        Session.setDoctorRole(selectedRole);
+// Update originals & button
         originalFullName = safe(fullNameField);
         originalOrg = safe(organizationField);
         originalRole = Objects.toString(roleCombo.getSelectedItem(), "");
@@ -529,7 +535,7 @@ public class AccountPage extends JPanel {
         this.profile = p;
 
         if (fullNameField != null) fullNameField.setText(p.getFullName());
-        if (organizationField != null) organizationField.setText(p.getSpecialty());
+        if (organizationField != null) organizationField.setText(p.getOrgnization());
         if (emailField != null) emailField.setText(p.getEmail());
         if (headerName != null) {
             String name = Session.getDoctorFullName();
@@ -563,7 +569,11 @@ public class AccountPage extends JPanel {
         if (roleCombo != null) {
             String initialRole = (meta != null && meta.role != null && !meta.role.isBlank()) ? meta.role : Objects.toString(roleCombo.getSelectedItem(), "Clinician");
             roleCombo.setSelectedItem(initialRole);
-        }
+        
+        // Sync role to Session so TopBar can display it
+        Session.setDoctorRole(initialRole);
+        window.getTopBar().updateDoctorInfo(Session.getDoctorFullName(), Session.getDoctorRole());
+}
 
         // originals reset
         originalFullName = safe(fullNameField);

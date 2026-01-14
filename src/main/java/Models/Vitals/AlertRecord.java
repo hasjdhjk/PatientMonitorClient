@@ -15,6 +15,7 @@ public class AlertRecord {
     private final List<String> causes;
     private final Instant timestamp;
 
+    // creates an immutable alert record for a patient at a specific point in time.
     public AlertRecord(int patientId, String patientName, LiveVitals.VitalsSeverity severity, List<String> causes, Instant timestamp) {
         this.patientId = patientId;
         this.patientName = patientName;
@@ -23,26 +24,32 @@ public class AlertRecord {
         this.timestamp = (timestamp == null) ? Instant.now() : timestamp;
     }
 
+    // returns the unique identifier of the patient associated with this alert.
     public int getPatientId() {
         return patientId;
     }
 
+    // returns the name of the patient associated with this alert.
     public String getPatientName() {
         return patientName;
     }
 
+    // returns the severity level of this alert.
     public LiveVitals.VitalsSeverity getSeverity() {
         return severity;
     }
 
+    // returns an unmodifiable list of human-readable causes for this alert.
     public List<String> getCauses() {
         return causes;
     }
 
+    // returns the timestamp indicating when this alert was recorded.
     public Instant getTimestamp() {
         return timestamp;
     }
 
+    // returns a string representation of this alert record for debugging or logging.
     @Override
     public String toString() {
         return "AlertRecord{" +
