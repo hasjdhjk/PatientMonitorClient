@@ -16,40 +16,40 @@ public class WaveformPanel extends JPanel {
     private double yMax = 2;
     private int secondsVisible = 10;
 
+    // Creates a waveform panel for displaying time-series data with optional alarm highlighting.
     public WaveformPanel(String title, Color baseColor) {
         this.baseColor = baseColor;
         setPreferredSize(new Dimension(1000, 300));
         setBackground(Color.WHITE);
     }
 
-    /* ===== DATA ===== */
-
+    // Appends new samples to the waveform while enforcing a maximum buffer size.
     public void addSamples(List<Double> data, int maxSamples) {
         samples.addAll(data);
         while (samples.size() > maxSamples) samples.remove(0);
         repaint();
     }
 
+    // Clears all waveform samples from the panel.
     public void clear() {
         samples.clear();
         repaint();
     }
 
-    /* ===== ALARM SUPPORT ===== */
-
+    // Enables or disables alarm mode for visual emphasis.
     public void setAlarm(boolean alarm) {
         this.alarm = alarm;
         repaint();
     }
 
-    /* ===== AXIS ===== */
-
+    // Configures the vertical axis range and visible time window.
     public void setAxis(double yMin, double yMax, int secondsVisible) {
         this.yMin = yMin;
         this.yMax = yMax;
         this.secondsVisible = secondsVisible;
     }
 
+    // Paints the waveform, grid, axes, and alarm indicators.
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -71,7 +71,6 @@ public class WaveformPanel extends JPanel {
         for (int y = 0; y < h - bottom; y += 40)
             g2.drawLine(left, y, w, y);
 
-        /* ===== AXES ===== */
         g2.setColor(Color.GRAY);
         g2.drawLine(left, 0, left, h - bottom);
         g2.drawLine(left, h - bottom, w, h - bottom);
@@ -84,7 +83,7 @@ public class WaveformPanel extends JPanel {
 
         if (samples.size() < 2) return;
 
-        /* ===== WAVEFORM ===== */
+        //waveform
         g2.setColor(alarm ? Color.RED : baseColor);
 
         double range = yMax - yMin;
@@ -102,7 +101,7 @@ public class WaveformPanel extends JPanel {
             g2.drawLine(x1, y1, x2, y2);
         }
 
-        /* ===== ALARM BORDER ===== */
+        // alarm boarder
         if (alarm) {
             g2.setColor(Color.RED);
             g2.setStroke(new BasicStroke(2));

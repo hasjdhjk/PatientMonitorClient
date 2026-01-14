@@ -7,17 +7,19 @@ public class RoundedPanel extends JPanel {
     private int radius = 20;
     private Color fillColor = new Color(245, 245, 245);
 
+    // Creates a panel with rounded corners using the specified layout manager.
     public RoundedPanel(LayoutManager layout) {
         super(layout);
         setOpaque(false);
     }
 
+    // Sets the background fill colour of the rounded panel.
     public void setFillColor(Color fillColor) {
         this.fillColor = fillColor;
         repaint();
     }
 
-
+    // Paints the rounded panel background using the current fill colour.
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

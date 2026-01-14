@@ -7,12 +7,14 @@ import java.awt.*;
 public class PlaceholderPasswordField extends JPasswordField {
     private String placeholder;
 
+    // Creates a password field with placeholder text and masked input
     public PlaceholderPasswordField(String placeholder) {
         this.placeholder = placeholder;
         setOpaque(false);
         setEchoChar('*');
     }
 
+    // Paints the placeholder text when the field is empty and not focused.
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

@@ -41,6 +41,7 @@ public class PatientTile extends BaseTile {
     private static final Color BORDER_WARN = new Color(245, 158, 11);
     private static final Color BORDER_DANGER = new Color(220, 38, 38);
 
+    // Creates a UI tile that displays a patient's details and live vitals with alert highlighting.
     public PatientTile(Patient patient, MainWindow window, HomePage homePage) {
         super(370, 320, 30, true);
         this.patient = patient;
@@ -130,6 +131,7 @@ public class PatientTile extends BaseTile {
         });
     }
 
+    // Builds the left-side panel that displays continuously updated vital labels.
     private JPanel buildDynamicVitalsPanel() {
         JPanel p = new JPanel();
         p.setOpaque(false);
@@ -156,6 +158,7 @@ public class PatientTile extends BaseTile {
         return p;
     }
 
+    // Builds the right side panel that displays static patient demographic information.
     private JPanel buildStaticInfoPanel(Patient patient) {
         JPanel p = new JPanel();
         p.setOpaque(false);
@@ -179,6 +182,7 @@ public class PatientTile extends BaseTile {
         return p;
     }
 
+    // Starts a timer that refreshes UI labels from shared LiveVitals once per second.
     private void startLiveRefresh(Patient patient) {
         LiveVitals live = LiveVitals.getShared(patient.getId(), patient.getBloodPressure());
 
@@ -224,6 +228,7 @@ public class PatientTile extends BaseTile {
         refreshTimer.start();
     }
 
+    // Stops all timers and resets alert state to prevent lingering UI effects or sounds.
     private void stopRefreshTimer() {
         if (refreshTimer != null) {
             refreshTimer.stop();
@@ -246,6 +251,7 @@ public class PatientTile extends BaseTile {
         }
     }
 
+    // Starts a flashing border to indicate warning or danger.
     private void startFlash(Color onColor, Color offColor) {
         // If already flashing, keep current timer but allow color to change
         if (flashTimer != null && flashTimer.isRunning()) {
@@ -276,6 +282,7 @@ public class PatientTile extends BaseTile {
         flashTimer.start();
     }
 
+    // Stops any flashing behaviour and applies the provided border colour.
     private void stopFlash(Color borderColor) {
         if (flashTimer != null) {
             flashTimer.stop();
@@ -292,12 +299,13 @@ public class PatientTile extends BaseTile {
         repaint();
     }
 
+    // Creates a consistently styled label used within the tile.
     private JLabel label(String text) {
         JLabel l = new JLabel(text);
         l.setFont(new Font("Arial", Font.PLAIN, 16));
         return l;
     }
-
+    // Returns a safe placeholder string when a value is null or blank.
     private String safe(String s) {
         return (s == null || s.isBlank()) ? "--" : s;
     }

@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 
 public class AddTile extends BaseTile {
 
+    // Creates a clickable tile that navigates to the add-patient page.
     public AddTile(MainWindow window) {
         super(370, 320, 30, true);
 

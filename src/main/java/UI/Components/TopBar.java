@@ -17,6 +17,7 @@ public class TopBar extends JPanel {
 
     private final MainWindow window;
 
+    // Creates the top navigation bar containing the app title and doctor account information.
     public TopBar(MainWindow window) {
         this.window = window;
 
@@ -28,12 +29,14 @@ public class TopBar extends JPanel {
         add(buildRightSection(), BorderLayout.EAST);
     }
 
+    // Ensures all text within the top bar remains white when the component is added to the UI.
     @Override
     public void addNotify() {
         super.addNotify();
         forceWhiteText(this);
     }
 
+    // Recursively forces all JLabel components within the container to render white text.
     private void forceWhiteText(Container c) {
         for (Component comp : c.getComponents()) {
             if (comp instanceof JLabel lbl) {
@@ -45,7 +48,7 @@ public class TopBar extends JPanel {
         }
     }
 
-    // ================= LEFT: LOGO + TITLE =================
+    // Builds the left section containing the application logo and title
     private JPanel buildLeftSection() {
         JPanel left = new JPanel();
         left.setOpaque(false);
@@ -66,14 +69,14 @@ public class TopBar extends JPanel {
         return left;
     }
 
-    // ================= RIGHT: NOTIFICATION + DOCTOR INFO =================
+    // Builds the right section containing notifications, doctor information, and avatar.
     private JPanel buildRightSection() {
         JPanel right = new JPanel();
         right.setOpaque(false);
         right.setLayout(new BoxLayout(right, BoxLayout.X_AXIS));
         right.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 30));
 
-        // ---- Notification button ----
+        // Notification button
         JLabel notificationBtn = new JLabel(
                 ImageLoader.loadImageScaled("icon_notification", "Icons", 24)
         );
@@ -83,12 +86,10 @@ public class TopBar extends JPanel {
         notificationBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                // hook later if needed
                 System.out.println("Notification clicked");
             }
         });
 
-        // ---- Text block ----
         JPanel textBlock = new JPanel();
         textBlock.setOpaque(false);
         textBlock.setLayout(new BoxLayout(textBlock, BoxLayout.Y_AXIS));
@@ -142,7 +143,7 @@ public class TopBar extends JPanel {
         return right;
     }
 
-    // ================= PUBLIC UPDATE API =================
+    // Updates the displayed doctor name, role, and avatar initials.
     public void updateDoctorInfo(String fullName, String role) {
         nameLabel.setText(fullName == null ? "" : fullName);
         roleLabel.setText(role == null ? "" : role);
@@ -151,6 +152,7 @@ public class TopBar extends JPanel {
         avatarLabel.setText(initials);
     }
 
+    // Extracts uppercase initials from a full name string for avatar display.
     private String extractInitials(String name) {
         String[] parts = name.trim().split("\\s+");
         if (parts.length == 0) return "";

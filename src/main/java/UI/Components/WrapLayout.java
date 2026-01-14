@@ -4,25 +4,30 @@ import java.awt.*;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+//Custom FlowLayout that automatically wraps components onto new rows when space runs out
 public class WrapLayout extends FlowLayout {
-
+    // Creates a wrap layout using default FlowLayout alignment and gaps
     public WrapLayout() {
         super();
     }
 
+    // Creates a wrap layout with the specified alignment.
     public WrapLayout(int align) {
         super(align);
     }
 
+    // Creates a wrap layout with the specified alignment and horizontal/vertical gaps.
     public WrapLayout(int align, int hgap, int vgap) {
         super(align, hgap, vgap);
     }
 
+    // Returns the preferred layout size accounting for component wrapping.
     @Override
     public Dimension preferredLayoutSize(Container target) {
         return layoutSize(target, true);
     }
 
+    // Returns the minimum layout size accounting for component wrapping.
     @Override
     public Dimension minimumLayoutSize(Container target) {
         Dimension minimum = layoutSize(target, false);
@@ -30,6 +35,7 @@ public class WrapLayout extends FlowLayout {
         return minimum;
     }
 
+    // Computes the layout size by placing components into rows that wrap within the container width.
     private Dimension layoutSize(Container target, boolean preferred) {
         synchronized (target.getTreeLock()) {
 

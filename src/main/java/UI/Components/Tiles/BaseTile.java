@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+// Base tile component providing rounded corners, shadow, and hover effects.
 public class BaseTile extends JPanel {
 
     private int radius;
@@ -14,6 +15,7 @@ public class BaseTile extends JPanel {
     private boolean hasHoverEffect;
     private boolean backgroundLocked = false;
 
+    // Creates a base tile with specified size, corner radius, and optional hover effect.
     public BaseTile(int width, int height, int radius, boolean hasHoverEffect) {
         this.radius = radius;
         setOpaque(false);
@@ -40,17 +42,20 @@ public class BaseTile extends JPanel {
             });
         }
     }
+    // Determines whether a colour is considered light based on average brightness.
     private boolean isLight(Color c) {
         // simple brightness check
         int brightness = (c.getRed() + c.getGreen() + c.getBlue()) / 3;
         return brightness >= 200;
     }
+    // Returns a lighter version of the given colour by the specified amount.
     private Color lighten(Color c, int amount) {
         int r = Math.min(255, c.getRed() + amount);
         int g = Math.min(255, c.getGreen() + amount);
         int b = Math.min(255, c.getBlue() + amount);
         return new Color(r, g, b);
     }
+    // Paints the tile background with a soft shadow and rounded corners.
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
@@ -92,7 +97,7 @@ public class BaseTile extends JPanel {
         super.paintComponent(g);
     }
 
-
+    // Sets the background colour of the tile unless background changes are locked.
     @Override
     public void setBackground(Color bg) {
         if (backgroundLocked) return;
@@ -100,11 +105,12 @@ public class BaseTile extends JPanel {
         this.tileColor = bg;
         repaint();
     }
-
+    // Enables or disables locking of background colour updates.
     public void lockBackground(boolean locked) {
         this.backgroundLocked = locked;
     }
 
+    // Forces the tile background colour regardless of lock state.
     public void forceBackground(Color bg) {
         this.baseColor = bg;
         this.tileColor = bg;
