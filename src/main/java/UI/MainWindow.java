@@ -80,7 +80,8 @@ public class MainWindow extends JFrame {
         pageContainer.add(liveMonitoringPage, PAGE_LIVE);
 
         add(pageContainer, BorderLayout.CENTER);
-        cardLayout.show(pageContainer, PAGE_HOME);
+        showPage(PAGE_LOGIN);
+        //cardLayout.show(pageContainer, PAGE_HOME);
 
         // ================= Theme =================
         SettingManager settings = new SettingManager();
@@ -104,6 +105,7 @@ public class MainWindow extends JFrame {
     }
 
     public void showHomePage() {
+        Services.AlertManager.getInstance().enableAlerts();
         homePage.onPageShown();
         showPage(PAGE_HOME);
     }

@@ -28,12 +28,14 @@ public class ApiClient {
             os.write(jsonBody.getBytes());
         }
 
-        BufferedReader reader =
-                new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        int code = conn.getResponseCode();
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                (code >= 200 && code < 300) ? conn.getInputStream() : conn.getErrorStream()
+        ));
 
         StringBuilder sb = new StringBuilder();
         String line;
-
         while ((line = reader.readLine()) != null) {
             sb.append(line);
         }
@@ -83,6 +85,18 @@ public class ApiClient {
         ResetPasswordRequest(String token, String newPassword) {
             this.token = token;
             this.newPassword = newPassword;
+        }
+    }
+
+    public static class DeleteAccountRequest {
+        String email;
+        String password;
+        String confirm;
+
+        DeleteAccountRequest(String email, String password, String confirm) {
+            this.email = email;
+            this.password = password;
+            this.confirm = confirm;
         }
     }
 
@@ -142,6 +156,21 @@ public class ApiClient {
             String body = gson.toJson(req);
 
             String json = postJson("/resetPassword", body);
+            return gson.fromJson(json, SimpleResponse.class);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // permanently delete doctor account
+    public static SimpleResponse deleteAccount(String email, String password) {
+        try {
+            DeleteAccountRequest req = new DeleteAccountRequest(email, password, "DELETE");
+            String body = gson.toJson(req);
+
+            String json = postJson("/deleteAccount", body);
             return gson.fromJson(json, SimpleResponse.class);
 
         } catch (Exception e) {

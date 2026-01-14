@@ -11,15 +11,9 @@ import java.util.List;
 
 public class LiveVitals {
 
-    private final int patientId;
-
-    private double heartRate = 75;
-    private double respRate = 16;
-    private double temperature = 36.8;
-    private double spo2 = 98;
-    private String bloodPressure = "120/80";
-
+    // =====================
     // Global shared registry
+    // =====================
     private static final ConcurrentHashMap<Integer, LiveVitals> SHARED = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Integer, PatientSimulatorService> SIMS = new ConcurrentHashMap<>();
 
@@ -31,8 +25,10 @@ public class LiveVitals {
 
     private static volatile boolean loopStarted = false;
 
-    // Get (or create) a globally shared LiveVitals instance for a patientId
-    // This also ensures there is exactly one simulator loop updating all shared vitals once per second
+    /**
+     * Get (or create) a globally shared LiveVitals instance for a patientId.
+     * This also ensures there is exactly one simulator loop updating all shared vitals once per second.
+     */
     public static LiveVitals getShared(int patientId, String baselineBloodPressure) {
         LiveVitals v = SHARED.computeIfAbsent(patientId, LiveVitals::new);
 
@@ -64,13 +60,26 @@ public class LiveVitals {
         return v;
     }
 
-
-    // Optional: remove a patient's shared vitals + simulator to avoid memory growth after discharge
-    // Safe to call anytime.
+    /**
+     * Optional: remove a patient's shared vitals + simulator to avoid memory growth after discharge.
+     * Safe to call anytime.
+     */
     public static void removeShared(int patientId) {
         SHARED.remove(patientId);
         SIMS.remove(patientId);
     }
+
+    /* =====================
+       Instance fields
+       ===================== */
+
+    private final int patientId;
+
+    private double heartRate = 75;
+    private double respRate = 16;
+    private double temperature = 36.9;
+    private double spo2 = 98;
+    private String bloodPressure = "124/76";
 
     public LiveVitals(int patientId) {
         this.patientId = patientId;
@@ -95,37 +104,37 @@ public class LiveVitals {
         this.bloodPressure = bloodPressure;
     }
 
-    // Convenience: any vital abnormal (warning-level thresholds)
+    /** Convenience: any vital abnormal (warning-level thresholds). */
     public boolean hasAbnormalVitals() {
         return isHeartRateAbnormal() || isTemperatureAbnormal() || isBloodPressureAbnormal();
     }
 
-    // WARNING-level causes (your current “abnormal” ranges)
+    /** WARNING-level causes (your current “abnormal” ranges). */
     public List<String> getWarningCauses() {
         List<String> causes = new ArrayList<>();
 
         if (isHeartRateAbnormal()) {
-            causes.add("Heart rate abnormal (HR=" + String.format("%.0f", heartRate) + ", normal 60–100)");
+            causes.add("Heart rate abnormal (HR=" + String.format("%.0f", heartRate) + ", normal 66–88)");
         }
         if (isTemperatureAbnormal()) {
-            causes.add("Temperature abnormal (Temp=" + String.format("%.1f", temperature) + ", normal 36.1–37.2)");
+            causes.add("Temperature abnormal (Temp=" + String.format("%.1f", temperature) + ", normal 36.5–37.4)");
         }
         if (isBloodPressureAbnormal()) {
-            causes.add("Blood pressure abnormal (BP=" + bloodPressure + ", normal 90–140 / 60–90)");
+            causes.add("Blood pressure abnormal (BP=" + bloodPressure + ", normal 109–139 / 66–86)");
         }
 
         return causes;
     }
 
-    // DANGER-level causes (more extreme thresholds)
+    /** DANGER-level causes (more extreme thresholds). */
     public List<String> getDangerCauses() {
         List<String> causes = new ArrayList<>();
 
-        if (heartRate < 40 || heartRate > 130) {
-            causes.add("Heart rate DANGER (HR=" + String.format("%.0f", heartRate) + ", danger <40 or >130)");
+        if (heartRate < 50 || heartRate > 110) {
+            causes.add("Heart rate DANGER (HR=" + String.format("%.0f", heartRate) + ", danger <50 or >110)");
         }
-        if (temperature < 35.0 || temperature > 39.0) {
-            causes.add("Temperature DANGER (Temp=" + String.format("%.1f", temperature) + ", danger <35.0 or >39.0)");
+        if (temperature < 35.5 || temperature > 38.5) {
+            causes.add("Temperature DANGER (Temp=" + String.format("%.1f", temperature) + ", danger <35.5 or >38.5)");
         }
 
         if (bloodPressure != null && !bloodPressure.isEmpty()) {
@@ -133,8 +142,8 @@ public class LiveVitals {
                 String[] parts = bloodPressure.split("/");
                 int sys = Integer.parseInt(parts[0].trim());
                 int dia = Integer.parseInt(parts[1].trim());
-                if (sys < 80 || sys > 180 || dia < 50 || dia > 120) {
-                    causes.add("Blood pressure DANGER (BP=" + bloodPressure + ", danger sys <80/>180 or dia <50/>120)");
+                if (sys < 90 || sys > 160 || dia < 55 || dia > 110) {
+                    causes.add("Blood pressure DANGER (BP=" + bloodPressure + ", danger sys <90/>160 or dia <55/>110)");
                 }
             } catch (Exception ignored) {
             }
@@ -153,11 +162,11 @@ public class LiveVitals {
     public enum VitalsSeverity { NORMAL, WARNING, DANGER }
 
     public boolean isHeartRateAbnormal() {
-        return heartRate < 60 || heartRate > 100;
+        return heartRate < 65.56 || heartRate > 87.64;
     }
 
     public boolean isTemperatureAbnormal() {
-        return temperature < 36.1 || temperature > 37.2;
+        return temperature < 36.46 || temperature > 37.36;
     }
 
     public boolean isBloodPressureAbnormal() {
@@ -166,15 +175,15 @@ public class LiveVitals {
             String[] parts = bloodPressure.split("/");
             int sys = Integer.parseInt(parts[0].trim());
             int dia = Integer.parseInt(parts[1].trim());
-            return sys < 90 || sys > 140 || dia < 60 || dia > 90;
+            return sys < 108 || sys > 139 || dia < 66 || dia > 86;
         } catch (Exception e) {
             return false;
         }
     }
 
     public VitalsSeverity getVitalsSeverity() {
-        boolean dangerHR = heartRate < 40 || heartRate > 130;
-        boolean dangerTemp = temperature < 35.0 || temperature > 39.0;
+        boolean dangerHR = heartRate < 50 || heartRate > 110;
+        boolean dangerTemp = temperature < 35.5 || temperature > 38.5;
 
         boolean dangerBP = false;
         if (bloodPressure != null && !bloodPressure.isEmpty()) {
@@ -182,7 +191,7 @@ public class LiveVitals {
                 String[] parts = bloodPressure.split("/");
                 int sys = Integer.parseInt(parts[0].trim());
                 int dia = Integer.parseInt(parts[1].trim());
-                dangerBP = (sys < 80 || sys > 180 || dia < 50 || dia > 120);
+                dangerBP = (sys < 90 || sys > 160 || dia < 55 || dia > 110);
             } catch (Exception ignored) {}
         }
 
@@ -190,4 +199,9 @@ public class LiveVitals {
 
         return hasAbnormalVitals() ? VitalsSeverity.WARNING : VitalsSeverity.NORMAL;
     }
+    public static void clearAllShared() {
+        SHARED.clear();
+        SIMS.clear();
+    }
+
 }

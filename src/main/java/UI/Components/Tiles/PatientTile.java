@@ -197,6 +197,7 @@ public class PatientTile extends BaseTile {
             // BP may be updated by simulator; keep UI synced
             bpLabel.setText("BP: " + safe(live.getBloodPressure()));
 
+
             // severity highlight + flash
             LiveVitals.VitalsSeverity sev = live.getVitalsSeverity();
             Color borderColor =
