@@ -169,11 +169,7 @@ public class AccountPage extends JPanel {
         nameCol.setLayout(new BoxLayout(nameCol, BoxLayout.Y_AXIS));
         nameCol.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
-        String displayName = Session.getDoctorFullName();
-        if (displayName == null || displayName.isBlank() || "demo".equalsIgnoreCase(displayName.trim())) {
-            displayName = (profile == null ? "" : profile.getFullName());
-        }
-        headerName = new JLabel(displayName);
+        headerName = new JLabel(profile == null ? "" : profile.getFullName());
         headerName.setFont(new Font("Arial", Font.BOLD, 22));
         headerName.setForeground(new Color(17, 24, 39));
 
@@ -273,9 +269,18 @@ public class AccountPage extends JPanel {
         // - EMAIL -> email (read-only recommended)
         // - ORGANIZATION -> specialty (closest field you have)
         // - ROLE -> dropdown (not in model; we store only UI state by default)
-        fullNameField = new PlaceholderTextField(profile == null ? "" : profile.getFullName());
-        emailField = new PlaceholderTextField(profile == null ? "" : profile.getEmail());
-        organizationField = new PlaceholderTextField(profile == null ? "" : profile.getOrgnization());
+        // NOTE: PlaceholderTextField's constructor is for the placeholder text, not the initial value.
+        // If we pass data into the constructor, it may only paint visually but getText() stays empty,
+        // so saving won't persist. Always set placeholder + setText(value).
+        fullNameField = new PlaceholderTextField("Full name");
+        fullNameField.setText(profile == null ? "" : profile.getFullName());
+
+        emailField = new PlaceholderTextField("Email address");
+        emailField.setText(profile == null ? "" : profile.getEmail());
+
+        organizationField = new PlaceholderTextField("Organization");
+        organizationField.setText(profile == null ? "" : profile.getOrgnization());
+
         passwordField = new PlaceholderPasswordField("Enter password"); // not persisted
 
         roleCombo = new JComboBox<>(new String[]{
@@ -283,10 +288,10 @@ public class AccountPage extends JPanel {
         });
         String initialRole = (meta != null && meta.role != null && !meta.role.isBlank()) ? meta.role : "Clinician";
         roleCombo.setSelectedItem(initialRole);
-        
+
         // Sync role to Session so TopBar can display it
         Session.setDoctorRole(initialRole);
-        window.getTopBar().updateDoctorInfo(Session.getDoctorFullName(), Session.getDoctorRole());
+        window.getTopBar().updateDoctorInfo(profile == null ? "" : profile.getFullName(), Session.getDoctorRole());
 roleCombo.setOpaque(true);
         roleCombo.setBackground(Color.WHITE);
 
@@ -380,6 +385,10 @@ roleCombo.setOpaque(true);
         emailField.setEditable(false);
         emailField.setOpaque(false);
 
+        // name should also be read-only (avoid DB write-back complexity)
+        fullNameField.setEditable(false);
+        fullNameField.setOpaque(false);
+
         // store original for dirty check
         originalFullName = safe(fullNameField);
         originalOrg = safe(organizationField);
@@ -419,9 +428,9 @@ roleCombo.setOpaque(true);
         try {
             String email = Session.getDoctorEmail();
             if (email != null && !email.isBlank() && !"demo".equalsIgnoreCase(email.trim())) {
-                if (base.getEmail() == null || base.getEmail().isBlank()) {
-                    base.setEmail(email.trim());
-                }
+                // Email from login/session should be the source of truth for display.
+                base.setEmail(email.trim());
+
                 // If we don't have a stable idNumber yet, derive one from the email hash (display-only).
                 if (base.getIdNumber() == null || base.getIdNumber().isBlank()) {
                     base.setIdNumber("DOC-" + Math.abs(email.trim().hashCode()));
@@ -436,36 +445,24 @@ roleCombo.setOpaque(true);
     private void saveDoctorProfileFromScreenshotForm() {
         if (profile == null) profile = DoctorProfile.defaults();
 
-        String full = safe(fullNameField);
-        String[] parts = full.trim().split("\\s+", 2);
-        String first = parts.length > 0 ? parts[0] : "";
-        String last = parts.length > 1 ? parts[1] : "";
+        // Name/email are read-only, so we keep existing values
 
-        profile.setFirstName(first);
-        profile.setLastName(last);
-
-        // Map ORGANIZATION -> specialty (since your model has no org field)
+        // Map ORGANIZATION -> specialty
         profile.setOrgnization(safe(organizationField));
-
-        // Email is read-only in UI; keep it
-        profileService.save(profile);
 
         // Update top UI
         headerName.setText(profile.getFullName());
         headerEmail.setText(profile.getEmail());
 
-        // Keep session display name in sync for the rest of the app
-        Session.setDoctorName(profile.getFirstName(), profile.getLastName());
-
         // Update TopBar
-        window.getTopBar().updateDoctorInfo(Session.getDoctorFullName(), Session.getDoctorRole());
+        window.getTopBar().updateDoctorInfo(profile.getFullName(), Session.getDoctorRole());
 
         // Save selected role to meta and persist
         String selectedRole = Objects.toString(roleCombo.getSelectedItem(), "");
         meta.role = selectedRole;
         metaService.saveRole(selectedRole);
 
-        
+
         Session.setDoctorRole(selectedRole);
 // Update originals & button
         originalFullName = safe(fullNameField);
@@ -536,15 +533,20 @@ roleCombo.setOpaque(true);
 
         if (fullNameField != null) fullNameField.setText(p.getFullName());
         if (organizationField != null) organizationField.setText(p.getOrgnization());
-        if (emailField != null) emailField.setText(p.getEmail());
+
+        // Keep email consistent everywhere: prefer Session email when available.
+        String em = Session.getDoctorEmail();
+        if (em == null || em.isBlank() || "demo".equalsIgnoreCase(em.trim())) {
+            em = p.getEmail();
+        } else {
+            em = em.trim();
+        }
+        if (emailField != null) emailField.setText(em == null ? "" : em);
+
         if (headerName != null) {
-            String name = Session.getDoctorFullName();
-            if (name == null || name.isBlank() || "demo".equalsIgnoreCase(name.trim())) name = p.getFullName();
-            headerName.setText(name == null ? "" : name);
+            headerName.setText(p == null ? "" : p.getFullName());
         }
         if (headerEmail != null) {
-            String em = Session.getDoctorEmail();
-            if (em == null || em.isBlank() || "demo".equalsIgnoreCase(em.trim())) em = p.getEmail();
             headerEmail.setText(em == null ? "" : em);
         }
 
@@ -569,17 +571,25 @@ roleCombo.setOpaque(true);
         if (roleCombo != null) {
             String initialRole = (meta != null && meta.role != null && !meta.role.isBlank()) ? meta.role : Objects.toString(roleCombo.getSelectedItem(), "Clinician");
             roleCombo.setSelectedItem(initialRole);
-        
-        // Sync role to Session so TopBar can display it
-        Session.setDoctorRole(initialRole);
-        window.getTopBar().updateDoctorInfo(Session.getDoctorFullName(), Session.getDoctorRole());
-}
+
+            // Sync role to Session so TopBar can display it
+            Session.setDoctorRole(initialRole);
+            window.getTopBar().updateDoctorInfo(p == null ? "" : p.getFullName(), Session.getDoctorRole());
+        }
 
         // originals reset
         originalFullName = safe(fullNameField);
         originalOrg = safe(organizationField);
         originalRole = Objects.toString(roleCombo.getSelectedItem(), "");
         refreshSaveEnabled();
+        if (fullNameField != null) {
+            fullNameField.setEditable(false);
+            fullNameField.setOpaque(false);
+        }
+        if (emailField != null) {
+            emailField.setEditable(false);
+            emailField.setOpaque(false);
+        }
     }
 
     // ===================== Field builders =====================

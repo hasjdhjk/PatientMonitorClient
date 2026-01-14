@@ -16,7 +16,7 @@ public class DoctorProfileService {
     private static final String K_LAST  = "lastName";
     private static final String K_ID = "idNumber";
     private static final String K_AGE = "age";
-    private static final String K_SPECIALTY = "specialty";
+    private static final String K_ORGNIZATION = "orgnization";
     private static final String K_EMAIL = "email";
 
     private final Path filePath;
@@ -47,7 +47,7 @@ public class DoctorProfileService {
         d.setFirstName(p.getProperty(K_FIRST, def.getFirstName()));
         d.setLastName(p.getProperty(K_LAST, def.getLastName()));
         d.setIdNumber(p.getProperty(K_ID, def.getIdNumber()));
-        d.setOrgnization(p.getProperty(K_SPECIALTY, def.getOrgnization()));
+        d.setOrgnization(p.getProperty(K_ORGNIZATION, def.getOrgnization()));
         d.setEmail(p.getProperty(K_EMAIL, def.getEmail()));
 
         int age = DoctorProfile.defaults().getAge();
@@ -69,7 +69,7 @@ public class DoctorProfileService {
         p.setProperty(K_LAST, safe(d.getLastName()));
         p.setProperty(K_ID, safe(d.getIdNumber()));
         p.setProperty(K_AGE, String.valueOf(d.getAge()));
-        p.setProperty(K_SPECIALTY, safe(d.getOrgnization()));
+        p.setProperty(K_ORGNIZATION, safe(d.getOrgnization()));
         p.setProperty(K_EMAIL, safe(d.getEmail()));
 
         try (OutputStream out = new FileOutputStream(filePath.toFile())) {
