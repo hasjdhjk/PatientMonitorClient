@@ -273,9 +273,18 @@ public class AccountPage extends JPanel {
         // - EMAIL -> email (read-only recommended)
         // - ORGANIZATION -> specialty (closest field you have)
         // - ROLE -> dropdown (not in model; we store only UI state by default)
-        fullNameField = new PlaceholderTextField(profile == null ? "" : profile.getFullName());
-        emailField = new PlaceholderTextField(profile == null ? "" : profile.getEmail());
-        organizationField = new PlaceholderTextField(profile == null ? "" : profile.getOrgnization());
+        // NOTE: PlaceholderTextField's constructor is for the placeholder text, not the initial value.
+        // If we pass data into the constructor, it may only paint visually but getText() stays empty,
+        // so saving won't persist. Always set placeholder + setText(value).
+        fullNameField = new PlaceholderTextField("Full name");
+        fullNameField.setText(profile == null ? "" : profile.getFullName());
+
+        emailField = new PlaceholderTextField("Email address");
+        emailField.setText(profile == null ? "" : profile.getEmail());
+
+        organizationField = new PlaceholderTextField("Organization");
+        organizationField.setText(profile == null ? "" : profile.getOrgnization());
+
         passwordField = new PlaceholderPasswordField("Enter password"); // not persisted
 
         roleCombo = new JComboBox<>(new String[]{
@@ -283,7 +292,7 @@ public class AccountPage extends JPanel {
         });
         String initialRole = (meta != null && meta.role != null && !meta.role.isBlank()) ? meta.role : "Clinician";
         roleCombo.setSelectedItem(initialRole);
-        
+
         // Sync role to Session so TopBar can display it
         Session.setDoctorRole(initialRole);
         window.getTopBar().updateDoctorInfo(Session.getDoctorFullName(), Session.getDoctorRole());
@@ -444,7 +453,7 @@ roleCombo.setOpaque(true);
         profile.setFirstName(first);
         profile.setLastName(last);
 
-        // Map ORGANIZATION -> specialty (since your model has no org field)
+        // Map ORGANIZATION -> specialty
         profile.setOrgnization(safe(organizationField));
 
         // Email is read-only in UI; keep it
@@ -465,7 +474,7 @@ roleCombo.setOpaque(true);
         meta.role = selectedRole;
         metaService.saveRole(selectedRole);
 
-        
+
         Session.setDoctorRole(selectedRole);
 // Update originals & button
         originalFullName = safe(fullNameField);

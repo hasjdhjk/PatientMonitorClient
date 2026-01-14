@@ -5,19 +5,19 @@ public class DoctorProfile {
     private String lastName;
     private String idNumber;
     private int age;
-    private String specialty;
+    private String orgnization;
     private String email;
 
     // Creates an empty doctor profile.
     public DoctorProfile() {}
 
     // Creates a doctor profile with identifying and professional details.
-    public DoctorProfile(String firstName, String lastName, String idNumber, int age, String specialty, String email) {
+    public DoctorProfile(String firstName, String lastName, String idNumber, int age, String orgnization, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.idNumber = idNumber;
         this.age = age;
-        this.specialty = specialty;
+        this.orgnization = orgnization;
         this.email = email;
     }
 
@@ -58,9 +58,9 @@ public class DoctorProfile {
     public void setAge(int age) { this.age = age; }
 
     // Returns the doctor's medical specialty.
-    public String getSpecialty() { return specialty; }
+    public String getOrgnization() { return orgnization; }
     // Updates the doctor's medical specialty.
-    public void setSpecialty(String specialty) { this.specialty = specialty; }
+    public void setOrgnization(String orgnization) { this.orgnization = orgnization; }
 
     // Returns the doctor's email address.
     public String getEmail() { return email; }
