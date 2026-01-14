@@ -23,7 +23,8 @@ public class MainWindow extends JFrame {
     public static final String PAGE_LOGIN = "login";
     public static final String PAGE_REGISTER = "register";
     public static final String PAGE_ADD = "add";
-    public static final String PAGE_STATUS = "status";
+    public static final String PAGE_LIVEMONITOR = "liveMonitor";
+    public static final String PAGE_DIGITALTWIN = "digitalTwin";
     public static final String PAGE_ACCOUNT = "account";
     public static final String PAGE_SETTINGS = "settings";
     public static final String PAGE_LIVE = "live";
@@ -31,6 +32,7 @@ public class MainWindow extends JFrame {
     private HomePage homePage;
     private LoginPage loginPage;
     private RegisterPage registerPage;
+    private LiveMonitoringPage liveMonitorPage;
     private DigitalTwinPage digitalTwinPage;
     private SettingsPage settingsPage;
     private AccountPage accountPage;
@@ -74,7 +76,8 @@ public class MainWindow extends JFrame {
         pageContainer.add(loginPage, PAGE_LOGIN);
         pageContainer.add(registerPage, PAGE_REGISTER);
         pageContainer.add(homePage, PAGE_HOME);
-        pageContainer.add(digitalTwinPage, PAGE_STATUS);
+        pageContainer.add(digitalTwinPage, PAGE_LIVEMONITOR);
+        pageContainer.add(digitalTwinPage, PAGE_DIGITALTWIN);
         pageContainer.add(settingsPage, PAGE_SETTINGS);
         pageContainer.add(accountPage, PAGE_ACCOUNT);
         pageContainer.add(addPatientPage, PAGE_ADD);
@@ -110,17 +113,10 @@ public class MainWindow extends JFrame {
         showPage(PAGE_HOME);
     }
 
-    // Navigates to the status tracker (digital twin) page for the given patient
-    public void showStatusTracker(Patient patient) {
-        sidebar.setSelected("Status Tracker");
+    public void showDigitalTwin(Patient patient) {
+        sidebar.setSelected("Digital Twin");
         digitalTwinPage.setPatient(patient);
-        showPage(PAGE_STATUS);
-    }
-
-    // Navigates to the add patient page.
-    public void showAddPatientPage() {
-        sidebar.setSelected("Add Patient");
-        showPage(PAGE_ADD);
+        showPage(PAGE_DIGITALTWIN);
     }
 
     // Navigates to the live monitoring page and swaps in a page instance for the chosen patient.
@@ -132,6 +128,12 @@ public class MainWindow extends JFrame {
         pageContainer.add(liveMonitoringPage, PAGE_LIVE);
 
         showPage(PAGE_LIVE);
+    }
+
+    // Navigates to the add patient page.
+    public void showAddPatientPage() {
+        sidebar.setSelected("Add Patient");
+        showPage(PAGE_ADD);
     }
 
     // Shows a named page and toggles top-level UI components based on authentication state.
