@@ -3,7 +3,7 @@
 A full-stack **Remote Patient Monitoring (RPM)** application built using a **Java client–server architecture**.  
 The system enables clinicians to manage patients, monitor simulated vital signs in real time, and review historical records through a desktop interface.
 
----
+<br>
 
 ## Table of Contents
 - [Overview](#overview)
@@ -15,7 +15,7 @@ The system enables clinicians to manage patients, monitor simulated vital signs 
 - [Design Notes](#design-notes)
 - [Author](#author)
 
----
+<br>
 
 ## Overview
 
@@ -29,7 +29,7 @@ The system consists of:
 - Deployment on **Tsuru (IMPAAS)**
 
 
----
+<br>
 
 ## Key Features
 
@@ -55,7 +55,7 @@ The system consists of:
 - Patient–doctor data isolation
 - Cloud-safe configuration using environment variables
 
----
+<br>
 
 ## Technologies Used
 
@@ -68,7 +68,7 @@ The system consists of:
 - **Maven**
 - **Tsuru (IMPAAS)**
 
----
+<br>
 
 ## Deployment
 
@@ -77,7 +77,7 @@ Both the **client** and **server** are deployed on **Tsuru**.
 - Server connects to PostgreSQL via environment variables
 - Client communicates with server using a configurable base URL
 
----
+<br>
 
 ## Configuration
 
@@ -92,13 +92,13 @@ Both the **client** and **server** are deployed on **Tsuru**.
 - TSURU_APPDIR
 - PGDATABASE
 
----
+<br>
 
 ## Usage
 
 
 
----
+<br>
 
 ## Design Notes
 
@@ -108,7 +108,7 @@ Both the **client** and **server** are deployed on **Tsuru**.
 - Shared in-memory caching is used on the client for responsive UI updates
 - System designed to be extensible to real sensor input in future work
 
----
+<br>
 
 ## Author
 
