@@ -104,6 +104,7 @@ public class MainWindow extends JFrame {
     }
 
     public void showHomePage() {
+        Services.AlertManager.getInstance().enableAlerts();
         homePage.onPageShown();
         showPage(PAGE_HOME);
     }

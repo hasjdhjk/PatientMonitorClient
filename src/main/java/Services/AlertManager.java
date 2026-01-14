@@ -21,9 +21,15 @@ public class AlertManager {
     private javax.swing.Timer soundTimer;
     private LiveVitals.VitalsSeverity currentlyPlaying = LiveVitals.VitalsSeverity.NORMAL;
 
+    // ✅ NEW: gate to prevent beeps (and prevent updateAlert from re-arming sound) while logged out
+    private boolean alertsEnabled = true;
+
     private AlertManager() {}
 
     public synchronized void updateAlert(Patient patient, LiveVitals.VitalsSeverity newSev, List<String> causes) {
+        // ✅ If alerts disabled (logged out), ignore updates so background timers can't restart sound
+        if (!alertsEnabled) return;
+
         int id = patient.getId();
         LiveVitals.VitalsSeverity oldSev = active.getOrDefault(id, LiveVitals.VitalsSeverity.NORMAL);
 
@@ -54,7 +60,22 @@ public class AlertManager {
         history.clear();
     }
 
+    // ✅ Call on logout
+    public synchronized void disableAlerts() {
+        alertsEnabled = false;
+        active.clear();
+        stopSoundTimer();
+        currentlyPlaying = LiveVitals.VitalsSeverity.NORMAL;
+    }
+
+    // ✅ Call after successful login
+    public synchronized void enableAlerts() {
+        alertsEnabled = true;
+    }
+
     private void refreshSound() {
+        if (!alertsEnabled) return;
+
         LiveVitals.VitalsSeverity highest = getHighestActiveSeverity();
 
         if (highest == currentlyPlaying) return; // no change
@@ -91,7 +112,10 @@ public class AlertManager {
             soundTimer = null;
         }
     }
+
     private void playBeep() {
+        if (!alertsEnabled) return;
+
         try {
             var is = getClass().getResourceAsStream("/sounds/alert.wav");
             if (is == null) return;
@@ -102,5 +126,4 @@ public class AlertManager {
             clip.start(); // one-shot beep
         } catch (Exception ignored) {}
     }
-
 }

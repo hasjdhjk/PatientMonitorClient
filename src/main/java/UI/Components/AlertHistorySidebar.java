@@ -21,7 +21,7 @@ import java.util.Set;
 
 public class AlertHistorySidebar extends JPanel {
 
-    private static final int SIDEBAR_WIDTH = 400;
+    private static final int SIDEBAR_WIDTH = 450;
 
     private final MainWindow window;
 
