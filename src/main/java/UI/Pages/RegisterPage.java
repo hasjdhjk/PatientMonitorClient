@@ -160,6 +160,17 @@ public class RegisterPage extends JPanel {
                 return;
             }
 
+            String email = emailField.getText().trim();
+
+            if (!isValidEmail(email)) {
+                JOptionPane.showMessageDialog(this,
+                        "Please enter a valid email address.",
+                        "Invalid Email",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+
             String password = new String(passwordField.getPassword()).trim();
             // password length check
             if (password.length() < 10) {
@@ -229,6 +240,18 @@ public class RegisterPage extends JPanel {
 
         add(leftPanel);
         add(rightPanel);
+    }
+
+    // check if email is valid
+    private boolean isValidEmail(String email) {
+        if (email == null) return false;
+
+        email = email.trim();
+
+        // @ + email with at least 5 characters
+        String regex = "^[A-Za-z0-9+_.-]+@.{5,}$";
+
+        return email.matches(regex);
     }
 
 
