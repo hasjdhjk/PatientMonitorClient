@@ -1,5 +1,7 @@
 package UI.Pages;
 
+import NetWork.Session;
+
 import Models.DoctorProfile;
 import Services.AccountMetaService;
 import Services.DoctorProfileService;
@@ -126,7 +128,7 @@ public class AccountPage extends JPanel {
         content.setBackground(themeBg);
 
         // ========== Load data ==========
-        this.profile = profileService.load();
+        this.profile = loadProfileFromDbOrFallback();
         this.meta = metaService.loadOrInit();
 
         // ---------- Main white card ----------
@@ -167,11 +169,19 @@ public class AccountPage extends JPanel {
         nameCol.setLayout(new BoxLayout(nameCol, BoxLayout.Y_AXIS));
         nameCol.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
-        headerName = new JLabel(profile.getFullName());
+        String displayName = Session.getDoctorFullName();
+        if (displayName == null || displayName.isBlank() || "demo".equalsIgnoreCase(displayName.trim())) {
+            displayName = (profile == null ? "" : profile.getFullName());
+        }
+        headerName = new JLabel(displayName);
         headerName.setFont(new Font("Arial", Font.BOLD, 22));
         headerName.setForeground(new Color(17, 24, 39));
 
-        headerEmail = new JLabel(profile.getEmail());
+        String displayEmail = Session.getDoctorEmail();
+        if (displayEmail == null || displayEmail.isBlank() || "demo".equalsIgnoreCase(displayEmail.trim())) {
+            displayEmail = (profile == null ? "" : profile.getEmail());
+        }
+        headerEmail = new JLabel(displayEmail);
         headerEmail.setFont(new Font("Arial", Font.PLAIN, 14));
         headerEmail.setForeground(new Color(75, 85, 99));
 
@@ -263,13 +273,13 @@ public class AccountPage extends JPanel {
         // - EMAIL -> email (read-only recommended)
         // - ORGANIZATION -> specialty (closest field you have)
         // - ROLE -> dropdown (not in model; we store only UI state by default)
-        fullNameField = new PlaceholderTextField(profile.getFullName());
-        emailField = new PlaceholderTextField(profile.getEmail());
-        organizationField = new PlaceholderTextField(profile.getSpecialty());
+        fullNameField = new PlaceholderTextField(profile == null ? "" : profile.getFullName());
+        emailField = new PlaceholderTextField(profile == null ? "" : profile.getEmail());
+        organizationField = new PlaceholderTextField(profile == null ? "" : profile.getSpecialty());
         passwordField = new PlaceholderPasswordField("Enter password"); // not persisted
 
         roleCombo = new JComboBox<>(new String[]{
-                "Clinician", "Consultant", "Surgeon", "Nurse", "Admin", "Viewer", "Earth Science"
+                "Clinician", "Consultant", "Surgeon", "Nurse", "Admin", "Viewer"
         });
         String initialRole = (meta != null && meta.role != null && !meta.role.isBlank()) ? meta.role : "Clinician";
         roleCombo.setSelectedItem(initialRole);
@@ -395,6 +405,29 @@ public class AccountPage extends JPanel {
         return root;
     }
 
+    // ===================== DB -> DoctorProfile loading =====================
+    private DoctorProfile loadProfileFromDbOrFallback() {
+        // Client app should not query the server DB directly.
+        // Use the locally stored profile as base, and fill missing identity from Session.
+        DoctorProfile base = profileService.load();
+        if (base == null) base = DoctorProfile.defaults();
+
+        try {
+            String email = Session.getDoctorEmail();
+            if (email != null && !email.isBlank() && !"demo".equalsIgnoreCase(email.trim())) {
+                if (base.getEmail() == null || base.getEmail().isBlank()) {
+                    base.setEmail(email.trim());
+                }
+                // If we don't have a stable idNumber yet, derive one from the email hash (display-only).
+                if (base.getIdNumber() == null || base.getIdNumber().isBlank()) {
+                    base.setIdNumber("DOC-" + Math.abs(email.trim().hashCode()));
+                }
+            }
+        } catch (Exception ignored) {}
+
+        return base;
+    }
+
     // ===================== Save logic (maps back to your DoctorProfile) =====================
     private void saveDoctorProfileFromScreenshotForm() {
         if (profile == null) profile = DoctorProfile.defaults();
@@ -417,8 +450,11 @@ public class AccountPage extends JPanel {
         headerName.setText(profile.getFullName());
         headerEmail.setText(profile.getEmail());
 
+        // Keep session display name in sync for the rest of the app
+        Session.setDoctorName(profile.getFirstName(), profile.getLastName());
+
         // Update TopBar
-        window.getTopBar().updateDoctorInfo(profile.getFullName(), profile.getSpecialty());
+        window.getTopBar().updateDoctorInfo(Session.getDoctorFullName(), profile.getSpecialty());
 
         // Save selected role to meta and persist
         String selectedRole = Objects.toString(roleCombo.getSelectedItem(), "");
@@ -489,14 +525,22 @@ public class AccountPage extends JPanel {
 
     // ===================== Reload when page shown =====================
     public void reloadProfile() {
-        DoctorProfile p = profileService.load();
+        DoctorProfile p = loadProfileFromDbOrFallback();
         this.profile = p;
 
         if (fullNameField != null) fullNameField.setText(p.getFullName());
         if (organizationField != null) organizationField.setText(p.getSpecialty());
         if (emailField != null) emailField.setText(p.getEmail());
-        if (headerName != null) headerName.setText(p.getFullName());
-        if (headerEmail != null) headerEmail.setText(p.getEmail());
+        if (headerName != null) {
+            String name = Session.getDoctorFullName();
+            if (name == null || name.isBlank() || "demo".equalsIgnoreCase(name.trim())) name = p.getFullName();
+            headerName.setText(name == null ? "" : name);
+        }
+        if (headerEmail != null) {
+            String em = Session.getDoctorEmail();
+            if (em == null || em.isBlank() || "demo".equalsIgnoreCase(em.trim())) em = p.getEmail();
+            headerEmail.setText(em == null ? "" : em);
+        }
 
         // update user id card if you want
         if (userIdCard != null) {
