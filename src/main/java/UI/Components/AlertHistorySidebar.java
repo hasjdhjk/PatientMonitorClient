@@ -21,7 +21,7 @@ import java.util.Set;
 
 public class AlertHistorySidebar extends JPanel {
 
-    private static final int SIDEBAR_WIDTH = 475;
+    private static final int SIDEBAR_WIDTH = 450;
 
     private final MainWindow window;
 
@@ -49,10 +49,10 @@ public class AlertHistorySidebar extends JPanel {
         // Full-height divider line on the LEFT of the sidebar
         setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, new Color(230, 232, 236)));
 
-        // Lock width (preferred), but allow shrinking with the window
+        // Lock width
         setPreferredSize(new Dimension(SIDEBAR_WIDTH, 0));
-        setMinimumSize(new Dimension(0, 0));  // ✅ allow it to shrink
-        setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE)); // ✅ allow it to expand if needed
+        setMinimumSize(new Dimension(SIDEBAR_WIDTH, 0));
+        setMaximumSize(new Dimension(SIDEBAR_WIDTH, Integer.MAX_VALUE));
 
         add(buildHeader(), BorderLayout.NORTH);
 
@@ -191,11 +191,10 @@ public class AlertHistorySidebar extends JPanel {
 
         // Fixed height
         int CARD_HEIGHT = 185;
-        card.setPreferredSize(new Dimension(0, CARD_HEIGHT));
+        card.setPreferredSize(new Dimension(Short.MAX_VALUE, CARD_HEIGHT));
         card.setMaximumSize(new Dimension(Integer.MAX_VALUE, CARD_HEIGHT));
         card.setMinimumSize(new Dimension(0, CARD_HEIGHT));
         card.setAlignmentX(Component.LEFT_ALIGNMENT);
-
 
         // --- Top row ---
         JPanel topRow = new JPanel(new BorderLayout());

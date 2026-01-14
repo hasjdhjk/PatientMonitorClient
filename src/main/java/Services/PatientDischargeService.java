@@ -23,7 +23,7 @@ public class PatientDischargeService {
 
     public static Runnable onDischarge = null;
 
-    // ===== Server config =====
+    // server config
     private static final HttpClient HTTP = HttpClient.newHttpClient();
 
     /**
@@ -35,10 +35,10 @@ public class PatientDischargeService {
      */
     public static void discharge(Patient patient, String diagnosis) {
 
-        // 0) basic guard
+        // basic guard
         if (patient == null) return;
 
-        // 1) Save discharge record locally (AccountPage uses this)
+        // Save discharge record locally (AccountPage uses this)
         PatientRecord record = new PatientRecord(
                 patient.getName(),
                 "REC-" + patient.getId(),
@@ -50,7 +50,7 @@ public class PatientDischargeService {
         records.add(record);
         PatientRecordIO.saveRecords(records);
 
-        // 2) Call server to delete from DB (async, avoid freezing UI)
+        // Call server to delete from DB (async, avoid freezing UI)
         final String doctor = NetWork.Session.getDoctorEmail();
         final int patientId = patient.getId();
 

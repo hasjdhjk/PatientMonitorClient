@@ -39,12 +39,12 @@ public class AlertManager {
             active.put(id, newSev);
         }
 
-        // Log ONLY if severity changed (prevents spam every time your blink timer runs)
+        // Log only if severity changed (prevents spam every time blink timer runs)
         if (newSev != oldSev) {
             if (newSev != LiveVitals.VitalsSeverity.NORMAL) {
                 history.add(new AlertRecord(id, patient.getName(), newSev, causes, Instant.now()));
             } else {
-                // Optional: log "resolved" events too if you want:
+                // optional log resolved events
                 // history.add(new AlertRecord(id, patient.getName(), Patient.VitalsSeverity.NORMAL, List.of("Alert resolved"), Instant.now()));
             }
         }
@@ -85,15 +85,15 @@ public class AlertManager {
         currentlyPlaying = highest;
 
         if (highest == LiveVitals.VitalsSeverity.DANGER) {
-            // Fast repeating beep (e.g., every 300ms)
+            // fast repeating beep (e.g., every 300ms)
             soundTimer = new javax.swing.Timer(300, e -> playBeep());
             soundTimer.start();
         } else if (highest == LiveVitals.VitalsSeverity.WARNING) {
-            // Slower repeating beep (e.g., every 700ms)
+            // slower repeating beep (e.g., every 700ms)
             soundTimer = new javax.swing.Timer(700, e -> playBeep());
             soundTimer.start();
         }
-        // NORMAL => no timer
+        // normal no timer
     }
 
     private LiveVitals.VitalsSeverity getHighestActiveSeverity() {
@@ -123,7 +123,7 @@ public class AlertManager {
             var audio = javax.sound.sampled.AudioSystem.getAudioInputStream(is);
             var clip = javax.sound.sampled.AudioSystem.getClip();
             clip.open(audio);
-            clip.start(); // one-shot beep
+            clip.start(); // one shot beep
         } catch (Exception ignored) {}
     }
 }

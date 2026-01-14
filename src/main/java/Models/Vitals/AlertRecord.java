@@ -5,10 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Immutable alert history record.
- * Stores the patient id/name, the severity (from LiveVitals), the human-readable causes, and a timestamp.
- */
+// Immutable alert history record
+// Stores the patient id/name, the severity (from LiveVitals), the human-readable causes, and a timestamp
 public class AlertRecord {
 
     private final int patientId;
@@ -17,11 +15,7 @@ public class AlertRecord {
     private final List<String> causes;
     private final Instant timestamp;
 
-    public AlertRecord(int patientId,
-                       String patientName,
-                       LiveVitals.VitalsSeverity severity,
-                       List<String> causes,
-                       Instant timestamp) {
+    public AlertRecord(int patientId, String patientName, LiveVitals.VitalsSeverity severity, List<String> causes, Instant timestamp) {
         this.patientId = patientId;
         this.patientName = patientName;
         this.severity = (severity == null) ? LiveVitals.VitalsSeverity.NORMAL : severity;

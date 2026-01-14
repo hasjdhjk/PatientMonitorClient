@@ -12,11 +12,7 @@ public class VitalRecord {
     private final double avgTemperature;
     private final double avgSpO2;
 
-    public VitalRecord(int patientId,
-                       double hr,
-                       double rr,
-                       double temp,
-                       double spo2) {
+    public VitalRecord(int patientId, double hr, double rr, double temp, double spo2) {
         this.patientId = patientId;
         this.avgHeartRate = hr;
         this.avgRespRate = rr;
