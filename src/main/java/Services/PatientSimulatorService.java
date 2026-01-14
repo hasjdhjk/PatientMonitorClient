@@ -33,7 +33,7 @@ public class PatientSimulatorService {
         // If no episode active, low chance to start one.
         if (dangerTicksRemaining <= 0) {
             // ~1% chance per second -> roughly one short red episode every ~100s per patient
-            if (rand.nextDouble() < 0.01) {
+            if (rand.nextDouble() < 0.005) {
                 dangerTicksRemaining = 4 + rand.nextInt(7); // 4–10 seconds of DANGER
                 episodeType = rand.nextInt(3);
             }
