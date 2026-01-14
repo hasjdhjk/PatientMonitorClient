@@ -21,7 +21,7 @@ public class PatientRecordIO {
     private static final Type LIST_TYPE =
             new TypeToken<List<PatientRecord>>(){}.getType();
 
-    // Load JSON
+    // Loads all patient records from the JSON file on disk.
     public static List<PatientRecord> loadRecords() {
         File file = new File(RECORD_FILE);
 
@@ -37,7 +37,7 @@ public class PatientRecordIO {
         }
     }
 
-    // Save JSON
+    // Saves the given list of patient records to the JSON file on disk.
     public static void saveRecords(List<PatientRecord> list) {
         try (FileWriter writer = new FileWriter(RECORD_FILE)) {
             gson.toJson(list, writer);
@@ -47,8 +47,7 @@ public class PatientRecordIO {
         }
     }
 
-    // Import from CSV
-    // Format: name, id, diagnosis, date
+    // Imports patient records from a user-selected CSV file.
     public static List<PatientRecord> importCSV(JFrame parent) {
 
         JFileChooser chooser = new JFileChooser();

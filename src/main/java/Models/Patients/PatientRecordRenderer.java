@@ -8,6 +8,7 @@ public class PatientRecordRenderer extends JPanel implements ListCellRenderer<Pa
     private JLabel name = new JLabel();
     private JLabel id = new JLabel();
 
+    // Creates a custom renderer for displaying patient records in a list.
     public PatientRecordRenderer() {
         setLayout(new BorderLayout());
         add(name, BorderLayout.CENTER);
@@ -15,6 +16,7 @@ public class PatientRecordRenderer extends JPanel implements ListCellRenderer<Pa
         setBorder(BorderFactory.createEmptyBorder(4, 6, 4, 6));
     }
 
+    // Configures how a patient record is displayed inside a list component.
     @Override
     public Component getListCellRendererComponent(
             JList<? extends PatientRecord> list,

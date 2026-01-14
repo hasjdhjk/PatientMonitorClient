@@ -11,10 +11,8 @@ import java.util.List;
 
 public class LiveVitals {
 
-    // =====================
     // Global shared registry
-    // =====================
-    private static final ConcurrentHashMap<Integer, LiveVitals> SHARED = new ConcurrentHashMap<>();
+        private static final ConcurrentHashMap<Integer, LiveVitals> SHARED = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Integer, PatientSimulatorService> SIMS = new ConcurrentHashMap<>();
 
     private static final ScheduledExecutorService EXEC = Executors.newSingleThreadScheduledExecutor(r -> {
@@ -25,10 +23,9 @@ public class LiveVitals {
 
     private static volatile boolean loopStarted = false;
 
-    /**
-     * Get (or create) a globally shared LiveVitals instance for a patientId.
-     * This also ensures there is exactly one simulator loop updating all shared vitals once per second.
-     */
+     // Get (or create) a globally shared LiveVitals instance for a patientId.
+     // This also ensures there is exactly one simulator loop updating all shared vitals once per second.
+
     public static LiveVitals getShared(int patientId, String baselineBloodPressure) {
         LiveVitals v = SHARED.computeIfAbsent(patientId, LiveVitals::new);
 
@@ -60,18 +57,10 @@ public class LiveVitals {
         return v;
     }
 
-    /**
-     * Optional: remove a patient's shared vitals + simulator to avoid memory growth after discharge.
-     * Safe to call anytime.
-     */
     public static void removeShared(int patientId) {
         SHARED.remove(patientId);
         SIMS.remove(patientId);
     }
-
-    /* =====================
-       Instance fields
-       ===================== */
 
     private final int patientId;
 
@@ -104,12 +93,12 @@ public class LiveVitals {
         this.bloodPressure = bloodPressure;
     }
 
-    /** Convenience: any vital abnormal (warning-level thresholds). */
+    // any vital abnormal (warning-level thresholds).
     public boolean hasAbnormalVitals() {
         return isHeartRateAbnormal() || isTemperatureAbnormal() || isBloodPressureAbnormal();
     }
 
-    /** WARNING-level causes (your current “abnormal” ranges). */
+    // warning-level threshold.
     public List<String> getWarningCauses() {
         List<String> causes = new ArrayList<>();
 
@@ -126,7 +115,7 @@ public class LiveVitals {
         return causes;
     }
 
-    /** DANGER-level causes (more extreme thresholds). */
+    // danger-level threshold.
     public List<String> getDangerCauses() {
         List<String> causes = new ArrayList<>();
 
@@ -152,7 +141,7 @@ public class LiveVitals {
         return causes;
     }
 
-    /** Unified helper for UI: return causes according to severity. */
+    // return causes according to severity.
     public List<String> getAlertCauses(VitalsSeverity sev) {
         if (sev == VitalsSeverity.DANGER) return getDangerCauses();
         if (sev == VitalsSeverity.WARNING) return getWarningCauses();
@@ -161,14 +150,17 @@ public class LiveVitals {
 
     public enum VitalsSeverity { NORMAL, WARNING, DANGER }
 
+    // Checks whether the heart rate is outside normal limits.
     public boolean isHeartRateAbnormal() {
         return heartRate < 65.56 || heartRate > 87.64;
     }
 
+    // checks whether the temperature is outside normal limits.
     public boolean isTemperatureAbnormal() {
         return temperature < 36.46 || temperature > 37.36;
     }
 
+    // checks whether the blood pressure is outside normal limits.
     public boolean isBloodPressureAbnormal() {
         if (bloodPressure == null || bloodPressure.isEmpty()) return false;
         try {
@@ -181,6 +173,7 @@ public class LiveVitals {
         }
     }
 
+    // determines the overall severity level based on all vital signs.
     public VitalsSeverity getVitalsSeverity() {
         boolean dangerHR = heartRate < 50 || heartRate > 110;
         boolean dangerTemp = temperature < 35.5 || temperature > 38.5;
@@ -199,6 +192,8 @@ public class LiveVitals {
 
         return hasAbnormalVitals() ? VitalsSeverity.WARNING : VitalsSeverity.NORMAL;
     }
+
+    // clears all shared vitals and simulator instances.
     public static void clearAllShared() {
         SHARED.clear();
         SIMS.clear();
