@@ -12,9 +12,7 @@ public class SettingManager {
 
     private final Preferences prefs = Preferences.userRoot().node(NODE);
 
-    // ======================
     // Theme
-    // ======================
     public boolean isDarkMode() {
         return prefs.getBoolean(KEY_DARK_MODE, false);
     }
@@ -23,9 +21,7 @@ public class SettingManager {
         prefs.putBoolean(KEY_DARK_MODE, enabled);
     }
 
-    // ======================
     // Language
-    // ======================
     public String getLanguage() {
         // default English
         return prefs.get(KEY_LANGUAGE, "en");
@@ -37,19 +33,13 @@ public class SettingManager {
         prefs.put(KEY_LANGUAGE, langCode);
     }
 
-    // ======================
     // Avatar
-    // ======================
-    /**
-     * @return absolute path to avatar image, or empty string if none
-     */
+    // absolute path to avatar image, or empty string if none
     public String getAvatarPath() {
         return prefs.get(KEY_AVATAR, "");
     }
 
-    /**
-     * @param path absolute file path; empty / null means "remove avatar"
-     */
+    // path absolute file path; empty / null to remove avatar
     public void setAvatarPath(String path) {
         if (path == null || path.isBlank()) {
             prefs.remove(KEY_AVATAR);
@@ -58,9 +48,7 @@ public class SettingManager {
         }
     }
 
-    // ======================
     // Reset
-    // ======================
     public void resetToDefaults() {
         setDarkMode(false);
         setLanguage("en");

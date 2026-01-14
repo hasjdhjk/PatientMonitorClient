@@ -11,12 +11,10 @@ import java.util.stream.Collectors;
 
 public class VitalTableJsonExportService {
 
-    /**
-     * Export minute-averaged vital history for ONE patient as JSON.
-     */
+    // export minute averaged vital history for one patient as JSON
     public static void exportJson(int patientId) {
 
-        // ✅ Filter by patient
+        // Filter by patient
         List<VitalRecord> records = VitalRecordIO.loadAll()
                 .stream()
                 .filter(r -> r.getPatientId() == patientId)

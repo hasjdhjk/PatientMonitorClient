@@ -222,7 +222,7 @@ public class LiveMonitoringPage extends JPanel {
         bpValue.setText(patient.getBloodPressure());
 
         row.add(card("Heart Rate", hrValue, "bpm"));
-        row.add(card("SpO₂", spo2Value, "%"));
+        row.add(card("SpO2", spo2Value, "%"));
         row.add(card("Resp Rate", respValue, "breaths / min"));
         row.add(card("Blood Pressure", bpValue, "mmHg"));
 
@@ -233,7 +233,7 @@ public class LiveMonitoringPage extends JPanel {
 
     private JPanel buildHistoryTable() {
 
-        String[] cols = {"Time", "HR (bpm)", "Resp (/min)", "Temp (°C)", "SpO₂ (%)"};
+        String[] cols = {"Time", "HR (bpm)", "Resp (/min)", "Temp (°C)", "SpO2 (%)"};
         historyModel = new DefaultTableModel(cols, 0);
 
         JTable table = new JTable(historyModel);

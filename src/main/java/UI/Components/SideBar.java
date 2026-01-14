@@ -1,4 +1,6 @@
 package UI.Components;
+import Services.AlertManager;
+import Models.Vitals.LiveVitals;
 
 import Utilities.SettingManager;
 import UI.MainWindow;
@@ -72,7 +74,12 @@ public class SideBar extends JPanel {
 
         // Logout button (bottom)
         JButton logoutBtn = createButton("Log Out", "logout", Color.RED);
-        logoutBtn.addActionListener(e -> window.showPage(MainWindow.PAGE_LOGIN));
+        logoutBtn.addActionListener(e -> {
+            AlertManager.getInstance().disableAlerts();
+            LiveVitals.clearAllShared();
+            window.showPage(MainWindow.PAGE_LOGIN);
+        });
+
 
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));

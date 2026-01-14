@@ -21,9 +21,7 @@ public class PatientRecordIO {
     private static final Type LIST_TYPE =
             new TypeToken<List<PatientRecord>>(){}.getType();
 
-    // =====================================================
     // Load JSON
-    // =====================================================
     public static List<PatientRecord> loadRecords() {
         File file = new File(RECORD_FILE);
 
@@ -39,9 +37,7 @@ public class PatientRecordIO {
         }
     }
 
-    // =====================================================
     // Save JSON
-    // =====================================================
     public static void saveRecords(List<PatientRecord> list) {
         try (FileWriter writer = new FileWriter(RECORD_FILE)) {
             gson.toJson(list, writer);
@@ -51,10 +47,8 @@ public class PatientRecordIO {
         }
     }
 
-    // =====================================================
     // Import from CSV
     // Format: name, id, diagnosis, date
-    // =====================================================
     public static List<PatientRecord> importCSV(JFrame parent) {
 
         JFileChooser chooser = new JFileChooser();
@@ -70,7 +64,7 @@ public class PatientRecordIO {
                 while ((line = br.readLine()) != null) {
                     String[] p = line.split(",");
 
-                    // auto fill missing fields
+                    // autofill missing fields
                     String name = p.length > 0 ? p[0].trim() : "Unknown";
                     String id = p.length > 1 ? p[1].trim() : "N/A";
                     String diag = p.length > 2 ? p[2].trim() : "No diagnosis";

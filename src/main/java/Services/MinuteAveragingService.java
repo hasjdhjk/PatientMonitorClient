@@ -20,10 +20,8 @@ public class MinuteAveragingService {
         this.vitals = vitals;
     }
 
-    /**
-     * Call ONCE PER SECOND from LiveMonitoringPage
-     * 60 samples = 1 minute average
-     */
+    // call once per second from LiveMonitoringPage
+    // 60 samples = 1 minute average
     public void sample() {
 
         hr.add(vitals.getHeartRate());

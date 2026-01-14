@@ -191,11 +191,12 @@ public class PatientTile extends BaseTile {
 
             hrLabel.setText("HR: " + hr + " bpm");
             tempLabel.setText(String.format("Temp: %.1f °C", temp));
-            spo2Label.setText("SpO₂: " + spo2 + " %");
+            spo2Label.setText("SpO2: " + spo2 + " %");
             rrLabel.setText("Resp: " + rr + " /min");
 
             // BP may be updated by simulator; keep UI synced
             bpLabel.setText("BP: " + safe(live.getBloodPressure()));
+
 
             // severity highlight + flash
             LiveVitals.VitalsSeverity sev = live.getVitalsSeverity();
