@@ -428,9 +428,9 @@ roleCombo.setOpaque(true);
         try {
             String email = Session.getDoctorEmail();
             if (email != null && !email.isBlank() && !"demo".equalsIgnoreCase(email.trim())) {
-                if (base.getEmail() == null || base.getEmail().isBlank()) {
-                    base.setEmail(email.trim());
-                }
+                // Email from login/session should be the source of truth for display.
+                base.setEmail(email.trim());
+
                 // If we don't have a stable idNumber yet, derive one from the email hash (display-only).
                 if (base.getIdNumber() == null || base.getIdNumber().isBlank()) {
                     base.setIdNumber("DOC-" + Math.abs(email.trim().hashCode()));
@@ -456,7 +456,12 @@ roleCombo.setOpaque(true);
         // Map ORGANIZATION -> specialty
         profile.setOrgnization(safe(organizationField));
 
-        // Email is read-only in UI; keep it
+        // Email is read-only in UI; keep it in sync with session (login) if available.
+        String sessionEmail = Session.getDoctorEmail();
+        if (sessionEmail != null && !sessionEmail.isBlank() && !"demo".equalsIgnoreCase(sessionEmail.trim())) {
+            profile.setEmail(sessionEmail.trim());
+        }
+
         profileService.save(profile);
 
         // Update top UI
@@ -545,15 +550,22 @@ roleCombo.setOpaque(true);
 
         if (fullNameField != null) fullNameField.setText(p.getFullName());
         if (organizationField != null) organizationField.setText(p.getOrgnization());
-        if (emailField != null) emailField.setText(p.getEmail());
+
+        // Keep email consistent everywhere: prefer Session email when available.
+        String em = Session.getDoctorEmail();
+        if (em == null || em.isBlank() || "demo".equalsIgnoreCase(em.trim())) {
+            em = p.getEmail();
+        } else {
+            em = em.trim();
+        }
+        if (emailField != null) emailField.setText(em == null ? "" : em);
+
         if (headerName != null) {
             String name = Session.getDoctorFullName();
             if (name == null || name.isBlank() || "demo".equalsIgnoreCase(name.trim())) name = p.getFullName();
             headerName.setText(name == null ? "" : name);
         }
         if (headerEmail != null) {
-            String em = Session.getDoctorEmail();
-            if (em == null || em.isBlank() || "demo".equalsIgnoreCase(em.trim())) em = p.getEmail();
             headerEmail.setText(em == null ? "" : em);
         }
 
