@@ -101,12 +101,22 @@ public class LoginPage extends ImagePanel {
 
             // Persist the logged-in doctor identity for subsequent API calls
             Session.setDoctorEmail(email);
+
+            // Persist display name from server response
+            Session.setDoctorName(res.givenName, res.familyName);
+
+            // Default role on first login (AccountPage can override later)
+            if (Session.getDoctorRole() == null || Session.getDoctorRole().isBlank()) {
+                Session.setDoctorRole("Clinician");
+            }
+
+            // Update top bar (second line shows ROLE)
+            mainWindow.getTopBar().updateDoctorInfo(Session.getDoctorFullName(), Session.getDoctorRole());
+
             clearFields();
 
             // notify other pages (e.g. Digital Twin) that doctor context changed
             mainWindow.onDoctorLoggedIn();
-
-            mainWindow.showHomePage();
         });
 
         // reset password and register

@@ -58,8 +58,7 @@ public class SettingsPage extends JPanel {
     private static final int ROW_H = 68;
     private static final int DROPDOWN_ROW_H = 72;
 
-
-    /** Default (won't break compilation). Replace values later if you have real doctor info. */
+    // Replace values later if you have real doctor info
     public SettingsPage(MainWindow window) {
         this(window, "Doctor", "doctor@example.com");
     }
@@ -83,9 +82,7 @@ public class SettingsPage extends JPanel {
         applyLocalTheme();
     }
 
-    // =========================
     // Main UI builder
-    // =========================
     private JComponent buildMainCard() {
         JPanel outer = new JPanel(new GridBagLayout());
         outer.setOpaque(true);
@@ -111,7 +108,7 @@ public class SettingsPage extends JPanel {
         column.add(profile);
         column.add(Box.createVerticalStrut(22));
 
-        // --- Controls: Dark mode + Language ---
+        // Dark mode + Language
         initControls(); // IMPORTANT: init before adding rows
 
         column.add(buildGroupCard(
@@ -119,11 +116,11 @@ public class SettingsPage extends JPanel {
         ));
         column.add(Box.createVerticalStrut(22));
 
-        // --- Danger zone: permanent delete account ---
+        // Danger zone: permanent delete account
         column.add(buildDeleteAccountCard());
         column.add(Box.createVerticalStrut(22));
 
-        // --- Buttons: Reset + Log out ---
+        // Buttons: Reset + Log out
         column.add(buildButtonsRow());
         column.add(Box.createVerticalGlue());
 
@@ -133,7 +130,7 @@ public class SettingsPage extends JPanel {
         outer.add(card);
 
         // Theme apply on this built card
-//        applyLocalTheme(card, title);
+        // applyLocalTheme(card, title);
 
         return outer;
     }
@@ -251,9 +248,7 @@ public class SettingsPage extends JPanel {
     }
 
 
-    // =========================
     // Avatar Upload
-    // =========================
     private JComponent buildAvatarPicker(int size) {
         avatarLabel = new JLabel();
         avatarLabel.setPreferredSize(new Dimension(size, size));
@@ -414,9 +409,7 @@ public class SettingsPage extends JPanel {
         return out;
     }
 
-    // =========================
     // Group + rows (fixed width to keep alignment)
-    // =========================
     private JComponent buildGroupCard(JComponent... rows) {
         RoundedPanel group = new RoundedPanel(new BorderLayout());
         group.setBorder(new EmptyBorder(6, 10, 6, 10));
@@ -472,9 +465,7 @@ public class SettingsPage extends JPanel {
         return row;
     }
 
-    // =========================
     // Theme
-    // =========================
     private void applyLocalTheme() {
         setBackground(settings.isDarkMode() ? DARK_BG : Color.WHITE);
     }
@@ -523,9 +514,7 @@ public class SettingsPage extends JPanel {
         applyLocalTheme();
     }
 
-    // =========================
     // Delete Account Card
-    // =========================
     private JComponent buildDeleteAccountCard() {
         // Password field for re-auth
         deletePasswordField = new JPasswordField();
@@ -642,9 +631,7 @@ public class SettingsPage extends JPanel {
         return dangerCard;
     }
 
-    // =========================
     // Avatar (initials) fallback component (kept for compatibility)
-    // =========================
     private static class InitialsAvatar extends JPanel {
         private final int size;
         private final String initials;
@@ -682,7 +669,7 @@ public class SettingsPage extends JPanel {
             g2.dispose();
         }
 
-        // NOTE: changed to public so SettingsPage can reuse it for fallback image rendering
+        // changed to public so SettingsPage can reuse it for fallback image rendering
         public static String computeInitials(String name) {
             if (name == null || name.isBlank()) return "D";
             String[] parts = name.trim().split("\\s+");

@@ -94,7 +94,7 @@ public final class ThemeManager {
             }
         }
 
-        // --- IMPORTANT FIX: TopBar should ALWAYS keep white text, even after recursion ---
+        // TopBar should ALWAYS keep white text, even after recursion
         if (c instanceof TopBar tb) {
             tb.setOpaque(true);
 

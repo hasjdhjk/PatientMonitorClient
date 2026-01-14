@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter;
 
 public class LiveMonitoringPage extends JPanel {
 
-    /* ===== THEME ===== */
+    // theme
     private static final Color BG_MAIN = new Color(245, 247, 250);
     private static final Color BG_CARD = Color.WHITE;
     private static final Color BORDER = new Color(220, 225, 230);
@@ -33,7 +33,7 @@ public class LiveMonitoringPage extends JPanel {
     private static final Color RED = new Color(220, 38, 38);
     private static final Color AMBER = new Color(234, 179, 8);
 
-    /* ===== DATA ===== */
+    // data
     private final LiveVitals vitals;
     private final ECGSimulatorService ecgSim;
     private final RespSimulatorService respSim;
@@ -78,8 +78,7 @@ public class LiveMonitoringPage extends JPanel {
         startClock();
     }
 
-    /* ================= HEADER ================= */
-
+    // header
     private JPanel buildHeader() {
 
         JPanel header = new JPanel(new BorderLayout());
@@ -135,8 +134,7 @@ public class LiveMonitoringPage extends JPanel {
         return header;
     }
 
-    /* ================= TOP BAR ================= */
-
+    // top bar
     private JPanel buildTopBar() {
 
         JPanel bar = new JPanel(new BorderLayout());
@@ -182,8 +180,7 @@ public class LiveMonitoringPage extends JPanel {
         return bar;
     }
 
-    /* ================= CONTENT ================= */
-
+    // content
     private JPanel buildMainContent() {
 
         JPanel content = new JPanel();
@@ -208,8 +205,7 @@ public class LiveMonitoringPage extends JPanel {
         return content;
     }
 
-    /* ================= VITAL CARDS ================= */
-
+    // vital cards
     private JPanel buildVitalsRow() {
 
         JPanel row = new JPanel(new GridLayout(1, 4, 18, 0));
@@ -229,8 +225,7 @@ public class LiveMonitoringPage extends JPanel {
         return row;
     }
 
-    /* ================= TABLE ================= */
-
+    // table
     private JPanel buildHistoryTable() {
 
         String[] cols = {"Time", "HR (bpm)", "Resp (/min)", "Temp (°C)", "SpO2 (%)"};
@@ -256,8 +251,7 @@ public class LiveMonitoringPage extends JPanel {
         return p;
     }
 
-    /* ================= LIVE LOOP ================= */
-
+    // live loop
     private void startLiveLoop() {
 
         new Timer(1000, e -> {
@@ -298,8 +292,7 @@ public class LiveMonitoringPage extends JPanel {
         }
     }
 
-    /* ================= HELPERS ================= */
-
+    // helpers
     private JPanel wrap(JPanel p, String title) {
         JPanel c = new JPanel(new BorderLayout());
         c.setBackground(BG_CARD);

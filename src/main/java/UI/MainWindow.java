@@ -1,6 +1,6 @@
 package UI;
 
-import Services.DoctorProfileService;
+import NetWork.Session;
 import Utilities.SettingManager;
 import Utilities.ThemeManager;
 
@@ -43,7 +43,7 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // ================= Top bar & sidebar =================
+        // Top bar & sidebar
         topBar = new TopBar(this);
         sidebar = new SideBar(this);
         add(topBar, BorderLayout.NORTH);
@@ -51,11 +51,11 @@ public class MainWindow extends JFrame {
         topBar.setVisible(true);
         sidebar.setVisible(true);
 
-        // ================= Card layout =================
+        // Card layout
         cardLayout = new CardLayout();
         pageContainer = new JPanel(cardLayout);
 
-        // ================= Pages =================
+        // Pages
         loginPage = new LoginPage(this);
         registerPage = new RegisterPage(this);
         homePage = new HomePage(this);
@@ -69,7 +69,7 @@ public class MainWindow extends JFrame {
         );
         liveMonitoringPage = new LiveMonitoringPage(dummyPatient, this);
 
-        // ================= Add to card container =================
+        // Pages
         pageContainer.add(loginPage, PAGE_LOGIN);
         pageContainer.add(registerPage, PAGE_REGISTER);
         pageContainer.add(homePage, PAGE_HOME);
@@ -83,19 +83,16 @@ public class MainWindow extends JFrame {
         showPage(PAGE_LOGIN);
         //cardLayout.show(pageContainer, PAGE_HOME);
 
-        // ================= Theme =================
+        // Theme
         SettingManager settings = new SettingManager();
         ThemeManager.apply(this, settings.isDarkMode());
 
-        DoctorProfileService ps = new DoctorProfileService();
-        var p = ps.load();
-        topBar.updateDoctorInfo(p.getFullName(), p.getSpecialty());
+        refreshTopBarDoctorInfo();
 
         setVisible(true);
     }
 
-    // ================= Navigation =================
-
+    // Navigation
     public void showLoginPage() {
         showPage(PAGE_LOGIN);
     }
@@ -156,17 +153,34 @@ public class MainWindow extends JFrame {
         showPage(PAGE_LOGIN);
     }
 
+    public void onDoctorLoggedIn() {
+        // Ensure UI switches out of auth pages
+        showHomePage();
+
+        // Refresh top bar doctor info using the logged-in identity
+        refreshTopBarDoctorInfo();
+
+        if (sidebar != null) {
+            sidebar.setVisible(true);
+        }
+        if (topBar != null) {
+            topBar.setVisible(true);
+        }
+    }
+
+    private void refreshTopBarDoctorInfo() {
+        if (topBar == null) return;
+
+        String email = Session.getDoctorEmail();
+        if (email != null && !email.isBlank() && !"demo".equalsIgnoreCase(email.trim())) {
+            topBar.updateDoctorInfo(Session.getDoctorFullName(), Session.getDoctorRole());
+        } else {
+            topBar.updateDoctorInfo("Demo", "");
+        }
+    }
+
     public AccountPage getAccountPage() {
         return accountPage;
     }
     public TopBar getTopBar() {return topBar;}
-    public void onDoctorLoggedIn() {
-        cardLayout.show(pageContainer, PAGE_HOME);
-
-        if (topBar != null) {
-        }
-        if (sidebar != null) {
-            sidebar.setVisible(true);
-        }
-    }
 }

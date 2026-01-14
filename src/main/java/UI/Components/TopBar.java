@@ -97,7 +97,7 @@ public class TopBar extends JPanel {
         nameLabel.setFont(new Font("Arial", Font.BOLD, 16));
         nameLabel.setForeground(Color.WHITE);
 
-        roleLabel = new JLabel("Senior Clinician");
+        roleLabel = new JLabel("");
         roleLabel.setFont(new Font("Arial", Font.PLAIN, 13));
         roleLabel.setForeground(new Color(220, 225, 255));
 
@@ -143,11 +143,11 @@ public class TopBar extends JPanel {
     }
 
     // ================= PUBLIC UPDATE API =================
-    public void updateDoctorInfo(String fullName, String specialty) {
-        nameLabel.setText(fullName);
-        roleLabel.setText(specialty);
+    public void updateDoctorInfo(String fullName, String role) {
+        nameLabel.setText(fullName == null ? "" : fullName);
+        roleLabel.setText(role == null ? "" : role);
 
-        String initials = extractInitials(fullName);
+        String initials = extractInitials(fullName == null ? "" : fullName);
         avatarLabel.setText(initials);
     }
 

@@ -133,7 +133,7 @@ public class VitalsPdfReportService {
             py = drawVitalBlock(g2, "Heart Rate", "bpm", hrMean, hrMin, hrMax, 24, py, textPrimary, textMuted);
             py = drawVitalBlock(g2, "Respiratory Rate", "/min", rrMean, rrMin, rrMax, 24, py, textPrimary, textMuted);
             py = drawVitalBlock(g2, "Temperature", "°C", tMean, tMin, tMax, 24, py, textPrimary, textMuted);
-            py = drawVitalBlock(g2, "SpO₂", "%", sMean, sMin, sMax, 24, py, textPrimary, textMuted);
+            py = drawVitalBlock(g2, "SpO2", "%", sMean, sMin, sMax, 24, py, textPrimary, textMuted);
 
             y += vitalsHeight + 36;
 
