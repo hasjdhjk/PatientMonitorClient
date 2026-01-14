@@ -97,7 +97,7 @@ public class LiveMonitoringPage extends JPanel {
         right.setBackground(BG_CARD);
 
         JButton digitalTwin = new JButton("Digital Twin");
-        digitalTwin.addActionListener(e -> window.showStatusTracker(patient));
+        digitalTwin.addActionListener(e -> window.showDigitalTwin(patient));
 
         Integer[] hours = {1, 2, 4, 6, 12, 24, 48, 72};
         JComboBox<Integer> hourSelect = new JComboBox<>(hours);
