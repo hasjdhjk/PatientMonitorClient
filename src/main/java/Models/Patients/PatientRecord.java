@@ -9,6 +9,7 @@ public class PatientRecord implements Serializable {
     private String diagnosis;
     private String date;
 
+    // Creates a patient record containing identifying and diagnostic information
     public PatientRecord(String patientName, String recordId, String diagnosis, String date) {
         this.patientName = patientName;
         this.recordId = recordId;
@@ -22,7 +23,7 @@ public class PatientRecord implements Serializable {
     public String getDiagnosis() { return diagnosis; }
     public String getDate() { return date; }
 
-    // Search helper
+    // Checks whether this record matches the given search query.
     public boolean matches(String q) {
         q = q.toLowerCase();
         return patientName.toLowerCase().contains(q)
@@ -30,6 +31,7 @@ public class PatientRecord implements Serializable {
                 || diagnosis.toLowerCase().contains(q);
     }
 
+    // Returns a string representation of the patient record.
     @Override
     public String toString() {
         return patientName + " (" + recordId + ")";
