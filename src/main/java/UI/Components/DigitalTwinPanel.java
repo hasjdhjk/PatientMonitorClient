@@ -43,12 +43,11 @@ public class DigitalTwinPanel extends JPanel {
         return "'" + s.replace("\\", "\\\\").replace("'", "\\'") + "'";
     }
 
+    // Sends doctor/session context values into the dashboard JavaScript environment when available.
     private void trySendContextToDashboard() {
         if (!pageLoaded || engine == null) return;
 
         String doctor = Session.getDoctorEmail();
-        // Provide an absolute API base so dashboard JS can fetch reliably.
-        // https://bioeng-bbb-app.impaas.uk
         String apiBase = ServerConfig.baseUrl();
 
         String js = "window.__doctor = " + jsString(doctor) + ";" +
@@ -58,11 +57,12 @@ public class DigitalTwinPanel extends JPanel {
         } catch (Exception ignored) {}
     }
 
-    // Call this after login/logout (or when the active doctor changes) to update the dashboard JS context
+    // Requests a refresh of the dashboard JS context after login/logout or session changes
     public void refreshDashboardContext() {
         Platform.runLater(this::trySendContextToDashboard);
     }
 
+    // Creates the panel and loads the digital twin dashboard inside an embedded JavaFX WebView.
     public DigitalTwinPanel() {
         setLayout(new BorderLayout());
         add(jfxPanel, BorderLayout.CENTER);
@@ -82,10 +82,10 @@ public class DigitalTwinPanel extends JPanel {
                     // After load, try to flush any pending updates.
                     flushPending();
 
-                    // Re-apply context after pending calls (covers late JS bootstraps)
+                    // Re-apply context after pending calls
                     trySendContextToDashboard();
 
-                    // Start simulation pushing vitals into dashboard JS
+                    // Start simulation pushing vitals into dashboard
                     startSimulation();
                 }
             });
@@ -96,14 +96,14 @@ public class DigitalTwinPanel extends JPanel {
         });
     }
 
-    //  Tell the dashboard which patient id to poll from
+    // Sets the patient ID so the dashboard knows which patient to display or poll for data.
     public void setSelectedPatientId(int patientId) {
         // Store latest request (so even if called before page is ready, it will apply later)
         pendingPatientId = patientId;
         Platform.runLater(this::trySendSelectedPatientId);
     }
 
-    // push vitals directly into the dashboard (it also polls DB).
+    // push vitals directly into the dashboard
     public void setVitals(int hr, int rr, int spo2, int sys, int dia, double temp) {
         int safeRr = rr > 0 ? rr : 12;
         int safeSpo2 = spo2 > 0 ? spo2 : 98;
@@ -131,7 +131,6 @@ public class DigitalTwinPanel extends JPanel {
             int spo2 = (int) Math.round(simulatedVitals.getSpO2());
             double temp = simulatedVitals.getTemperature();
 
-            // BP is fixed (as requested)
             int sys = 120;
             int dia = 80;
 
@@ -154,14 +153,14 @@ public class DigitalTwinPanel extends JPanel {
         super.removeNotify();
     }
 
-    // Internals
-
+    // Flushes any pending patient ID or vitals updates after the page has finished loading.
     private void flushPending() {
         // Called after page load; attempt both updates.
         trySendSelectedPatientId();
         trySendVitals();
     }
 
+    // Attempts to send the currently selected patient ID into the dashboard JavaScript once ready.
     private void trySendSelectedPatientId() {
         if (!pageLoaded || engine == null) return;
         if (pendingPatientId == null) return;
@@ -181,6 +180,7 @@ public class DigitalTwinPanel extends JPanel {
         );
     }
 
+    // Attempts to send the latest vitals into the dashboard JavaScript once ready.
     private void trySendVitals() {
         if (!pageLoaded || engine == null) return;
         if (pendingVitals == null) return;
@@ -245,6 +245,7 @@ public class DigitalTwinPanel extends JPanel {
         final int dia;
         final double temp;
 
+        // Stores a single set of vitals values to be sent to the dashboard.
         Vitals(int hr, int rr, int spo2, int sys, int dia, double temp) {
             this.hr = hr;
             this.rr = rr;

@@ -9,13 +9,14 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-// stick a patient tile on top
+// Button that allows a patient tile to be marked as sticky (pinned to the top).
 public class StickyButton extends JButton {
 
     private boolean selected = false;
     private final ImageIcon normalImage;
     private final ImageIcon selectedImage;
 
+    // Creates a sticky toggle button linked to a patient and refreshes the home page on change.
     public StickyButton(Patient patient, HomePage homePage) {
         // set image
         normalImage = ImageLoader.loadImage("stickybutton", "UI", 35);
@@ -43,7 +44,7 @@ public class StickyButton extends JButton {
             }
         });
     }
-
+    // Returns whether the sticky button is currently selected.
     public boolean isSelected() {
         return selected;
     }

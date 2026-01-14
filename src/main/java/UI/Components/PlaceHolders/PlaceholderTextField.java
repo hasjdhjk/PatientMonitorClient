@@ -7,12 +7,14 @@ public class PlaceholderTextField extends JTextField {
 
     private final String placeholder;
 
+    // Creates a text field with placeholder text.
     public PlaceholderTextField(String placeholder) {
         super();
         this.placeholder = placeholder == null ? "" : placeholder;
         setOpaque(false);
     }
 
+    // Paints the placeholder text when the field is empty and not focused.
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

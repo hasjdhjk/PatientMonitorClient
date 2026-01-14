@@ -20,6 +20,7 @@ public class SideBar extends JPanel {
     private Color hoverColor = new Color(240, 240, 240);
     private Color darkSidebarColor = new Color(40, 42, 46);
 
+    // Creates the sidebar navigation panel with page buttons and logout control.
     public SideBar(MainWindow window) {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(220, 0));
@@ -90,7 +91,7 @@ public class SideBar extends JPanel {
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
-    // Button helpers
+    // Creates a sidebar button that navigates to a specific page when clicked.
     private JButton makeSidebarButton(
             String text, String iconName, Color textColor, String pageName, MainWindow window) {
 
@@ -103,6 +104,7 @@ public class SideBar extends JPanel {
         return btn;
     }
 
+    // Creates a styled sidebar button with icon and hover behaviour
     private JButton createButton(String text, String iconName, Color textColor) {
         JButton btn = new JButton(text);
 
@@ -149,10 +151,12 @@ public class SideBar extends JPanel {
         return btn;
     }
 
+    // Returns whether the given button is currently selected.
     private boolean isSelected(JButton btn) {
         return btn.getBackground().equals(selectedColor) && btn.isOpaque();
     }
 
+    // Updates the sidebar to visually mark the given button as selected
     private void setSelectedButton(JButton selected) {
         for (JButton b : allButtons) {
             b.setOpaque(false);
@@ -164,6 +168,7 @@ public class SideBar extends JPanel {
         selected.setBackground(selectedColor);
     }
 
+    // Selects a sidebar button by its displayed label text.
     public void setSelected(String label) {
         for (JButton b : allButtons) {
             if (b.getText().equalsIgnoreCase(label)) {

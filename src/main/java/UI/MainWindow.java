@@ -37,6 +37,7 @@ public class MainWindow extends JFrame {
     private AddPatientPage addPatientPage;
     private LiveMonitoringPage liveMonitoringPage;
 
+    // Creates the main application window and initialises all pages, navigation, and theme settings.
     public MainWindow() {
         setTitle("Patient Monitor");
         setSize(1920, 1080);
@@ -92,32 +93,37 @@ public class MainWindow extends JFrame {
         setVisible(true);
     }
 
-    // Navigation
+    // Navigates the UI to the login page.
     public void showLoginPage() {
         showPage(PAGE_LOGIN);
     }
 
+    // Navigates the UI to the register page
     public void showRegisterPage() {
         showPage(PAGE_REGISTER);
     }
 
+    // Navigates to the home page and enables alert behaviour for live monitoring
     public void showHomePage() {
         Services.AlertManager.getInstance().enableAlerts();
         homePage.onPageShown();
         showPage(PAGE_HOME);
     }
 
+    // Navigates to the status tracker (digital twin) page for the given patient
     public void showStatusTracker(Patient patient) {
         sidebar.setSelected("Status Tracker");
         digitalTwinPage.setPatient(patient);
         showPage(PAGE_STATUS);
     }
 
+    // Navigates to the add patient page.
     public void showAddPatientPage() {
         sidebar.setSelected("Add Patient");
         showPage(PAGE_ADD);
     }
 
+    // Navigates to the live monitoring page and swaps in a page instance for the chosen patient.
     public void showLiveMonitoring(Patient patient) {
         sidebar.setSelected("Live Monitoring");
 
@@ -128,6 +134,7 @@ public class MainWindow extends JFrame {
         showPage(PAGE_LIVE);
     }
 
+    // Shows a named page and toggles top-level UI components based on authentication state.
     public void showPage(String pageName) {
         boolean isAuthPage =
                 pageName.equals(PAGE_LOGIN) || pageName.equals(PAGE_REGISTER);
@@ -149,10 +156,12 @@ public class MainWindow extends JFrame {
         repaint();
     }
 
+    // Logs out the current user by returning to the login page.
     public void logout() {
         showPage(PAGE_LOGIN);
     }
 
+    // Updates the UI after a successful login, including top bar doctor identity display.
     public void onDoctorLoggedIn() {
         // Ensure UI switches out of auth pages
         showHomePage();
@@ -168,6 +177,7 @@ public class MainWindow extends JFrame {
         }
     }
 
+    // Refreshes the top bar doctor details using the current session information
     private void refreshTopBarDoctorInfo() {
         if (topBar == null) return;
 
@@ -178,9 +188,10 @@ public class MainWindow extends JFrame {
             topBar.updateDoctorInfo("Demo", "");
         }
     }
-
+    // Returns the account page instance for external components that need to refresh profile state
     public AccountPage getAccountPage() {
         return accountPage;
     }
+    // Returns the top bar component for pages that need to update doctor display information
     public TopBar getTopBar() {return topBar;}
 }

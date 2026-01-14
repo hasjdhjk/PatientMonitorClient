@@ -18,6 +18,7 @@ public class PatientRecordsPanel extends RoundedPanel {
     private JList<PatientRecord> recordList;
     private PlaceholderTextField searchField;
 
+    // Creates the records panel UI with search, import, delete, and clear controls.
     public PatientRecordsPanel(Runnable onBack) {
         super(new BorderLayout(20, 20));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -129,22 +130,23 @@ public class PatientRecordsPanel extends RoundedPanel {
         resetFilter();
     }
     // Helpers
+    // Copies the full record list into the filtered model (used when clearing search).
     private void resetFilter() {
         filteredModel.clear();
         for (int i = 0; i < recordModel.size(); i++)
             filteredModel.addElement(recordModel.get(i));
     }
-
+    // Loads patient records from the JSON file into the list model.
     private void loadFromJson() {
         recordModel.clear();
         for (PatientRecord r : PatientRecordIO.loadRecords())
             recordModel.addElement(r);
     }
-
+    // Saves the current record list model back to the JSON file.
     private void saveToJson() {
         PatientRecordIO.saveRecords(Collections.list(recordModel.elements()));
     }
-
+    // Shows a pop-up dialog displaying the selected record details.
     private void showRecordPreview(PatientRecord r) {
         String msg = "Name: " + r.getPatientName() + "\n"
                 + "Record ID: " + r.getRecordId() + "\n"
@@ -155,7 +157,7 @@ public class PatientRecordsPanel extends RoundedPanel {
                 this, msg, "Record Details", JOptionPane.INFORMATION_MESSAGE
         );
     }
-    // public refresh
+    // Reloads records from disk and refreshes the displayed list (e.g., after discharge updates).
     public void reloadFromDisk() {
         loadFromJson();
         resetFilter();

@@ -16,6 +16,7 @@ public class ECGPanel extends JPanel {
     private JFXPanel fxPanel = new JFXPanel();
     private WebEngine engine;
 
+    // Creates an embedded ECG panel that renders a waveform view.
     public ECGPanel() {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(260, 120));
@@ -29,6 +30,7 @@ public class ECGPanel extends JPanel {
         });
     }
 
+    // Updates the ECG display with a new heart rate value.
     public void setHeartRate(int hr) {
         Platform.runLater(() -> {
             if (engine != null) {

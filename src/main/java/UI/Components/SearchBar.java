@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 public class SearchBar extends BaseTile {
     private JTextField searchField;
 
+    // Creates a search bar tile with an icon and text input field.
     public SearchBar() {
         super(400, 65, 40, true);
         setLayout(new BorderLayout());
@@ -29,7 +30,7 @@ public class SearchBar extends BaseTile {
         setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30)); // make sure text inside teh border
     }
 
-    // listen to live typing
+    // Registers a listener that receives live search text updates as the user types.
     public void addSearchListener(Consumer<String> listener) {
         searchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override

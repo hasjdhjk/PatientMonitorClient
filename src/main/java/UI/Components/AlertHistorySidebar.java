@@ -34,9 +34,10 @@ public class AlertHistorySidebar extends JPanel {
     private final Timer refreshTimer;
     private int lastHistorySize = -1;
 
-    // ✅ NEW: keep track of which alerts have been acknowledged (hidden from sidebar)
+    // keep track of which alerts have been acknowledged
     private final Set<String> acknowledgedKeys = new HashSet<>();
 
+    // Creates the alert sidebar UI and starts a timer to refresh its contents periodically.
     public AlertHistorySidebar(MainWindow window) {
         this.window = window;
 
@@ -79,6 +80,7 @@ public class AlertHistorySidebar extends JPanel {
         refresh();
     }
 
+    // Builds the header area containing the sidebar title and alert counts.
     private JPanel buildHeader() {
         JPanel header = new JPanel();
         header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
@@ -104,6 +106,7 @@ public class AlertHistorySidebar extends JPanel {
         return header;
     }
 
+    // Refreshes the UI only if the alert history size has changed to reduce unnecessary rebuilding.
     private void refreshIfNeeded() {
         List<AlertRecord> history = AlertManager.getInstance().getHistory();
         if (history.size() != lastHistorySize) {
@@ -113,6 +116,7 @@ public class AlertHistorySidebar extends JPanel {
         }
     }
 
+    // Rebuilds the sidebar list from alert history and updates the critical/warning counts.
     public void refresh() {
         List<AlertRecord> history = AlertManager.getInstance().getHistory();
         lastHistorySize = history.size();
@@ -120,7 +124,7 @@ public class AlertHistorySidebar extends JPanel {
         // newest first
         Collections.reverse(history);
 
-        // Count critical/warning BUT only those not acknowledged (since sidebar shows unacked)
+        // count critical/warning BUT only those not acknowledged
         int critical = 0, warning = 0;
         for (AlertRecord r : history) {
             if (acknowledgedKeys.contains(keyOf(r))) continue;
@@ -160,6 +164,7 @@ public class AlertHistorySidebar extends JPanel {
         listPanel.repaint();
     }
 
+    // Creates a styled alert card panel for a single alert record.
     private JPanel buildCard(AlertRecord r) {
         LiveVitals.VitalsSeverity sev = r.getSeverity();
 
@@ -300,6 +305,7 @@ public class AlertHistorySidebar extends JPanel {
         return card;
     }
 
+    // Applies consistent styling to the sidebar action buttons.
     private void styleButton(JButton btn, boolean filled, Color accent) {
         btn.setFocusPainted(false);
         btn.setFont(new Font("Arial", Font.BOLD, 12));
@@ -319,6 +325,7 @@ public class AlertHistorySidebar extends JPanel {
         btn.setOpaque(true);
     }
 
+    // Searches the in-memory patient database for a patient matching the given ID.
     private Patient findPatientById(int id) {
         for (Patient p : AddedPatientDB.getAll()) {
             if (p.getId() == id) return p;
@@ -326,12 +333,13 @@ public class AlertHistorySidebar extends JPanel {
         return null;
     }
 
-    // ✅ NEW: stable-ish key for acknowledging a specific record
+    // Generates a stable key used to uniquely identify an alert record for acknowledgement.
     private String keyOf(AlertRecord r) {
         long ms = (r.getTimestamp() == null) ? 0L : r.getTimestamp().toEpochMilli();
         return r.getPatientId() + "|" + r.getSeverity() + "|" + ms;
     }
 
+    // Formats a timestamp into a short human-readable "time ago" string.
     private String formatTimeAgo(Instant ts) {
         if (ts == null) return "";
         long s = Duration.between(ts, Instant.now()).getSeconds();

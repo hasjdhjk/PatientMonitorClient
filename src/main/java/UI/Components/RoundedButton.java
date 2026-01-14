@@ -13,10 +13,11 @@ public class RoundedButton extends JButton {
     private Color pressColor = new Color(50, 110, 220);
     private Color textColor = Color.WHITE;
 
-    private float animProgress = 0f;   // 用于 hover 动画
+    private float animProgress = 0f;   // used for hover animation
     private Timer hoverTimer;
     private boolean hovering = false;
 
+    // Creates a rounded button with hover and press animations.
     public RoundedButton(String text) {
         super(text);
         setFont(new Font("Arial", Font.BOLD, 14));
@@ -63,12 +64,13 @@ public class RoundedButton extends JButton {
         });
     }
 
-    // Allow customization
+    // Sets the corner radius of the rounded button.
     public void setRadius(int radius) {
         this.radius = radius;
         repaint();
     }
 
+    // Sets the button colours for normal, hover, and pressed states.
     public void setButtonColor(Color normal, Color hover, Color press) {
         this.normalColor = normal;
         this.hoverColor = hover;
@@ -76,11 +78,13 @@ public class RoundedButton extends JButton {
         repaint();
     }
 
+    // Sets the colour of the button text.
     public void setTextColor(Color c) {
         this.textColor = c;
         repaint();
     }
 
+    // Paints the rounded button background and centered text with animation.
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
@@ -107,6 +111,7 @@ public class RoundedButton extends JButton {
         g2.dispose();
     }
 
+    // Returns a preferred size based on the button text and padding.
     @Override
     public Dimension getPreferredSize() {
         // Auto-size based on text + padding
@@ -116,6 +121,7 @@ public class RoundedButton extends JButton {
         return new Dimension(w, h);
     }
 
+    // Blends two colours together based on the given ratio.
     private Color blend(Color c1, Color c2, float ratio) {
         ratio = Math.min(1f, Math.max(0f, ratio));
         int r = (int) (c1.getRed() * (1 - ratio) + c2.getRed() * ratio);
@@ -124,6 +130,7 @@ public class RoundedButton extends JButton {
         return new Color(r, g, b);
     }
 
+    // Sets all button colours including text colour in one call.
     public void setColors(Color normal, Color hover, Color press, Color text) {
         this.normalColor = normal;
         this.hoverColor = hover;
