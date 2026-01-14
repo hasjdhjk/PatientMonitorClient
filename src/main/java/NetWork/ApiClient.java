@@ -152,7 +152,6 @@ public class ApiClient {
 
 
     // response
-
     public static class LoginResponse {
         public String status;
         public String message;

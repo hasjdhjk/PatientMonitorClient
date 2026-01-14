@@ -34,7 +34,7 @@ public class AlertHistorySidebar extends JPanel {
     private final Timer refreshTimer;
     private int lastHistorySize = -1;
 
-    // ✅ NEW: keep track of which alerts have been acknowledged (hidden from sidebar)
+    // keep track of which alerts have been acknowledged (hidden from sidebar)
     private final Set<String> acknowledgedKeys = new HashSet<>();
 
     public AlertHistorySidebar(MainWindow window) {
@@ -46,10 +46,9 @@ public class AlertHistorySidebar extends JPanel {
         setOpaque(true);
         setBackground(sidebarBg);
 
-        // Full-height divider line on the LEFT of the sidebar
+        // full height divider line on the LEFT of the sidebar
         setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, new Color(230, 232, 236)));
 
-        // Lock width
         setPreferredSize(new Dimension(SIDEBAR_WIDTH, 0));
         setMinimumSize(new Dimension(SIDEBAR_WIDTH, 0));
         setMaximumSize(new Dimension(SIDEBAR_WIDTH, Integer.MAX_VALUE));
@@ -67,7 +66,6 @@ public class AlertHistorySidebar extends JPanel {
         scrollPane.setBorder(null);
         scrollPane.setOpaque(false);
 
-        // IMPORTANT: viewport must be opaque with sidebar background to look continuous
         scrollPane.getViewport().setOpaque(true);
         scrollPane.getViewport().setBackground(getBackground());
 
@@ -120,7 +118,7 @@ public class AlertHistorySidebar extends JPanel {
         // newest first
         Collections.reverse(history);
 
-        // Count critical/warning BUT only those not acknowledged (since sidebar shows unacked)
+        // Count critical/warning but only those not acknowledged (since sidebar shows unacked)
         int critical = 0, warning = 0;
         for (AlertRecord r : history) {
             if (acknowledgedKeys.contains(keyOf(r))) continue;
@@ -153,7 +151,7 @@ public class AlertHistorySidebar extends JPanel {
             listPanel.add(none);
         }
 
-        // IMPORTANT: pushes extra vertical space to the bottom so cards don't stretch
+        // pushes extra vertical space to the bottom so cards don't stretch
         listPanel.add(Box.createVerticalGlue());
 
         listPanel.revalidate();
@@ -196,7 +194,7 @@ public class AlertHistorySidebar extends JPanel {
         card.setMinimumSize(new Dimension(0, CARD_HEIGHT));
         card.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // --- Top row ---
+        // top row
         JPanel topRow = new JPanel(new BorderLayout());
         topRow.setOpaque(false);
         topRow.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -213,7 +211,7 @@ public class AlertHistorySidebar extends JPanel {
         topRow.add(tag, BorderLayout.WEST);
         topRow.add(timeAgo, BorderLayout.EAST);
 
-        // --- Middle ---
+        // middle
         JPanel mid = new JPanel();
         mid.setOpaque(false);
         mid.setLayout(new BoxLayout(mid, BoxLayout.Y_AXIS));
@@ -245,7 +243,7 @@ public class AlertHistorySidebar extends JPanel {
             mid.add(extra);
         }
 
-        // --- Bottom row: buttons ---
+        // bottom row buttons
         JPanel bottom = new JPanel();
         bottom.setOpaque(false);
         bottom.setLayout(new BoxLayout(bottom, BoxLayout.X_AXIS));
@@ -273,7 +271,7 @@ public class AlertHistorySidebar extends JPanel {
             }
         });
 
-        // ✅ NEW: Acknowledge hides it from the sidebar immediately
+        // hides it from the sidebar immediately
         ackBtn.addActionListener(e -> {
             acknowledgedKeys.add(keyOf(r));
             refresh();
@@ -284,7 +282,7 @@ public class AlertHistorySidebar extends JPanel {
         bottom.add(ackBtn);
         bottom.add(Box.createHorizontalGlue());
 
-        // --- Stack inside the card ---
+        // Stack inside the card
         JPanel center = new JPanel();
         center.setOpaque(false);
         center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
@@ -326,7 +324,7 @@ public class AlertHistorySidebar extends JPanel {
         return null;
     }
 
-    // ✅ NEW: stable-ish key for acknowledging a specific record
+    // key for acknowledging a specific record
     private String keyOf(AlertRecord r) {
         long ms = (r.getTimestamp() == null) ? 0L : r.getTimestamp().toEpochMilli();
         return r.getPatientId() + "|" + r.getSeverity() + "|" + ms;

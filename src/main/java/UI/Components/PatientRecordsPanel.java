@@ -22,7 +22,7 @@ public class PatientRecordsPanel extends RoundedPanel {
         super(new BorderLayout(20, 20));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // ================= Buttons =================
+        // Buttons
         RoundedButton backBtn = new RoundedButton("← Back");
         backBtn.addActionListener(e -> onBack.run());
 
@@ -41,7 +41,7 @@ public class PatientRecordsPanel extends RoundedPanel {
         topBar.add(clearBtn);
         topBar.add(searchField);
 
-        // ================= List =================
+        // List
         recordList = new JList<>(filteredModel);
         recordList.setCellRenderer(new PatientRecordRenderer());
 
@@ -54,7 +54,7 @@ public class PatientRecordsPanel extends RoundedPanel {
             }
         });
 
-        // ================= Search =================
+        // Search
         searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             private void filter() {
                 String q = searchField.getText().trim().toLowerCase();
@@ -76,7 +76,7 @@ public class PatientRecordsPanel extends RoundedPanel {
             @Override public void changedUpdate(javax.swing.event.DocumentEvent e) { filter(); }
         });
 
-        // ================= Import CSV =================
+        // Import CSV
         importBtn.addActionListener(e -> {
             JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
             List<PatientRecord> newOnes = PatientRecordIO.importCSV(parent);
@@ -87,7 +87,7 @@ public class PatientRecordsPanel extends RoundedPanel {
             saveToJson();
         });
 
-        // ================= Delete =================
+        // Delete
         deleteBtn.addActionListener(e -> {
             PatientRecord selected = recordList.getSelectedValue();
             if (selected == null) {
@@ -106,7 +106,7 @@ public class PatientRecordsPanel extends RoundedPanel {
             saveToJson();
         });
 
-        // ================= Clear =================
+        // Clear
         clearBtn.addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(
                     this,
@@ -124,11 +124,11 @@ public class PatientRecordsPanel extends RoundedPanel {
         add(topBar, BorderLayout.NORTH);
         add(new JScrollPane(recordList), BorderLayout.CENTER);
 
-        // ================= Load =================
+        // Load
         loadFromJson();
         resetFilter();
     }
-    // ===================== Helpers =====================
+    // Helpers
     private void resetFilter() {
         filteredModel.clear();
         for (int i = 0; i < recordModel.size(); i++)
@@ -155,7 +155,7 @@ public class PatientRecordsPanel extends RoundedPanel {
                 this, msg, "Record Details", JOptionPane.INFORMATION_MESSAGE
         );
     }
-    // ===================== PUBLIC REFRESH =====================
+    // public refresh
     public void reloadFromDisk() {
         loadFromJson();
         resetFilter();

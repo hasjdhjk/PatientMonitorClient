@@ -11,9 +11,15 @@ import java.util.List;
 
 public class LiveVitals {
 
-    // =====================
+    private final int patientId;
+
+    private double heartRate = 75;
+    private double respRate = 16;
+    private double temperature = 36.8;
+    private double spo2 = 98;
+    private String bloodPressure = "120/80";
+
     // Global shared registry
-    // =====================
     private static final ConcurrentHashMap<Integer, LiveVitals> SHARED = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Integer, PatientSimulatorService> SIMS = new ConcurrentHashMap<>();
 
@@ -25,10 +31,8 @@ public class LiveVitals {
 
     private static volatile boolean loopStarted = false;
 
-    /**
-     * Get (or create) a globally shared LiveVitals instance for a patientId.
-     * This also ensures there is exactly one simulator loop updating all shared vitals once per second.
-     */
+    // Get (or create) a globally shared LiveVitals instance for a patientId
+    // This also ensures there is exactly one simulator loop updating all shared vitals once per second
     public static LiveVitals getShared(int patientId, String baselineBloodPressure) {
         LiveVitals v = SHARED.computeIfAbsent(patientId, LiveVitals::new);
 
@@ -60,26 +64,13 @@ public class LiveVitals {
         return v;
     }
 
-    /**
-     * Optional: remove a patient's shared vitals + simulator to avoid memory growth after discharge.
-     * Safe to call anytime.
-     */
+
+    // Optional: remove a patient's shared vitals + simulator to avoid memory growth after discharge
+    // Safe to call anytime.
     public static void removeShared(int patientId) {
         SHARED.remove(patientId);
         SIMS.remove(patientId);
     }
-
-    /* =====================
-       Instance fields
-       ===================== */
-
-    private final int patientId;
-
-    private double heartRate = 75;
-    private double respRate = 16;
-    private double temperature = 36.8;
-    private double spo2 = 98;
-    private String bloodPressure = "120/80";
 
     public LiveVitals(int patientId) {
         this.patientId = patientId;
@@ -104,12 +95,12 @@ public class LiveVitals {
         this.bloodPressure = bloodPressure;
     }
 
-    /** Convenience: any vital abnormal (warning-level thresholds). */
+    // Convenience: any vital abnormal (warning-level thresholds)
     public boolean hasAbnormalVitals() {
         return isHeartRateAbnormal() || isTemperatureAbnormal() || isBloodPressureAbnormal();
     }
 
-    /** WARNING-level causes (your current “abnormal” ranges). */
+    // WARNING-level causes (your current “abnormal” ranges)
     public List<String> getWarningCauses() {
         List<String> causes = new ArrayList<>();
 
@@ -126,7 +117,7 @@ public class LiveVitals {
         return causes;
     }
 
-    /** DANGER-level causes (more extreme thresholds). */
+    // DANGER-level causes (more extreme thresholds)
     public List<String> getDangerCauses() {
         List<String> causes = new ArrayList<>();
 

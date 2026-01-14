@@ -28,10 +28,10 @@ public class DigitalTwinPanel extends JPanel {
     // Keep the latest requested values so HomePage/StatusTracker can call in any order.
     private volatile Integer pendingPatientId = null;
     private volatile Vitals pendingVitals = null;
-    // Avoid spamming logs when dashboard JS functions are not ready.
+    // Avoid spamming logs when dashboard JS functions are not ready
     private final java.util.Set<String> warnedJsFns = java.util.Collections.synchronizedSet(new java.util.HashSet<>());
 
-    // --- Simulator driving dashboard ---
+    // Simulator driving dashboard
     private final LiveVitals simulatedVitals = new LiveVitals(0);
     private final PatientSimulatorService simulator = new PatientSimulatorService(simulatedVitals);
     private ScheduledExecutorService simExec;
@@ -48,7 +48,7 @@ public class DigitalTwinPanel extends JPanel {
 
         String doctor = Session.getDoctorEmail();
         // Provide an absolute API base so dashboard JS can fetch reliably.
-        // Example: https://bioeng-bbb-app.impaas.uk
+        // https://bioeng-bbb-app.impaas.uk
         String apiBase = ServerConfig.baseUrl();
 
         String js = "window.__doctor = " + jsString(doctor) + ";" +
@@ -58,10 +58,7 @@ public class DigitalTwinPanel extends JPanel {
         } catch (Exception ignored) {}
     }
 
-    /**
-     * Call this after login/logout (or when the active doctor changes) to update
-     * the dashboard JS context (window.__doctor / window.__apiBase).
-     */
+    // Call this after login/logout (or when the active doctor changes) to update the dashboard JS context
     public void refreshDashboardContext() {
         Platform.runLater(this::trySendContextToDashboard);
     }
@@ -99,19 +96,14 @@ public class DigitalTwinPanel extends JPanel {
         });
     }
 
-    /**
-     * Tell the dashboard which patient id to poll from:
-     * fetch("../api/patient?id=ID")
-     */
+    //  Tell the dashboard which patient id to poll from
     public void setSelectedPatientId(int patientId) {
         // Store latest request (so even if called before page is ready, it will apply later)
         pendingPatientId = patientId;
         Platform.runLater(this::trySendSelectedPatientId);
     }
 
-    /**
-     * Optional: push vitals directly into the dashboard (it also polls DB).
-     */
+    // push vitals directly into the dashboard (it also polls DB).
     public void setVitals(int hr, int rr, int spo2, int sys, int dia, double temp) {
         int safeRr = rr > 0 ? rr : 12;
         int safeSpo2 = spo2 > 0 ? spo2 : 98;
@@ -120,8 +112,7 @@ public class DigitalTwinPanel extends JPanel {
         Platform.runLater(this::trySendVitals);
     }
 
-    // ===================== Simulator =====================
-
+    // Simulator
     private void startSimulation() {
         stopSimulation();
 
@@ -163,7 +154,7 @@ public class DigitalTwinPanel extends JPanel {
         super.removeNotify();
     }
 
-    // ===================== Internals =====================
+    // Internals
 
     private void flushPending() {
         // Called after page load; attempt both updates.
@@ -211,11 +202,7 @@ public class DigitalTwinPanel extends JPanel {
         );
     }
 
-    /**
-     * Polls for `window.<fnName>` existence before running `action`.
-     * This avoids JSException: TypeError: undefined is not a function
-     * when Java calls into JS too early.
-     */
+    // avoids JSException: TypeError: undefined is not a function when Java calls into JS too early.
     private void runWhenJsFunctionAvailable(String fnName, Runnable action, int retries) {
         if (!pageLoaded || engine == null) return;
 
