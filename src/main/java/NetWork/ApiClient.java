@@ -11,11 +11,12 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+// HTTP client for talking to backend API
 public class ApiClient {
 
-// base URL is provided by ServerConfig
     private static final Gson gson = new Gson();
 
+    // Send POST request with JSON and return response
     private static String postJson(String endpoint, String jsonBody) throws IOException {
         URL url = new URL(ServerConfig.url(endpoint));
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -30,6 +31,7 @@ public class ApiClient {
 
         int code = conn.getResponseCode();
 
+        // Use error stream if request failed
         BufferedReader reader = new BufferedReader(new InputStreamReader(
                 (code >= 200 && code < 300) ? conn.getInputStream() : conn.getErrorStream()
         ));
@@ -45,7 +47,7 @@ public class ApiClient {
     }
 
 
-    // requests
+    // Request models
     public static class LoginRequest {
         String email;
         String password;
@@ -101,8 +103,6 @@ public class ApiClient {
     }
 
 
-    // authetication
-
     // login
     public static LoginResponse login(String email, String password) {
         try {
@@ -118,6 +118,7 @@ public class ApiClient {
         }
     }
 
+    // register
     public static SimpleResponse register(String email, String password,
                                           String givenName, String familyName) {
         try {
@@ -134,37 +135,8 @@ public class ApiClient {
         }
     }
 
-    // request password reset
-    public static SimpleResponse requestPasswordReset(String email) {
-        try {
-            ResetRequest req = new ResetRequest(email);
-            String body = gson.toJson(req);
 
-            String json = postJson("/requestPasswordReset", body);
-            return gson.fromJson(json, SimpleResponse.class);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-     // reset password
-    public static SimpleResponse resetPassword(String token, String newPassword) {
-        try {
-            ResetPasswordRequest req = new ResetPasswordRequest(token, newPassword);
-            String body = gson.toJson(req);
-
-            String json = postJson("/resetPassword", body);
-            return gson.fromJson(json, SimpleResponse.class);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    // permanently delete doctor account
+    // delete account
     public static SimpleResponse deleteAccount(String email, String password) {
         try {
             DeleteAccountRequest req = new DeleteAccountRequest(email, password, "DELETE");
@@ -180,7 +152,7 @@ public class ApiClient {
     }
 
 
-    // response
+    // Response models
     public static class LoginResponse {
         public String status;
         public String message;
