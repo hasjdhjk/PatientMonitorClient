@@ -45,7 +45,7 @@ public class TopBar extends JPanel {
         }
     }
 
-    // ================= LEFT: LOGO + TITLE =================
+    //  LEFT: LOGO + TITLE
     private JPanel buildLeftSection() {
         JPanel left = new JPanel();
         left.setOpaque(false);
@@ -66,14 +66,14 @@ public class TopBar extends JPanel {
         return left;
     }
 
-    // ================= RIGHT: NOTIFICATION + DOCTOR INFO =================
+    // RIGHT: NOTIFICATION + DOCTOR INFO
     private JPanel buildRightSection() {
         JPanel right = new JPanel();
         right.setOpaque(false);
         right.setLayout(new BoxLayout(right, BoxLayout.X_AXIS));
         right.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 30));
 
-        // ---- Notification button ----
+        // Notification button
         JLabel notificationBtn = new JLabel(
                 ImageLoader.loadImageScaled("icon_notification", "Icons", 24)
         );
@@ -88,7 +88,7 @@ public class TopBar extends JPanel {
             }
         });
 
-        // ---- Text block ----
+        // Text block
         JPanel textBlock = new JPanel();
         textBlock.setOpaque(false);
         textBlock.setLayout(new BoxLayout(textBlock, BoxLayout.Y_AXIS));
@@ -105,7 +105,7 @@ public class TopBar extends JPanel {
         textBlock.add(Box.createVerticalStrut(4));
         textBlock.add(roleLabel);
 
-        // ---- Avatar ----
+        // Avatar
         avatarLabel = new JLabel("SJ", SwingConstants.CENTER);
         avatarLabel.setPreferredSize(new Dimension(80, 80));
         avatarLabel.setMaximumSize(new Dimension(80, 80));
@@ -142,7 +142,7 @@ public class TopBar extends JPanel {
         return right;
     }
 
-    // ================= PUBLIC UPDATE API =================
+    //  PUBLIC UPDATE API
     public void updateDoctorInfo(String fullName, String specialty) {
         nameLabel.setText(fullName);
         roleLabel.setText(specialty);

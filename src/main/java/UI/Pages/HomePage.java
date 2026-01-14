@@ -46,19 +46,14 @@ public class HomePage extends JPanel {
         Color appBg = darkMode ? new Color(18, 18, 20) : new Color(245, 245, 245);
         setBackground(appBg);
 
-        // =========================
-        // TOP (Search bar row)
-        // =========================
+        // top (Search bar row)
         JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 15));
         top.setBackground(appBg);
 
         SearchBar searchBar = new SearchBar();
-        // NOTE: FlowLayout ignores BorderLayout constraints, so just add(searchBar) is correct
         top.add(searchBar);
 
-        // =========================
-        // CENTER (Grid + Scroll)
-        // =========================
+        // center (Grid + Scroll)
         grid = new JPanel(new WrapLayout(FlowLayout.LEFT, 15, 15));
         grid.setBackground(appBg);
         grid.setBorder(BorderFactory.createEmptyBorder(0, 10, 20, 10));
@@ -68,8 +63,7 @@ public class HomePage extends JPanel {
         scroll.setBorder(null);
         scroll.getViewport().setBackground(appBg);
 
-        // ✅ IMPORTANT FIX:
-        // Wrap ONLY the main content (top + grid) so the sidebar isn't pushed down by NORTH
+        // Wrap only the main content (top + grid) so the sidebar isn't pushed down by NORTH
         JPanel centerWrapper = new JPanel(new BorderLayout());
         centerWrapper.setBackground(appBg);
         centerWrapper.add(top, BorderLayout.NORTH);
@@ -77,15 +71,10 @@ public class HomePage extends JPanel {
 
         add(centerWrapper, BorderLayout.CENTER);
 
-        // =========================
-        // RIGHT (Alert sidebar)
-        // =========================
+        // right (Alert sidebar)
         AlertHistorySidebar sidebar = new AlertHistorySidebar(window);
         add(sidebar, BorderLayout.EAST);
 
-        // =========================
-        // Existing logic (unchanged)
-        // =========================
         PatientDischargeService.onDischarge = this::reloadFromServerAsync;
 
         reloadFromServerAsync();
