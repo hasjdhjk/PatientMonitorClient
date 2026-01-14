@@ -1,6 +1,6 @@
 package UI;
 
-import Services.DoctorProfileService;
+import NetWork.Session;
 import Utilities.SettingManager;
 import Utilities.ThemeManager;
 
@@ -87,9 +87,7 @@ public class MainWindow extends JFrame {
         SettingManager settings = new SettingManager();
         ThemeManager.apply(this, settings.isDarkMode());
 
-        DoctorProfileService ps = new DoctorProfileService();
-        var p = ps.load();
-        topBar.updateDoctorInfo(p.getFullName(), p.getSpecialty());
+        refreshTopBarDoctorInfo();
 
         setVisible(true);
     }
@@ -155,17 +153,34 @@ public class MainWindow extends JFrame {
         showPage(PAGE_LOGIN);
     }
 
+    public void onDoctorLoggedIn() {
+        // Ensure UI switches out of auth pages
+        showHomePage();
+
+        // Refresh top bar doctor info using the logged-in identity
+        refreshTopBarDoctorInfo();
+
+        if (sidebar != null) {
+            sidebar.setVisible(true);
+        }
+        if (topBar != null) {
+            topBar.setVisible(true);
+        }
+    }
+
+    private void refreshTopBarDoctorInfo() {
+        if (topBar == null) return;
+
+        String email = Session.getDoctorEmail();
+        if (email != null && !email.isBlank() && !"demo".equalsIgnoreCase(email.trim())) {
+            topBar.updateDoctorInfo(email.trim(), "");
+        } else {
+            topBar.updateDoctorInfo("Demo", "");
+        }
+    }
+
     public AccountPage getAccountPage() {
         return accountPage;
     }
     public TopBar getTopBar() {return topBar;}
-    public void onDoctorLoggedIn() {
-        cardLayout.show(pageContainer, PAGE_HOME);
-
-        if (topBar != null) {
-        }
-        if (sidebar != null) {
-            sidebar.setVisible(true);
-        }
-    }
 }

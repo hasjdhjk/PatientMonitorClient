@@ -1,5 +1,7 @@
 package UI.Pages;
 
+import NetWork.Session;
+
 import Models.DoctorProfile;
 import Services.AccountMetaService;
 import Services.DoctorProfileService;
@@ -93,14 +95,14 @@ public class AccountPage extends JPanel {
         cardLayout.show(cardPanel, "account");
     }
 
-    // main account page
+    // ===================== MAIN ACCOUNT PAGE  =====================
     private JPanel buildAccountMain() {
         boolean dark = new SettingManager().isDarkMode();
 
         JPanel root = new JPanel(new BorderLayout());
         root.setBackground(themeBg);
 
-        // header
+        // ---------- Header ----------
         JPanel header = new JPanel();
         header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
         header.setBackground(themeBg);
@@ -120,16 +122,16 @@ public class AccountPage extends JPanel {
 
         root.add(header, BorderLayout.NORTH);
 
-        // Scrollable content
+        // ---------- Scrollable content ----------
         JPanel content = new JPanel();
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
         content.setBackground(themeBg);
 
-        // Load data
-        this.profile = profileService.load();
+        // ========== Load data ==========
+        this.profile = loadProfileFromDbOrFallback();
         this.meta = metaService.loadOrInit();
 
-        // Main white card
+        // ---------- Main white card ----------
         BaseTile card = new BaseTile(1200, 600, 45, false);
         card.setMaximumSize(new Dimension(1200, 600));
         card.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -138,11 +140,11 @@ public class AccountPage extends JPanel {
         card.setBorder(BorderFactory.createEmptyBorder(24, 28, 24, 28));
         this.formRoot = card;
 
-        // top row inside card: avatar + name/email + buttons + status
+        // ----- top row inside card: avatar + name/email + buttons + status -----
         JPanel topRow = new JPanel(new BorderLayout());
         topRow.setOpaque(false);
 
-        // left: avatar (far left) + name/email centered to avatar + buttons below avatar
+        // Left section: avatar (far left) + name/email centered to avatar + buttons below avatar
         JPanel leftProfile = new JPanel(new GridBagLayout());
         leftProfile.setOpaque(false);
 
@@ -151,7 +153,7 @@ public class AccountPage extends JPanel {
         lp.fill = GridBagConstraints.NONE;
         lp.anchor = GridBagConstraints.WEST;
 
-        // avatar
+        // ---- Avatar ----
         avatarCircle = new AvatarCircle(74);
         avatarCircle.setImagePath(meta.avatarPath);
 
@@ -161,17 +163,25 @@ public class AccountPage extends JPanel {
         lp.weighty = 0;
         leftProfile.add(avatarCircle, lp);
 
-        // Name/Email: vertically centered relative to avatar
+        // ---- Name/Email: vertically centered relative to avatar ----
         JPanel nameCol = new JPanel();
         nameCol.setOpaque(false);
         nameCol.setLayout(new BoxLayout(nameCol, BoxLayout.Y_AXIS));
         nameCol.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
-        headerName = new JLabel(profile.getFullName());
+        String displayName = Session.getDoctorFullName();
+        if (displayName == null || displayName.isBlank() || "demo".equalsIgnoreCase(displayName.trim())) {
+            displayName = (profile == null ? "" : profile.getFullName());
+        }
+        headerName = new JLabel(displayName);
         headerName.setFont(new Font("Arial", Font.BOLD, 22));
         headerName.setForeground(new Color(17, 24, 39));
 
-        headerEmail = new JLabel(profile.getEmail());
+        String displayEmail = Session.getDoctorEmail();
+        if (displayEmail == null || displayEmail.isBlank() || "demo".equalsIgnoreCase(displayEmail.trim())) {
+            displayEmail = (profile == null ? "" : profile.getEmail());
+        }
+        headerEmail = new JLabel(displayEmail);
         headerEmail.setFont(new Font("Arial", Font.PLAIN, 14));
         headerEmail.setForeground(new Color(75, 85, 99));
 
@@ -189,7 +199,7 @@ public class AccountPage extends JPanel {
         lp.insets = new Insets(0, 90, 0, 0); // gap between avatar and text
         leftProfile.add(nameCol, lp);
 
-        // Buttons: lower, under avatar only (doesn't affect name/email alignment)
+        // ---- Buttons: lower, under avatar only (doesn't affect name/email alignment) ----
         JPanel photoBtnRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         photoBtnRow.setOpaque(false);
         changePhotoBtn = smallOutlineButton("Change Photo");
@@ -247,7 +257,7 @@ public class AccountPage extends JPanel {
 
         card.add(topRow, BorderLayout.NORTH);
 
-        // form area
+        // ----- form area -----
         JPanel form = new JPanel(new GridBagLayout());
         form.setOpaque(false);
         form.setBorder(BorderFactory.createEmptyBorder(18, 0, 0, 0));
@@ -258,14 +268,18 @@ public class AccountPage extends JPanel {
         gbc.weightx = 1;
         gbc.anchor = GridBagConstraints.NORTHWEST;
 
-        // fields
-        fullNameField = new PlaceholderTextField(profile.getFullName());
-        emailField = new PlaceholderTextField(profile.getEmail());
-        organizationField = new PlaceholderTextField(profile.getSpecialty());
+        // Fields mapped to your model:
+        // - FULL NAME -> first+last
+        // - EMAIL -> email (read-only recommended)
+        // - ORGANIZATION -> specialty (closest field you have)
+        // - ROLE -> dropdown (not in model; we store only UI state by default)
+        fullNameField = new PlaceholderTextField(profile == null ? "" : profile.getFullName());
+        emailField = new PlaceholderTextField(profile == null ? "" : profile.getEmail());
+        organizationField = new PlaceholderTextField(profile == null ? "" : profile.getSpecialty());
         passwordField = new PlaceholderPasswordField("Enter password"); // not persisted
 
         roleCombo = new JComboBox<>(new String[]{
-                "Clinician", "Consultant", "Surgeon", "Nurse", "Admin", "Viewer", "Earth Science"
+                "Clinician", "Consultant", "Surgeon", "Nurse", "Admin", "Viewer"
         });
         String initialRole = (meta != null && meta.role != null && !meta.role.isBlank()) ? meta.role : "Clinician";
         roleCombo.setSelectedItem(initialRole);
@@ -280,7 +294,7 @@ public class AccountPage extends JPanel {
         addLabeledInput(form, "ORGANIZATION", organizationField, gbc, 0, row);
         addLabeledCombo(form, "ROLE", roleCombo, gbc, 1, row++);
 
-        // keep password row (like settings), you can remove if not needed
+        // Optional: keep password row (like settings), you can remove if not needed
         addLabeledInput(form, "PASSWORD", passwordField, gbc, 0, row);
         JPanel spacer = new JPanel();
         spacer.setOpaque(false);
@@ -317,7 +331,7 @@ public class AccountPage extends JPanel {
         content.add(card);
         content.add(Box.createVerticalStrut(22));
 
-        // Metadata card
+        // ---------- Metadata card ----------
         BaseTile metaCard = new BaseTile(1200, 260, 45, false);
         metaCard.setMaximumSize(new Dimension(1200, 260));
         metaCard.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -357,6 +371,7 @@ public class AccountPage extends JPanel {
 
         root.add(scroll, BorderLayout.CENTER);
 
+        // ---------- Behaviour ----------
         // email should be read-only like screenshot
         emailField.setEditable(false);
         emailField.setOpaque(false);
@@ -390,7 +405,30 @@ public class AccountPage extends JPanel {
         return root;
     }
 
-    // Save logic (maps back to your DoctorProfile)
+    // ===================== DB -> DoctorProfile loading =====================
+    private DoctorProfile loadProfileFromDbOrFallback() {
+        // Client app should not query the server DB directly.
+        // Use the locally stored profile as base, and fill missing identity from Session.
+        DoctorProfile base = profileService.load();
+        if (base == null) base = DoctorProfile.defaults();
+
+        try {
+            String email = Session.getDoctorEmail();
+            if (email != null && !email.isBlank() && !"demo".equalsIgnoreCase(email.trim())) {
+                if (base.getEmail() == null || base.getEmail().isBlank()) {
+                    base.setEmail(email.trim());
+                }
+                // If we don't have a stable idNumber yet, derive one from the email hash (display-only).
+                if (base.getIdNumber() == null || base.getIdNumber().isBlank()) {
+                    base.setIdNumber("DOC-" + Math.abs(email.trim().hashCode()));
+                }
+            }
+        } catch (Exception ignored) {}
+
+        return base;
+    }
+
+    // ===================== Save logic (maps back to your DoctorProfile) =====================
     private void saveDoctorProfileFromScreenshotForm() {
         if (profile == null) profile = DoctorProfile.defaults();
 
@@ -412,8 +450,11 @@ public class AccountPage extends JPanel {
         headerName.setText(profile.getFullName());
         headerEmail.setText(profile.getEmail());
 
+        // Keep session display name in sync for the rest of the app
+        Session.setDoctorName(profile.getFirstName(), profile.getLastName());
+
         // Update TopBar
-        window.getTopBar().updateDoctorInfo(profile.getFullName(), profile.getSpecialty());
+        window.getTopBar().updateDoctorInfo(Session.getDoctorFullName(), profile.getSpecialty());
 
         // Save selected role to meta and persist
         String selectedRole = Objects.toString(roleCombo.getSelectedItem(), "");
@@ -436,10 +477,10 @@ public class AccountPage extends JPanel {
                         !Objects.equals(Objects.toString(roleCombo.getSelectedItem(), ""), originalRole);
 
         saveBtn.setEnabled(dirty);
-        // gray-out style could be added here if your RoundedButton supports it
+        // optional: gray-out style could be added here if your RoundedButton supports it
     }
 
-    // Avatar actions
+    // ===================== Avatar actions =====================
     private void onChangePhoto() {
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("Choose an avatar image");
@@ -482,16 +523,24 @@ public class AccountPage extends JPanel {
         avatarCircle.repaint();
     }
 
-    // Reload when page shown
+    // ===================== Reload when page shown =====================
     public void reloadProfile() {
-        DoctorProfile p = profileService.load();
+        DoctorProfile p = loadProfileFromDbOrFallback();
         this.profile = p;
 
         if (fullNameField != null) fullNameField.setText(p.getFullName());
         if (organizationField != null) organizationField.setText(p.getSpecialty());
         if (emailField != null) emailField.setText(p.getEmail());
-        if (headerName != null) headerName.setText(p.getFullName());
-        if (headerEmail != null) headerEmail.setText(p.getEmail());
+        if (headerName != null) {
+            String name = Session.getDoctorFullName();
+            if (name == null || name.isBlank() || "demo".equalsIgnoreCase(name.trim())) name = p.getFullName();
+            headerName.setText(name == null ? "" : name);
+        }
+        if (headerEmail != null) {
+            String em = Session.getDoctorEmail();
+            if (em == null || em.isBlank() || "demo".equalsIgnoreCase(em.trim())) em = p.getEmail();
+            headerEmail.setText(em == null ? "" : em);
+        }
 
         // update user id card if you want
         if (userIdCard != null) {
@@ -523,7 +572,7 @@ public class AccountPage extends JPanel {
         refreshSaveEnabled();
     }
 
-    // Field builders
+    // ===================== Field builders =====================
     private void addLabeledInput(JPanel parent, String labelText, JComponent field,
                                  GridBagConstraints gbc, int col, int row) {
         JLabel label = new JLabel(labelText);
@@ -575,7 +624,7 @@ public class AccountPage extends JPanel {
         parent.add(box, gbc);
     }
 
-    // Theme helpers
+    // ===================== Theme helpers =====================
     private void fixInputColors(Container root, boolean dark) {
         Color inputFg = dark ? new Color(235, 235, 235) : Color.BLACK;
         Color tileBg = dark ? new Color(45, 48, 56) : Color.WHITE;
@@ -599,7 +648,7 @@ public class AccountPage extends JPanel {
         if (formRoot != null) fixInputColors(formRoot, dark);
     }
 
-    // small UI bits
+    // ===================== small UI bits =====================
     private JButton smallOutlineButton(String text) {
         JButton b = new JButton(text);
         b.setFont(new Font("Arial", Font.BOLD, 13));
@@ -618,7 +667,7 @@ public class AccountPage extends JPanel {
         return tf == null ? "" : tf.getText().trim();
     }
 
-    // formatting helpers
+    // ===================== formatting helpers =====================
     private String humanizeAgo(LocalDateTime t) {
         if (t == null) return "";
         Duration d = Duration.between(t, LocalDateTime.now());
@@ -646,7 +695,7 @@ public class AccountPage extends JPanel {
         return Math.max(0, d.toDays());
     }
 
-    // inner components (no extra files needed)
+    // ===================== inner components (no extra files needed) =====================
     private static class StatusBadge extends JPanel {
         public StatusBadge(String text) {
             setOpaque(false);

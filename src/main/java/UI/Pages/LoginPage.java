@@ -101,12 +101,21 @@ public class LoginPage extends ImagePanel {
 
             // Persist the logged-in doctor identity for subsequent API calls
             Session.setDoctorEmail(email);
+
+            // Update top bar immediately with best available display name
+            String display = email;
+            String gn = res.givenName;
+            String fn = res.familyName;
+            if (gn != null) gn = gn.trim();
+            if (fn != null) fn = fn.trim();
+            String full = ((gn == null ? "" : gn) + " " + (fn == null ? "" : fn)).trim();
+            if (!full.isBlank()) display = full;
+            mainWindow.getTopBar().updateDoctorInfo(display, "");
+
             clearFields();
 
             // notify other pages (e.g. Digital Twin) that doctor context changed
             mainWindow.onDoctorLoggedIn();
-
-            mainWindow.showHomePage();
         });
 
         // reset password and register
