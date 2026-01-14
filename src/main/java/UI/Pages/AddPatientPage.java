@@ -29,7 +29,7 @@ public class AddPatientPage extends JPanel {
     private PlaceholderTextField ageField;
     private PlaceholderTextField bloodPressureField;
 
-    // ====== Server config ======
+    // Server config
     private static final HttpClient HTTP = HttpClient.newHttpClient();
 
     public AddPatientPage(MainWindow mainWindow) {
