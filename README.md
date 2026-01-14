@@ -46,7 +46,7 @@ The system consists of:
 - Digital Twin patient view
 - Historical vital records table
 - PDF and JSON export of patient data
-- Light / dark theme support
+
 
 ### Server (Backend API)
 - RESTful API using Java Servlets
