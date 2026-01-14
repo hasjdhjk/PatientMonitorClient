@@ -34,7 +34,6 @@ public class VitalsPdfReportService {
             double pageHeight = pf.getImageableHeight();
 
             // Estimated total content height of your layout (px)
-            // This is intentionally generous
             double contentHeightEstimate = 1100;
 
             double scale = Math.min(1.0, pageHeight / contentHeightEstimate);
