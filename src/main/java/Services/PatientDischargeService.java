@@ -23,22 +23,13 @@ public class PatientDischargeService {
 
     public static Runnable onDischarge = null;
 
-    // server config
+    // HTTP client
     private static final HttpClient HTTP = HttpClient.newHttpClient();
-
-    /**
-     * Discharge flow:
-     1) save local record (AccountPage reads this)
-     * 2) call server to delete patient from DB
-     * 3) remove from local cache
-     * 4) trigger UI refresh callback
-     */
     public static void discharge(Patient patient, String diagnosis) {
 
-        // basic guard
         if (patient == null) return;
 
-        // Save discharge record locally (AccountPage uses this)
+        // Save discharge record locally
         PatientRecord record = new PatientRecord(
                 patient.getName(),
                 "REC-" + patient.getId(),
@@ -50,7 +41,7 @@ public class PatientDischargeService {
         records.add(record);
         PatientRecordIO.saveRecords(records);
 
-        // Call server to delete from DB (async, avoid freezing UI)
+        // Delete from server DB
         final String doctor = NetWork.Session.getDoctorEmail();
         final int patientId = patient.getId();
 
@@ -91,10 +82,10 @@ public class PatientDischargeService {
                 try {
                     get();
 
-                    // 3) Remove from local cache only after DB success
+                    // Remove from local cache after DB success
                     AddedPatientDB.removePatient(patient);
                     LiveVitals.removeShared(patientId);
-                    // 4) notify UI to reload from DB
+                    // Notify UI to refresh
                     if (onDischarge != null) onDischarge.run();
 
                 } catch (Exception ex) {

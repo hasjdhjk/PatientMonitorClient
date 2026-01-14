@@ -7,11 +7,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
+// Load and save doctor profile to local disks
 public class DoctorProfileService {
 
+    // Local storage names
     private static final String DIR_NAME = ".patientmonitor";
     private static final String FILE_NAME = "doctor_profile.properties";
 
+    // Property keys
     private static final String K_FIRST = "firstName";
     private static final String K_LAST  = "lastName";
     private static final String K_ID = "idNumber";
@@ -21,13 +24,16 @@ public class DoctorProfileService {
 
     private final Path filePath;
 
+    // Resolve profile file path under user home
     public DoctorProfileService() {
         String home = System.getProperty("user.home");
         Path dir = Path.of(home, DIR_NAME);
         this.filePath = dir.resolve(FILE_NAME);
     }
 
+    // Load profile from files
     public DoctorProfile load() {
+        // First run: create a default profile
         if (!Files.exists(filePath)) {
             DoctorProfile def = DoctorProfile.defaults();
             save(def);
@@ -59,6 +65,7 @@ public class DoctorProfileService {
         return d;
     }
 
+    // Save profile to file
     public void save(DoctorProfile d) {
         try {
             Files.createDirectories(filePath.getParent());
@@ -78,6 +85,7 @@ public class DoctorProfileService {
         }
     }
 
+    // Null-safe string helper
     private String safe(String s) {
         return s == null ? "" : s.trim();
     }
