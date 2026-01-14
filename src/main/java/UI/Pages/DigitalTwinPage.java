@@ -6,6 +6,7 @@ import Models.Patients.Patient;
 import UI.Components.DigitalTwinPanel;
 import UI.Components.Tiles.BaseTile;
 import UI.MainWindow;
+import NetWork.Session;
 
 import javax.swing.*;
 import java.awt.*;
@@ -44,6 +45,8 @@ public class DigitalTwinPage extends JPanel {
         setBackground(Color.WHITE);
 
         digitalTwinPanel = new DigitalTwinPanel();
+        // Ensure dashboard uses the currently logged-in doctor (not demo)
+        digitalTwinPanel.setDoctorEmail(Session.getDoctorEmail());
 
         twinTile = new BaseTile(1200, 750, 30, true);
         twinTile.setLayout(new BorderLayout());
@@ -100,6 +103,7 @@ public class DigitalTwinPage extends JPanel {
         this.currentPatient = patient;
         this.currentIndex = allPatients.indexOf(patient);
         initLiveVitalsForCurrentPatient();
+        digitalTwinPanel.setDoctorEmail(Session.getDoctorEmail());
         pushPatientToTwin();
         startLiveLoop();
     }
@@ -109,6 +113,7 @@ public class DigitalTwinPage extends JPanel {
         currentIndex = (currentIndex + 1) % allPatients.size();
         currentPatient = allPatients.get(currentIndex);
         initLiveVitalsForCurrentPatient();
+        digitalTwinPanel.setDoctorEmail(Session.getDoctorEmail());
         pushPatientToTwin();
         startLiveLoop();
     }
@@ -118,6 +123,7 @@ public class DigitalTwinPage extends JPanel {
         currentIndex = (currentIndex - 1 + allPatients.size()) % allPatients.size();
         currentPatient = allPatients.get(currentIndex);
         initLiveVitalsForCurrentPatient();
+        digitalTwinPanel.setDoctorEmail(Session.getDoctorEmail());
         pushPatientToTwin();
         startLiveLoop();
     }

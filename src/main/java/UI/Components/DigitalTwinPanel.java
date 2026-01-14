@@ -13,6 +13,8 @@ import javafx.util.Duration;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -24,6 +26,9 @@ public class DigitalTwinPanel extends JPanel {
     private final JFXPanel jfxPanel = new JFXPanel();
     private WebEngine engine;
     private volatile boolean pageLoaded = false;
+
+    // Cached doctor email used to build the dashboard URL (?doctor=...)
+    private volatile String doctorEmail = "demo";
 
     // Keep the latest requested values so HomePage/StatusTracker can call in any order.
     private volatile Integer pendingPatientId = null;
@@ -47,7 +52,7 @@ public class DigitalTwinPanel extends JPanel {
     private void trySendContextToDashboard() {
         if (!pageLoaded || engine == null) return;
 
-        String doctor = Session.getDoctorEmail();
+        String doctor = (doctorEmail == null || doctorEmail.isBlank()) ? Session.getDoctorEmail() : doctorEmail;
         String apiBase = ServerConfig.baseUrl();
 
         String js = "window.__doctor = " + jsString(doctor) + ";" +
@@ -62,22 +67,61 @@ public class DigitalTwinPanel extends JPanel {
         Platform.runLater(this::trySendContextToDashboard);
     }
 
+    private String buildDashboardUrl() {
+        String base = DASHBOARD_URL;
+        if (base == null || base.isBlank()) return base;
+
+        String doc = (doctorEmail == null || doctorEmail.isBlank()) ? "demo" : doctorEmail.trim();
+        String encoded;
+        try {
+            encoded = URLEncoder.encode(doc, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            encoded = "demo";
+        }
+
+        // Preserve any existing query string
+        String joiner = base.contains("?") ? "&" : "?";
+        return base + joiner + "doctor=" + encoded;
+    }
+
+    private void reloadDashboard() {
+        Platform.runLater(() -> {
+            if (engine == null) return;
+            pageLoaded = false;
+            engine.load(buildDashboardUrl());
+        });
+    }
+
+    // Called by pages to update which doctor the dashboard should use
+    public void setDoctorEmail(String email) {
+        this.doctorEmail = (email == null || email.isBlank()) ? "demo" : email.trim();
+        reloadDashboard();
+    }
+
     // Creates the panel and loads the digital twin dashboard inside an embedded JavaFX WebView.
     public DigitalTwinPanel() {
         setLayout(new BorderLayout());
         add(jfxPanel, BorderLayout.CENTER);
 
         Platform.runLater(() -> {
+            // Capture current session doctor before the first load (avoids defaulting to demo)
+            doctorEmail = Session.getDoctorEmail();
+
             WebView webView = new WebView();
             engine = webView.getEngine();
 
             engine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
-                if (newState == Worker.State.SUCCEEDED) {   
+                if (newState == Worker.State.SUCCEEDED) {
                     pageLoaded = true;
                     System.out.println("Digital Twin HTML loaded: " + engine.getLocation());
 
                     // Provide logged-in doctor to the dashboard page
                     trySendContextToDashboard();
+
+                    // Extra safety: if the dashboard exposes setDoctorFromJava, update it too
+                    try {
+                        engine.executeScript("window.setDoctorFromJava && window.setDoctorFromJava(" + jsString(doctorEmail) + ");");
+                    } catch (Exception ignored) {}
 
                     // After load, try to flush any pending updates.
                     flushPending();
@@ -90,8 +134,9 @@ public class DigitalTwinPanel extends JPanel {
                 }
             });
 
-            System.out.println("Loading Digital Twin dashboard: " + DASHBOARD_URL);
-            engine.load(DASHBOARD_URL);
+            String url = buildDashboardUrl();
+            System.out.println("Loading Digital Twin dashboard: " + url);
+            engine.load(url);
             jfxPanel.setScene(new Scene(webView));
         });
     }

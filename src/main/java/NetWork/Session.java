@@ -2,8 +2,8 @@ package NetWork;
 
 // Holds current logged-in doctor info (from database)
 public final class Session {
-    // Default demo user when not logged in
-    private static volatile String doctorEmail = "demo";
+    // Logged-in doctor email. Empty means not logged in.
+    private static volatile String doctorEmail = "";
     // Cached doctor profile fields
     private static volatile String doctorGivenName = "";
     private static volatile String doctorFamilyName = "";
@@ -15,6 +15,8 @@ public final class Session {
     public static void setDoctorEmail(String email) {
         if (email != null && !email.isBlank()) {
             doctorEmail = email.trim();
+        } else {
+            doctorEmail = "";
         }
     }
 
@@ -40,14 +42,23 @@ public final class Session {
         return doctorRole;
     }
 
-    // Get current doctor email
+    // Get current doctor email (falls back to "demo" when not logged in)
     public static String getDoctorEmail() {
+        return (doctorEmail == null || doctorEmail.isBlank()) ? "demo" : doctorEmail;
+    }
+
+    // Raw email without fallback (useful for login checks)
+    public static String getDoctorEmailRaw() {
         return doctorEmail;
+    }
+
+    public static boolean isLoggedIn() {
+        return doctorEmail != null && !doctorEmail.isBlank() && !"demo".equalsIgnoreCase(doctorEmail.trim());
     }
 
     // Clear session on logout
     public static void clear() {
-        doctorEmail = "demo";
+        doctorEmail = "";
         doctorGivenName = "";
         doctorFamilyName = "";
         doctorRole = "";
