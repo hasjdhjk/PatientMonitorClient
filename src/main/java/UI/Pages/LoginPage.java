@@ -1,6 +1,7 @@
 package UI.Pages;
 
 import NetWork.ApiClient;
+import NetWork.Session;
 import UI.Components.ImagePanel;
 import UI.Components.PlaceHolders.PlaceholderPasswordField;
 import UI.Components.PlaceHolders.PlaceholderTextField;
@@ -44,7 +45,7 @@ public class LoginPage extends ImagePanel {
         emailLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // email field (base tile)
-        BaseTile emailFieldTile = new BaseTile(320, 60, 40, true);
+        BaseTile emailFieldTile = new BaseTile(320, 30, 40, true);
         emailFieldTile.setLayout(new BorderLayout());
         emailField = new PlaceholderTextField("Enter your email");
         styleTextField(emailField);
@@ -56,14 +57,14 @@ public class LoginPage extends ImagePanel {
         pwdLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // password field
-        BaseTile pwdFieldTile = new BaseTile(320, 60, 40, true);
+        BaseTile pwdFieldTile = new BaseTile(320, 30, 40, true);
         pwdFieldTile.setLayout(new BorderLayout());
         passwordField = new PlaceholderPasswordField("Enter your password");
         styleTextField(passwordField);
         pwdFieldTile.add(passwordField, BorderLayout.CENTER);
 
         // sign in button
-        BaseTile signInTile = new BaseTile(320, 60, 40, true);
+        BaseTile signInTile = new BaseTile(320, 30, 40, true);
         signInTile.setBackground(new Color(68, 104, 140)); // override BaseTile color
         signInTile.setLayout(new BorderLayout());
 
@@ -97,6 +98,13 @@ public class LoginPage extends ImagePanel {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
+            // Persist the logged-in doctor identity for subsequent API calls
+            Session.setDoctorEmail(email);
+            clearFields();
+
+            // notify other pages (e.g. Digital Twin) that doctor context changed
+            mainWindow.onDoctorLoggedIn();
 
             mainWindow.showHomePage();
         });

@@ -1,8 +1,8 @@
 package Services;
 
-import Models.LiveVitals;
-import Models.VitalRecord;
-import Models.VitalRecordIO;
+import Models.Vitals.LiveVitals;
+import Models.Vitals.VitalRecord;
+import Models.Vitals.VitalRecordIO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +10,9 @@ import java.util.List;
 public class MinuteAveragingService {
 
     private final LiveVitals vitals;
-    private final List<Double> hr = new ArrayList<>();
-    private final List<Double> rr = new ArrayList<>();
+
+    private final List<Double> hr   = new ArrayList<>();
+    private final List<Double> rr   = new ArrayList<>();
     private final List<Double> temp = new ArrayList<>();
     private final List<Double> spo2 = new ArrayList<>();
 
@@ -19,6 +20,10 @@ public class MinuteAveragingService {
         this.vitals = vitals;
     }
 
+    /**
+     * Call ONCE PER SECOND from LiveMonitoringPage
+     * 60 samples = 1 minute average
+     */
     public void sample() {
 
         hr.add(vitals.getHeartRate());
@@ -26,22 +31,27 @@ public class MinuteAveragingService {
         temp.add(vitals.getTemperature());
         spo2.add(vitals.getSpO2());
 
-        if (hr.size() >= 60) {
+        // Wait until we have 60 samples (≈ 1 minute)
+        if (hr.size() < 60) return;
 
-            VitalRecord record = new VitalRecord(
-                    vitals.getPatientId(),
-                    hr.stream().mapToDouble(d -> d).average().orElse(0),
-                    rr.stream().mapToDouble(d -> d).average().orElse(0),
-                    temp.stream().mapToDouble(d -> d).average().orElse(0),
-                    spo2.stream().mapToDouble(d -> d).average().orElse(0)
-            );
+        VitalRecord record = new VitalRecord(
+                vitals.getPatientId(),
+                avg(hr),
+                avg(rr),
+                avg(temp),
+                avg(spo2)
+        );
 
-            VitalRecordIO.append(record);
+        VitalRecordIO.append(record);
 
-            hr.clear();
-            rr.clear();
-            temp.clear();
-            spo2.clear();
-        }
+        // Reset buffers for next minute
+        hr.clear();
+        rr.clear();
+        temp.clear();
+        spo2.clear();
+    }
+
+    private double avg(List<Double> v) {
+        return v.stream().mapToDouble(d -> d).average().orElse(0);
     }
 }

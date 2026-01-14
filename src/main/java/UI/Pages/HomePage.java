@@ -1,7 +1,7 @@
 package UI.Pages;
 
-import Models.AddedPatientDB;
-import Models.Patient;
+import Models.Patients.AddedPatientDB;
+import Models.Patients.Patient;
 import Services.PatientDischargeService;
 
 import UI.Components.SearchBar;
@@ -98,7 +98,7 @@ public class HomePage extends JPanel {
     }
 
     public void reloadFromServerAsync() {
-        final String doctorUsername = "demo";
+        final String doctorUsername = NetWork.Session.getDoctorEmail();
 
         SwingWorker<List<Patient>, Void> worker = new SwingWorker<>() {
             @Override

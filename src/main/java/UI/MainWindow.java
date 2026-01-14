@@ -4,7 +4,7 @@ import Services.DoctorProfileService;
 import Utilities.SettingManager;
 import Utilities.ThemeManager;
 
-import Models.Patient;
+import Models.Patients.Patient;
 import UI.Components.SideBar;
 import UI.Components.TopBar;
 import UI.Pages.*;
@@ -80,7 +80,8 @@ public class MainWindow extends JFrame {
         pageContainer.add(liveMonitoringPage, PAGE_LIVE);
 
         add(pageContainer, BorderLayout.CENTER);
-        cardLayout.show(pageContainer, PAGE_HOME);
+        showPage(PAGE_LOGIN);
+        //cardLayout.show(pageContainer, PAGE_HOME);
 
         // ================= Theme =================
         SettingManager settings = new SettingManager();
@@ -159,5 +160,13 @@ public class MainWindow extends JFrame {
         return accountPage;
     }
     public TopBar getTopBar() {return topBar;}
+    public void onDoctorLoggedIn() {
+        cardLayout.show(pageContainer, PAGE_HOME);
 
+        if (topBar != null) {
+        }
+        if (sidebar != null) {
+            sidebar.setVisible(true);
+        }
+    }
 }

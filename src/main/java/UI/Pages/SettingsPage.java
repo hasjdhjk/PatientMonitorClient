@@ -1,4 +1,6 @@
 package UI.Pages;
+import NetWork.ApiClient;
+import NetWork.Session;
 
 import UI.MainWindow;
 import UI.Components.RoundedButton;
@@ -42,6 +44,7 @@ public class SettingsPage extends JPanel {
 
     private JCheckBox darkModeToggle;
     private JComboBox<String> languageDropdown;
+    private JPasswordField deletePasswordField;
 
     // Profile info (safe defaults; you can later pass real values via another constructor)
     private final String doctorName;
@@ -114,6 +117,10 @@ public class SettingsPage extends JPanel {
         column.add(buildGroupCard(
                 buildToggleRow("Dark mode", darkModeToggle)
         ));
+        column.add(Box.createVerticalStrut(22));
+
+        // --- Danger zone: permanent delete account ---
+        column.add(buildDeleteAccountCard());
         column.add(Box.createVerticalStrut(22));
 
         // --- Buttons: Reset + Log out ---
@@ -517,6 +524,125 @@ public class SettingsPage extends JPanel {
     }
 
     // =========================
+    // Delete Account Card
+    // =========================
+    private JComponent buildDeleteAccountCard() {
+        // Password field for re-auth
+        deletePasswordField = new JPasswordField();
+        deletePasswordField.setFont(new Font("Dialog", Font.PLAIN, 16));
+        deletePasswordField.setPreferredSize(new Dimension(260, 34));
+        deletePasswordField.setMaximumSize(new Dimension(260, 34));
+
+        JLabel title = new JLabel("Danger zone");
+        title.setFont(new Font("Dialog", Font.BOLD, 18));
+
+        JLabel hint = new JLabel("Permanently delete your account (cannot be undone)");
+        hint.setFont(new Font("Dialog", Font.PLAIN, 14));
+
+        JPanel passwordRow = new JPanel(new BorderLayout(12, 0));
+        passwordRow.setOpaque(false);
+        JLabel pwLabel = new JLabel("Password");
+        pwLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
+        passwordRow.add(pwLabel, BorderLayout.WEST);
+        passwordRow.add(deletePasswordField, BorderLayout.EAST);
+
+        RoundedButton deleteBtn = new RoundedButton(" Delete account ");
+        deleteBtn.setFont(new Font("Dialog", Font.BOLD, 16));
+        // try to visually indicate danger without relying on custom button internals
+        deleteBtn.setForeground(Color.WHITE);
+        try {
+            deleteBtn.setBackground(new Color(180, 50, 50));
+            deleteBtn.setOpaque(true);
+        } catch (Exception ignored) {}
+
+        deleteBtn.addActionListener(e -> {
+            String email = Session.getDoctorEmail();
+            String pw = new String(deletePasswordField.getPassword());
+
+            if (email == null || email.isBlank() || "demo".equalsIgnoreCase(email.trim())) {
+                JOptionPane.showMessageDialog(this,
+                        "No logged-in account found.",
+                        "Delete account",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (pw == null || pw.isBlank()) {
+                JOptionPane.showMessageDialog(this,
+                        "Please enter your password to delete your account.",
+                        "Delete account",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Strong confirmation: user must type DELETE
+            String typed = JOptionPane.showInputDialog(this,
+                    "This will permanently delete your account.\nType DELETE to confirm:",
+                    "Confirm deletion",
+                    JOptionPane.WARNING_MESSAGE);
+
+            if (typed == null) return; // cancelled
+            if (!"DELETE".equals(typed.trim())) {
+                JOptionPane.showMessageDialog(this,
+                        "Confirmation text did not match. Account was not deleted.",
+                        "Delete account",
+                        JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            ApiClient.SimpleResponse res = ApiClient.deleteAccount(email, pw);
+            if (res == null) {
+                JOptionPane.showMessageDialog(this,
+                        "Request failed (no response).",
+                        "Delete account",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (res.status != null && res.status.equalsIgnoreCase("ok")) {
+                // clear local session and return to login
+                Session.clear();
+                JOptionPane.showMessageDialog(this,
+                        "Account deleted.",
+                        "Delete account",
+                        JOptionPane.INFORMATION_MESSAGE);
+                window.logout();
+            } else {
+                String msg = (res.message == null || res.message.isBlank()) ? "Delete failed" : res.message;
+                JOptionPane.showMessageDialog(this,
+                        msg,
+                        "Delete account",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        JPanel center = new JPanel();
+        center.setOpaque(false);
+        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
+
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        hint.setAlignmentX(Component.CENTER_ALIGNMENT);
+        passwordRow.setAlignmentX(Component.CENTER_ALIGNMENT);
+        deleteBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        center.add(title);
+        center.add(Box.createVerticalStrut(6));
+        center.add(hint);
+        center.add(Box.createVerticalStrut(12));
+        center.add(passwordRow);
+        center.add(Box.createVerticalStrut(14));
+        center.add(deleteBtn);
+
+        RoundedPanel dangerCard = new RoundedPanel(new BorderLayout());
+        dangerCard.setBorder(new EmptyBorder(14, 14, 14, 14));
+        dangerCard.setAlignmentX(Component.CENTER_ALIGNMENT);
+        dangerCard.setMaximumSize(new Dimension(COLUMN_W, Integer.MAX_VALUE));
+        dangerCard.add(center, BorderLayout.CENTER);
+
+        return dangerCard;
+    }
+
+    // =========================
     // Avatar (initials) fallback component (kept for compatibility)
     // =========================
     private static class InitialsAvatar extends JPanel {
@@ -567,4 +693,3 @@ public class SettingsPage extends JPanel {
         }
     }
 }
-

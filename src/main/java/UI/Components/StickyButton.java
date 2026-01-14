@@ -1,6 +1,6 @@
 package UI.Components;
 
-import Models.Patient;
+import Models.Patients.Patient;
 import UI.Pages.HomePage;
 import Utilities.ImageLoader;
 

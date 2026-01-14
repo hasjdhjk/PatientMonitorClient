@@ -1,6 +1,6 @@
 package Services;
 
-import Models.LiveVitals;
+import Models.Vitals.LiveVitals;
 import java.util.Random;
 
 public class PatientSimulatorService {

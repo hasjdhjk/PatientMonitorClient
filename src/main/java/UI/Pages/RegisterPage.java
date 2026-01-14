@@ -136,8 +136,8 @@ public class RegisterPage extends JPanel {
         termsCheck.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // sign up button
-        BaseTile signUpTile = new BaseTile(650, 75, 50, true);
-        signUpTile.setMaximumSize(new Dimension(650, 75));
+        BaseTile signUpTile = new BaseTile(650, 60, 50, true);
+        signUpTile.setMaximumSize(new Dimension(650, 60));
         signUpTile.setBackground(new Color(68, 104, 140));
         signUpTile.setLayout(new BorderLayout());
         JButton signUpBtn = new JButton("Sign up");
@@ -242,8 +242,8 @@ public class RegisterPage extends JPanel {
 
     // input fields
     private BaseTile inputTile() {
-        BaseTile tile = new BaseTile(650, 75, 50, false);
-        tile.setMaximumSize(new Dimension(650, 75));
+        BaseTile tile = new BaseTile(650, 60, 50, false);
+        tile.setMaximumSize(new Dimension(650, 60));
         tile.setLayout(new BorderLayout());
         tile.setAlignmentX(Component.LEFT_ALIGNMENT);
         return tile;
