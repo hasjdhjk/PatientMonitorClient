@@ -4,6 +4,7 @@ public final class Session {
     private static volatile String doctorEmail = "demo"; // fallback
     private static volatile String doctorGivenName = "";
     private static volatile String doctorFamilyName = "";
+    private static volatile String doctorRole = "";
 
     private Session() {}
 
@@ -23,6 +24,14 @@ public final class Session {
         return full.isBlank() ? getDoctorEmail() : full;
     }
 
+    public static void setDoctorRole(String role) {
+        doctorRole = (role == null ? "" : role.trim());
+    }
+
+    public static String getDoctorRole() {
+        return doctorRole;
+    }
+
     public static String getDoctorEmail() {
         return doctorEmail;
     }
@@ -30,5 +39,6 @@ public final class Session {
         doctorEmail = "demo";
         doctorGivenName = "";
         doctorFamilyName = "";
+        doctorRole = "";
     }
 }

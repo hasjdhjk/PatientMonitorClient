@@ -102,15 +102,16 @@ public class LoginPage extends ImagePanel {
             // Persist the logged-in doctor identity for subsequent API calls
             Session.setDoctorEmail(email);
 
-            // Update top bar immediately with best available display name
-            String display = email;
-            String gn = res.givenName;
-            String fn = res.familyName;
-            if (gn != null) gn = gn.trim();
-            if (fn != null) fn = fn.trim();
-            String full = ((gn == null ? "" : gn) + " " + (fn == null ? "" : fn)).trim();
-            if (!full.isBlank()) display = full;
-            mainWindow.getTopBar().updateDoctorInfo(display, "");
+            // Persist display name from server response
+            Session.setDoctorName(res.givenName, res.familyName);
+
+            // Default role on first login (AccountPage can override later)
+            if (Session.getDoctorRole() == null || Session.getDoctorRole().isBlank()) {
+                Session.setDoctorRole("Clinician");
+            }
+
+            // Update top bar (second line shows ROLE)
+            mainWindow.getTopBar().updateDoctorInfo(Session.getDoctorFullName(), Session.getDoctorRole());
 
             clearFields();
 

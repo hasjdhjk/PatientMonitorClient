@@ -5,17 +5,17 @@ public class DoctorProfile {
     private String lastName;
     private String idNumber;
     private int age;
-    private String specialty;
+    private String orgnization;
     private String email;
 
     public DoctorProfile() {}
 
-    public DoctorProfile(String firstName, String lastName, String idNumber, int age, String specialty, String email) {
+    public DoctorProfile(String firstName, String lastName, String idNumber, int age, String orgnization, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.idNumber = idNumber;
         this.age = age;
-        this.specialty = specialty;
+        this.orgnization = orgnization;
         this.email = email;
     }
 
@@ -25,7 +25,7 @@ public class DoctorProfile {
                 "Chen",
                 "DOC123456",
                 20,
-                "Cardiac Surgeon",
+                "NHS",
                 "doctor@mail.com"
         );
     }
@@ -46,8 +46,8 @@ public class DoctorProfile {
     public int getAge() { return age; }
     public void setAge(int age) { this.age = age; }
 
-    public String getSpecialty() { return specialty; }
-    public void setSpecialty(String specialty) { this.specialty = specialty; }
+    public String getOrgnization() { return orgnization; }
+    public void setOrgnization(String specialty) { this.orgnization = specialty; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }

@@ -173,7 +173,7 @@ public class MainWindow extends JFrame {
 
         String email = Session.getDoctorEmail();
         if (email != null && !email.isBlank() && !"demo".equalsIgnoreCase(email.trim())) {
-            topBar.updateDoctorInfo(email.trim(), "");
+            topBar.updateDoctorInfo(Session.getDoctorFullName(), Session.getDoctorRole());
         } else {
             topBar.updateDoctorInfo("Demo", "");
         }
