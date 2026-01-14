@@ -22,7 +22,7 @@ public class AlertManager {
     private LiveVitals.VitalsSeverity currentlyPlaying = LiveVitals.VitalsSeverity.NORMAL;
 
     // ✅ NEW: gate to prevent beeps (and prevent updateAlert from re-arming sound) while logged out
-    private boolean alertsEnabled = true;
+    private boolean alertsEnabled = false;
 
     private AlertManager() {}
 

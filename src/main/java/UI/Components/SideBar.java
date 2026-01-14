@@ -1,6 +1,6 @@
 package UI.Components;
 import Services.AlertManager;
-import Models.LiveVitals;
+import Models.Vitals.LiveVitals;
 
 import Utilities.SettingManager;
 import UI.MainWindow;
