@@ -62,6 +62,9 @@ public class SettingsPage extends JPanel {
     // Avatar label (clickable)
     private JLabel avatarLabel;
 
+    // Prevent refresh recursion when page becomes visible
+    private boolean refreshing = false;
+
     // Layout constants
     private static final int COLUMN_W = 540;
     private static final int ROW_H = 68;
@@ -89,6 +92,7 @@ public class SettingsPage extends JPanel {
 
     // Main UI builder
     private JComponent buildMainCard() {
+        resolveDisplayIdentity();
         JPanel outer = new JPanel(new GridBagLayout());
         outer.setOpaque(true);
 
@@ -221,6 +225,7 @@ public class SettingsPage extends JPanel {
     }
 
     private JComponent buildProfileHeader() {
+        resolveDisplayIdentity();
         JPanel header = new JPanel(new FlowLayout(FlowLayout.CENTER, 16, 0));
         header.setOpaque(false);
         header.setMaximumSize(new Dimension(COLUMN_W, Integer.MAX_VALUE));
@@ -545,8 +550,24 @@ public class SettingsPage extends JPanel {
         add(buildMainCard(), BorderLayout.CENTER);
         revalidate();
         repaint();
-        ThemeManager.apply(window, settings.isDarkMode());
         applyLocalTheme();
+    }
+
+    @Override
+    public void setVisible(boolean aFlag) {
+        super.setVisible(aFlag);
+        if (!aFlag) return;
+
+        // When this page is shown, re-sync identity/avatar with current Session
+        if (refreshing) return;
+        refreshing = true;
+        SwingUtilities.invokeLater(() -> {
+            try {
+                refreshPage();
+            } finally {
+                refreshing = false;
+            }
+        });
     }
 
     // Delete Account Card

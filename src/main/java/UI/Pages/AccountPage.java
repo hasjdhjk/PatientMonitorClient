@@ -169,7 +169,11 @@ public class AccountPage extends JPanel {
         nameCol.setLayout(new BoxLayout(nameCol, BoxLayout.Y_AXIS));
         nameCol.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
-        headerName = new JLabel(profile == null ? "" : profile.getFullName());
+        String displayName = Session.getDoctorFullName();
+        if (displayName == null || displayName.isBlank() || "demo".equalsIgnoreCase(displayName.trim())) {
+            displayName = (profile == null ? "" : profile.getFullName());
+        }
+        headerName = new JLabel(displayName);
         headerName.setFont(new Font("Arial", Font.BOLD, 22));
         headerName.setForeground(new Color(17, 24, 39));
 
@@ -273,7 +277,7 @@ public class AccountPage extends JPanel {
         // If we pass data into the constructor, it may only paint visually but getText() stays empty,
         // so saving won't persist. Always set placeholder + setText(value).
         fullNameField = new PlaceholderTextField("Full name");
-        fullNameField.setText(profile == null ? "" : profile.getFullName());
+        fullNameField.setText(headerName == null ? (profile == null ? "" : profile.getFullName()) : headerName.getText());
 
         emailField = new PlaceholderTextField("Email address");
         emailField.setText(profile == null ? "" : profile.getEmail());
@@ -291,7 +295,7 @@ public class AccountPage extends JPanel {
 
         // Sync role to Session so TopBar can display it
         Session.setDoctorRole(initialRole);
-        window.getTopBar().updateDoctorInfo(profile == null ? "" : profile.getFullName(), Session.getDoctorRole());
+        window.getTopBar().updateDoctorInfo(headerName.getText(), Session.getDoctorRole());
 roleCombo.setOpaque(true);
         roleCombo.setBackground(Color.WHITE);
 
@@ -450,12 +454,12 @@ roleCombo.setOpaque(true);
         // Map ORGANIZATION -> specialty
         profile.setOrgnization(safe(organizationField));
 
-        // Update top UI
-        headerName.setText(profile.getFullName());
-        headerEmail.setText(profile.getEmail());
+        // Name/email are read-only; keep the current display text
+        headerName.setText(headerName.getText());
+        headerEmail.setText(headerEmail.getText());
 
         // Update TopBar
-        window.getTopBar().updateDoctorInfo(profile.getFullName(), Session.getDoctorRole());
+        window.getTopBar().updateDoctorInfo(headerName.getText(), Session.getDoctorRole());
 
         // Save selected role to meta and persist
         String selectedRole = Objects.toString(roleCombo.getSelectedItem(), "");
@@ -464,7 +468,7 @@ roleCombo.setOpaque(true);
 
 
         Session.setDoctorRole(selectedRole);
-// Update originals & button
+        // Update originals & button
         originalFullName = safe(fullNameField);
         originalOrg = safe(organizationField);
         originalRole = Objects.toString(roleCombo.getSelectedItem(), "");
@@ -531,7 +535,13 @@ roleCombo.setOpaque(true);
         DoctorProfile p = loadProfileFromDbOrFallback();
         this.profile = p;
 
-        if (fullNameField != null) fullNameField.setText(p.getFullName());
+        if (fullNameField != null) {
+            String displayName = Session.getDoctorFullName();
+            if (displayName == null || displayName.isBlank() || "demo".equalsIgnoreCase(displayName.trim())) {
+                displayName = (p == null ? "" : p.getFullName());
+            }
+            fullNameField.setText(displayName);
+        }
         if (organizationField != null) organizationField.setText(p.getOrgnization());
 
         // Keep email consistent everywhere: prefer Session email when available.
@@ -544,7 +554,11 @@ roleCombo.setOpaque(true);
         if (emailField != null) emailField.setText(em == null ? "" : em);
 
         if (headerName != null) {
-            headerName.setText(p == null ? "" : p.getFullName());
+            String displayName = Session.getDoctorFullName();
+            if (displayName == null || displayName.isBlank() || "demo".equalsIgnoreCase(displayName.trim())) {
+                displayName = (p == null ? "" : p.getFullName());
+            }
+            headerName.setText(displayName);
         }
         if (headerEmail != null) {
             headerEmail.setText(em == null ? "" : em);
@@ -574,7 +588,7 @@ roleCombo.setOpaque(true);
 
             // Sync role to Session so TopBar can display it
             Session.setDoctorRole(initialRole);
-            window.getTopBar().updateDoctorInfo(p == null ? "" : p.getFullName(), Session.getDoctorRole());
+            window.getTopBar().updateDoctorInfo(headerName == null ? (p == null ? "" : p.getFullName()) : headerName.getText(), Session.getDoctorRole());
         }
 
         // originals reset

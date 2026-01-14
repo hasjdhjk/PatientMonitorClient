@@ -3,12 +3,16 @@ package Utilities;
 import java.util.HashMap;
 import java.util.Map;
 
+// Simple language switch and text lookup
 public final class LanguageManager {
 
+    // Current language (default English)
     private static String language = "en";
 
+    // All translations: language (key to text)
     private static final Map<String, Map<String, String>> TEXT = new HashMap<>();
 
+    // Initialize translation tables
     static {
         Map<String, String> en = new HashMap<>();
         en.put("settings.title", "Settings");
@@ -28,18 +32,22 @@ public final class LanguageManager {
         TEXT.put("zh", zh);
     }
 
+    // Utility class (no instances)
     private LanguageManager() {}
 
+    // Change current language
     public static void setLanguage(String lang) {
         if (lang == null) lang = "en";
         lang = lang.trim().toLowerCase();
         language = TEXT.containsKey(lang) ? lang : "en";
     }
 
+    // Get current language
     public static String getLanguage() {
         return language;
     }
 
+    // Translate key based on the current language
     public static String t(String key) {
         Map<String, String> table = TEXT.getOrDefault(language, TEXT.get("en"));
         return table.getOrDefault(key, key);
